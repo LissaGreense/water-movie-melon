@@ -5,7 +5,7 @@ import {AccordionTab} from "primereact/accordion";
 import {Avatar} from "primereact/avatar";
 import {Chip} from "primereact/chip";
 
-function getMovieTabs() {
+export const getMovieTabs=() => {
     const [movies, setMovies] = useState<Movie[]>([]);
     useEffect(() => {
         getMovies()
