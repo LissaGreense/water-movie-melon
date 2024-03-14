@@ -5,6 +5,18 @@
   text-align: center;
 }
 
+.background-img {
+  background-image: url("assets/background.gif");
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 .classExample {
   width: 75rem;
 }

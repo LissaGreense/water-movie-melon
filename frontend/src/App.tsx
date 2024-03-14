@@ -9,7 +9,7 @@ function App() {
   return (
       <>
         <Router>
-          <div>
+          <div className={"background-img"}>
             <Routes>
               <Route path="/" element={<HomePage/>}/>
               <Route path="/login" element={<h2>LOGIN HERE</h2>}/>
