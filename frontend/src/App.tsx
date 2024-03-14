@@ -1,24 +1,24 @@
 import './App.css'
-import {PrimeReactProvider} from "primereact/api";
 import "primereact/resources/themes/vela-green/theme.css";
-import {Accordion} from "primereact/accordion";
-import {getMovieTabs} from "./components/movieAccordion.tsx";
-import {getMovieForm} from "./components/movieFormAdd.tsx";
+import {NewMovieForm} from "./components/newMovieForm.tsx";
+import {MovieList} from "./components/movieList.tsx";
+import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 
 
 function App() {
   return (
-    <>
-        <PrimeReactProvider>
-            <Accordion className={"showMovies"} activeIndex={0}>
-                {getMovieTabs()}
-            </Accordion>
-            <Accordion className={"addMovies"} activeIndex={1}>
-                {getMovieForm()}
-            </Accordion>
-        </PrimeReactProvider>
-    </>
+      <>
+        <Router>
+          <div>
+            <Routes>
+              <Route path="/" element={<MovieList/>}/>
+              <Route path="/login" element={<h2>LOGIN HERE</h2>}/>
+              <Route path="/new-movie" element={<NewMovieForm/>}/>
+            </Routes>
+          </div>
+        </Router>
+      </>
   )
 }
 
-export default App
+export default App;
