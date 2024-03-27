@@ -1,6 +1,7 @@
 import MovieMenu from "./movieMenu.tsx";
 import TopMovies from "./movieTopFilms.tsx";
 import {MovieNightCounter} from "./movieNightCounter.tsx";
+import bucket from "../assets/bucketph.png";
 
 
 export const HomePage = () => {
@@ -16,7 +17,7 @@ export const HomePage = () => {
                 </div>
                 <div className={'bucketSpace'}>
                     <MovieNightCounter nextNightDate={currentDate}/>
-                    wiadro z filmami
+                    <img className={'bucket'} alt={'bucket'} src={bucket}/>
                     <div className={'userMenu'}>
                         <MovieMenu/>
                     </div>

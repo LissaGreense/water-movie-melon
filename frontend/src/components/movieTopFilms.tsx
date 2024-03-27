@@ -59,7 +59,7 @@ export default function TopMovies() {
     return (
         <div className="card flex justify-content-center">
             <Sidebar visible={visible} onHide={() => setVisible(false)}>
-                <h2>Sidebar</h2>
+                <h2>Top Movies</h2>
                 <div className="card">
                     <DataScroller value={movies} itemTemplate={itemTemplate} rows={5} inline scrollHeight="500px"
                                   header="Scroll Down to Load More"/>
