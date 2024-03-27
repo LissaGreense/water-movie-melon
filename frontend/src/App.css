@@ -36,23 +36,35 @@ span {
 }
 .pageContent {
   height: 90%;
-  background-color: #535bf2;
   display: flex;
 }
 .topMovies {
   height: 100%;
   float: left;
-  background-color: #213547;
   align-items: center;
   display: flex;
 }
 .bucketSpace {
   height: 100%;
   width: 100%;
-  background-color: brown;
+}
+.bucket {
+  height: 70%;
+  width: auto;
+  align-items: center;
+  animation-name: bucket;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}
+@keyframes bucket {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(5px, 5px) rotate(5deg); }
+  50% { transform: translate(0, 0) rotate(0deg); }
+  75% { transform: translate(-5px, 5px) rotate(-5deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
 }
 .userMenu {
   height: 100%;
   float: right;
-  background-color: blueviolet;
 }
+
