@@ -1,4 +1,4 @@
-import { Movie } from "../types/movie.ts";
+import { Movie } from "../../types/internal/movie.ts";
 import axios from "axios";
 
 const backend_url = 'http://localhost:8000';
