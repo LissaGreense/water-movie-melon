@@ -18,8 +18,8 @@ export const HomePage = () => {
                 <div className={'bucketSpace'}>
                     <MovieNightCounter nextNightDate={currentDate}/>
                     <img className={'bucket'} alt={'bucket'} src={bucket}/>
-                    <div className={'userMenu'}>
-                        <MovieMenu/>
+                  <div className={'userMenu'}>
+                    <MovieMenu/>
                     </div>
                 </div>
             </div>

@@ -1,3 +1,11 @@
 .counterContainer {
-  float: c
+  color: black;
+  background-color: white;
+  width: 9%;
+  float: left;
+  margin-left: 45%;
+  align-items: center;
+  vertical-align: top;
+  border-radius: 15px;
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
 }

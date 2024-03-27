@@ -49,12 +49,17 @@ span {
   width: 100%;
 }
 .bucket {
-  height: 70%;
+  height: 60%;
   width: auto;
-  align-items: center;
   animation-name: bucket;
   animation-duration: 2s;
   animation-iteration-count: infinite;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 @keyframes bucket {
   0% { transform: translate(0, 0) rotate(0deg); }

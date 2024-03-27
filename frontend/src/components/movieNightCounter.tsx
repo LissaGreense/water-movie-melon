@@ -1,4 +1,5 @@
 import {FC, useEffect, useState} from "react";
+import "./movieNightCounter.css"
 
 
 interface MovieNightCounterProps {
@@ -32,14 +33,14 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({nextNightDate}) =
 
   if (countDown <= 0) {
     return (
-        <div>
-          Oglądamy!
+        <div className={"counterContainer"}>
+          <h2>Oglądamy!</h2>
         </div>
     )
   } else {
     return (
-        <div>
-          {getHourValue()}:{getMinutesValue()}:{getSecondsValue()}
+        <div className={"counterContainer"}>
+          <h2>{getHourValue()}:{getMinutesValue()}:{getSecondsValue()}</h2>
         </div>
     )
   }
