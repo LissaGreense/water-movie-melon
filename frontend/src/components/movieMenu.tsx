@@ -1,10 +1,9 @@
 import { Menu } from 'primereact/menu';
-
 import { MenuItem } from 'primereact/menuitem';
 import {Avatar} from "primereact/avatar";
 
 
-export default function MovieHomePage() {
+export default function MovieMenu() {
 const itemRenderer = (item: any) => (
         <div className='p-menuitem-content'>
             <a className="flex align-items-center p-menuitem-link">
@@ -65,8 +64,8 @@ const itemRenderer = (item: any) => (
     ]
 
     return (
-        <div className="card flex justify-content-center">
-            <Menu model={items} className="w-full md:w-15rem"  />
+        <div className="card flex flex-column md:flex-row align-content-end">
+            <Menu model={items} className="flex flex-column md:flex-row align-content-end"  />
         </div>
     )
 }

@@ -28,3 +28,31 @@
 span {
   margin: 0 5px;
 }
+.logoBar {
+  height: 10%;
+  background-image: url("assets/LOGOMELONPLACEHOLDER.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.pageContent {
+  height: 90%;
+  background-color: #535bf2;
+  display: flex;
+}
+.topMovies {
+  height: 100%;
+  float: left;
+  background-color: #213547;
+  align-items: center;
+  display: flex;
+}
+.bucketSpace {
+  height: 100%;
+  width: 100%;
+  background-color: brown;
+}
+.userMenu {
+  height: 100%;
+  float: right;
+  background-color: blueviolet;
+}
