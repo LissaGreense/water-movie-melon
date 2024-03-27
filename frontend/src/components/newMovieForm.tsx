@@ -1,7 +1,7 @@
 import {InputText} from "primereact/inputtext";
 import {Button} from "primereact/button";
 import {Accordion, AccordionTab} from "primereact/accordion";
-import {postMovie} from "../connections/movie.ts";
+import {postMovie} from "../connections/internal/movie.ts";
 import dayjs from 'dayjs'
 
 export const NewMovieForm = () => {
