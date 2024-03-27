@@ -8,7 +8,7 @@ const itemRenderer = (item: any) => (
         <div className='p-menuitem-content'>
             <a className="flex align-items-center p-menuitem-link">
                 <span className={item.icon} />
-                <span className="mx-2">{item.label}</span>
+                <span className="counterContainer">{item.label}</span>
             </a>
         </div>
     );

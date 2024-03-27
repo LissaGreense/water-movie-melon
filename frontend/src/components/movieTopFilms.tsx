@@ -65,7 +65,7 @@ export default function TopMovies() {
                                   header="Scroll Down to Load More"/>
                 </div>
             </Sidebar>
-            <Button icon="pi pi-arrow-right" onClick={() => setVisible(true)}/>
+            <Button label='TOP MOVIES' icon="pi pi-arrow-right" onClick={() => setVisible(true)}/>
         </div>
     )
 }
