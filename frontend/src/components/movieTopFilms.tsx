@@ -2,8 +2,8 @@
 import {useEffect, useState} from 'react';
 import { DataScroller } from 'primereact/datascroller';
 import { Rating } from 'primereact/rating';
-import {getMovies} from "../connections/movie.ts";
-import {Movie} from "../types/movie.ts";
+import {getMovies} from "../connections/internal/movie.ts";
+import {Movie} from "../types/internal/movie.ts";
 import {Button} from "primereact/button";
 import { Sidebar } from 'primereact/sidebar';
 
