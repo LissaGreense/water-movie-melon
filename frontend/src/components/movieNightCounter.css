@@ -2,11 +2,18 @@
   color: black;
   background-color: white;
   width: 9%;
-  margin-left:auto;
-  margin-right:auto;
-  align-items: center;
-  vertical-align: top;
+  height: fit-content;
   border-radius: 15px;
   min-width: fit-content;
+  position: absolute;
+  margin: auto;
+  top: 12%;
+  left: 0;
+  right: 0;
+  bottom: auto;
   font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+
+.counterContainer h2 {
+  margin: 0;
 }
