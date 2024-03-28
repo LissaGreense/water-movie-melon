@@ -72,4 +72,49 @@ span {
   height: 100%;
   float: right;
 }
-
+.textSans {
+  color: black;
+  background-color: forestgreen;
+  width: 9%;
+  height: fit-content;
+  border-radius: 10px;
+  min-width: fit-content;
+  margin: auto;
+  top: 12%;
+  left: 0;
+  right: 0;
+  bottom: auto;
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+.textSansNoBorder {
+  color: crimson;
+  width: 9%;
+  height: fit-content;
+  border-radius: 10px;
+  min-width: fit-content;
+  margin: auto;
+  top: 12%;
+  left: 0;
+  right: 0;
+  bottom: auto;
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+.topMovieCover {
+  width: 30%;
+  height: 100%;
+}
+.topMovieCoverDiv {
+  width: 30%;
+  height: auto;
+}
+.topMovieCoverData {
+  width: 70%;
+  float: right;
+}
+.topMovieDiv {
+  height: auto;
+  float: left;
+  align-items: center;
+  display: flex;
+  border-bottom: 7px solid #213547;
+}

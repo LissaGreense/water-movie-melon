@@ -6,6 +6,7 @@ import {getMovies} from "../connections/internal/movie.ts";
 import {Movie} from "../types/internal/movie.ts";
 import {Button} from "primereact/button";
 import { Sidebar } from 'primereact/sidebar';
+import cover from '../assets/coverplaceholder.jpg'
 
 interface TopFilms {
     title: string;
@@ -34,25 +35,27 @@ export default function TopMovies() {
     const itemTemplate = (data: TopFilms) => {
         return (
 
-            <div className="col-12">
-                <div className="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
-                    <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"  alt={data.title} />
-                    <div className="flex flex-column lg:flex-row justify-content-between align-items-center xl:align-items-start lg:flex-1 gap-4">
-                        <div className="flex flex-column align-items-center lg:align-items-start gap-3">
-                            <div className="flex flex-column gap-1">
-                                <div className="text-2xl font-bold text-900">{data.title}</div>
-                            </div>
-                            <div className="flex flex-column gap-2">
-                                <Rating value={data.rating} readOnly cancel={false}></Rating>
-                                <span className="flex align-items-center gap-2">
+            <div className={'topMovieDiv'}>
+                <div className={'topMovieCoverDiv'}>
+                    <img className="topMovieCover" src={cover} alt={data.title}/>
+                </div>
+                <div
+                    className="topMovieCoverData">
+                    <div>
+                        <div>
+                            <div className="textSans">{data.title}</div>
+                        </div>
+                        <div className="flex flex-column gap-2">
+                            <Rating value={data.rating} readOnly cancel={false}></Rating>
+                            <span className="flex align-items-center gap-2">
                                     <i className="pi pi-tag product-category-icon"></i>
-                                    <span className="font-semibold">{data.genre}</span>
+                                    <span className="textSansNoBorder">{data.genre}</span>
                                 </span>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
         );
     };
 
@@ -61,11 +64,10 @@ export default function TopMovies() {
             <Sidebar visible={visible} onHide={() => setVisible(false)}>
                 <h2>Top Movies</h2>
                 <div className="card">
-                    <DataScroller value={movies} itemTemplate={itemTemplate} rows={5} inline scrollHeight="500px"
-                                  header="Scroll Down to Load More"/>
+                    <DataScroller value={movies} itemTemplate={itemTemplate} rows={7} inline scrollHeight="500px"/>
                 </div>
             </Sidebar>
-            <Button label='TOP MOVIES' icon="pi pi-arrow-right" onClick={() => setVisible(true)}/>
+            <Button label='TOP MOVIES' onClick={() => setVisible(true)}/>
         </div>
     )
 }
