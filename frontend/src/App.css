@@ -1,0 +1,120 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.background-img {
+  background-image: url("assets/background.gif");
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.classExample {
+  width: 75rem;
+}
+
+.userRow {
+  display: inline-block;
+}
+.userRow,
+span {
+  margin: 0 5px;
+}
+.logoBar {
+  height: 10%;
+  background-image: url("assets/LOGOMELONPLACEHOLDER.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.pageContent {
+  height: 90%;
+  display: flex;
+}
+.topMovies {
+  height: 100%;
+  float: left;
+  align-items: center;
+  display: flex;
+}
+.bucketSpace {
+  height: 100%;
+  width: 100%;
+}
+.bucket {
+  height: 60%;
+  width: auto;
+  animation-name: bucket;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+@keyframes bucket {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(5px, 5px) rotate(5deg); }
+  50% { transform: translate(0, 0) rotate(0deg); }
+  75% { transform: translate(-5px, 5px) rotate(-5deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+.userMenu {
+  height: 100%;
+  float: right;
+}
+.textSans {
+  color: black;
+  background-color: forestgreen;
+  width: 9%;
+  height: fit-content;
+  border-radius: 10px;
+  min-width: fit-content;
+  margin: auto;
+  top: 12%;
+  left: 0;
+  right: 0;
+  bottom: auto;
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+.textSansNoBorder {
+  color: crimson;
+  width: 9%;
+  height: fit-content;
+  border-radius: 10px;
+  min-width: fit-content;
+  margin: auto;
+  top: 12%;
+  left: 0;
+  right: 0;
+  bottom: auto;
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+.topMovieCover {
+  width: 30%;
+  height: 100%;
+}
+.topMovieCoverDiv {
+  width: 30%;
+  height: auto;
+}
+.topMovieCoverData {
+  width: 70%;
+  float: right;
+}
+.topMovieDiv {
+  height: auto;
+  float: left;
+  align-items: center;
+  display: flex;
+  border-bottom: 7px solid #213547;
+}
