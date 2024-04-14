@@ -5,7 +5,7 @@ import json
 
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Movie, Rate, MovieNight
+from .models import Movie, Rate, MovieNight, Attendees
 
 
 # TODO: to remove, only for debugging purpose
@@ -41,26 +41,45 @@ def rate(request):
         rate_from_body = json.loads(request.body)
 
         try:
-            new_movie = Movie(**rate_from_body)
+            new_rate = Rate(**rate_from_body)
         except TypeError:
             return HttpResponse(json.dumps({'error': 'out of field'}), content_type='application/json', status=400)
 
-        new_movie.save()
+        new_rate.save()
         return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
 
 
 @csrf_exempt
 def new_night(request):
     if request.method == 'GET':
-        all_movies = serializers.serialize('python', MovieNight.objects.all())
-        movies_field = [d['fields'] for d in all_movies]
-        return HttpResponse(json.dumps(movies_field, cls=DjangoJSONEncoder), content_type='application/json')
+        all_nights = serializers.serialize('python', MovieNight.objects.all())
+        night_field = [d['fields'] for d in all_nights]
+        return HttpResponse(json.dumps(night_field, cls=DjangoJSONEncoder), content_type='application/json')
     elif request.method == 'POST':
-        movie_from_body = json.loads(request.body)
+        night_from_body = json.loads(request.body)
         try:
-            new_movie = MovieNight(**movie_from_body)
+            new_movie_night = MovieNight(**night_from_body)
         except TypeError:
             return HttpResponse(json.dumps({'error': 'out of field'}), content_type='application/json', status=400)
 
-        new_movie.save()
+        new_movie_night.save()
+        return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
+
+
+@csrf_exempt
+def attendees(request):
+    if request.method == 'GET':
+        all_attendees = serializers.serialize('python', Attendees.objects.all())
+        attendees_field = [d['fields'] for d in all_attendees]
+
+        return HttpResponse(json.dumps(attendees_field, cls=DjangoJSONEncoder), content_type='application/json')
+
+    elif request.method == 'POST':
+        attendee_from_body = json.loads(request.body)
+        try:
+            new_attendee = Attendees(**attendee_from_body)
+        except TypeError:
+            return HttpResponse(json.dumps({'error': 'out of field'}), content_type='application/json', status=400)
+
+        new_attendee.save()
         return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')

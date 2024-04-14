@@ -36,3 +36,14 @@ class MovieNight(models.Model):
     host = models.CharField(max_length=50)
     night_date = models.DateTimeField('night_date')
     location = models.CharField(max_length=100)
+
+
+class Attendees(models.Model):
+    night = models.ForeignKey(MovieNight, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    accept_date = models.DateTimeField('accept_date')
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['night', 'user'], name='unique_night_user_attendee')
+        ]
