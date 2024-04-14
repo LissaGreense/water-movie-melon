@@ -15,13 +15,15 @@ export async function getMovies(): Promise<Movie[]> {
   }
 }
 
-export async function postMovie(title: string, link: string, user: string, date_added: string, genre: string): Promise<void> {
+export async function postMovie(title: string, link: string, user: string, date_added: string, genre: string, cover_link: string, duration: number): Promise<void> {
   const data = {
     title: title,
     link: link,
     user: user,
     date_added: date_added,
     genre: genre,
+    duration: duration,
+    cover_link: cover_link
   }
   try {
     const response = await axios.post(backend_url + movies_endpoint, data);

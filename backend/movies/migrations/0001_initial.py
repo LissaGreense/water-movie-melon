@@ -26,6 +26,8 @@ class Migration(migrations.Migration):
                 ('user', models.CharField(max_length=20)),
                 ('date_added', models.DateTimeField(verbose_name='date_added')),
                 ('genre', models.CharField(max_length=20)),
+                ('cover', models.CharField(max_length=150)),
+                ('duration', models.IntegerField(max_length=5)),
             ],
         ),
         migrations.CreateModel(

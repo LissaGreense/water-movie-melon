@@ -10,6 +10,10 @@ class Movie(models.Model):
     genre = models.CharField(max_length=20)
 
 
+cover_link = models.CharField(max_length=150, default='')
+duration = models.IntegerField(default=1)
+
+
 class User(AbstractUser):
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
 
@@ -26,3 +30,9 @@ class Rate(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['movie', 'user'], name='unique_movie_user_rating')
         ]
+
+
+class MovieNight(models.Model):
+    host = models.CharField(max_length=50)
+    night_date = models.DateTimeField('night_date')
+    location = models.CharField(max_length=100)
