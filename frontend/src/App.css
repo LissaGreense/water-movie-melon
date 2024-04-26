@@ -87,7 +87,7 @@ span {
   font-family: "Comic Sans MS", "Comic Sans", cursive;
 }
 .textSansNoBorder {
-  color: crimson;
+  color: #000000;
   width: 9%;
   height: fit-content;
   border-radius: 10px;
@@ -117,4 +117,33 @@ span {
   align-items: center;
   display: flex;
   border-bottom: 7px solid #213547;
+}
+.melonStyleContainer {
+  height: 70%;
+  width: 80%;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.floatLeft {
+  float: left;
+  align-items: start;
+}
+.movieCoverDiv {
+  width: 20%;
+}
+.movieCoverDiv img {
+  height: 9em;
+}
+.movieData {
+  width: 80%
+}
+.melonStyleContainerFruit {
+  background-color: crimson;
+}
+.melonStyleContainerPeel {
+  background-color: green;
 }
