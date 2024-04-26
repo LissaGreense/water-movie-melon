@@ -8,11 +8,9 @@ class Movie(models.Model):
     user = models.CharField(max_length=20)
     date_added = models.DateTimeField('date_added')
     genre = models.CharField(max_length=20)
-
-
-cover_link = models.CharField(max_length=150, default='')
-duration = models.IntegerField(default=1)
-is_watched = models.BooleanField(default=False)
+    cover_link = models.CharField(max_length=150, default='')
+    duration = models.IntegerField(default=1)
+    is_watched = models.BooleanField(default=False)
 
 
 class User(AbstractUser):
