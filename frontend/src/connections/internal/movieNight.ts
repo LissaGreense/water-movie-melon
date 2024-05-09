@@ -4,7 +4,7 @@ import {MovieNight} from "../../types/internal/movieNight.ts";
 const backend_url = 'http://localhost:8000';
 const movie_nights_endpoint = '/movies/newNight';
 
-export async function getMovies(): Promise<MovieNight[]> {
+export async function getMovieNights(): Promise<MovieNight[]> {
     try {
         const response = await axios.get<MovieNight[]>(backend_url + movie_nights_endpoint);
         console.log(response);

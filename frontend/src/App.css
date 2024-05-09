@@ -139,11 +139,20 @@ span {
   height: 9em;
 }
 .movieData {
-  width: 80%
+  width: 80%;
 }
 .melonStyleContainerFruit {
   background-color: crimson;
 }
 .melonStyleContainerPeel {
   background-color: green;
+}
+.melonStyleCalendar {
+
+}
+.pageContentCalendar {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin-top: 5%;
 }
