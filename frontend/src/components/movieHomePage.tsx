@@ -6,7 +6,7 @@ import bucket from "../assets/bucketph.png";
 
 export const HomePage = () => {
     const currentDate = new Date();
-    currentDate.setMinutes(currentDate.getMinutes() +3)
+    currentDate.setMinutes(currentDate.getMinutes() + 3)
     return (
         <>
             <div className={'logoBar'}>
