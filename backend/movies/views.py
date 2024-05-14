@@ -1,4 +1,6 @@
 from django.core.serializers.json import DjangoJSONEncoder
+from django.contrib.auth import authenticate, login, logout
+from rest_framework.authtoken.models import Token
 from django.http import HttpResponse
 from django.core import serializers
 import json
@@ -83,3 +85,21 @@ def attendees(request):
 
         new_attendee.save()
         return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
+
+
+@csrf_exempt
+def login_user(request):
+    if request.method == 'POST':
+        user_data = json.loads(request.body)
+        username = user_data["username"]
+        password = user_data["password"]
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            token, created = Token.objects.get_or_create(user=user)
+
+            return HttpResponse(json.dumps({'token': token.key}), content_type='application/json')
+
+        return HttpResponse(json.dumps({'error': 'Invalid credentials'}), content_type='application/json', status=401)
+
