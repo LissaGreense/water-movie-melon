@@ -1,0 +1,13 @@
+services:
+#  frontend:
+#    image: wmm-front
+#    ports:
+#      - 5173:5173
+#    depends_on:
+#      - backend
+#    restart: always
+  backend:
+    image: wmm-back
+    ports:
+      - 8000:8000
+    restart: always
