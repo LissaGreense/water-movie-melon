@@ -10,4 +10,4 @@ Tool to pick the best title for movie night with your friends
 3. cd ..
 4. python backend/manage.py migrate
 5. python backend/manage.py runserver
-6. cd frontend && npm dev run
+6. cd frontend && npm run dev
