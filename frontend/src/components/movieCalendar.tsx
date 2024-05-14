@@ -3,11 +3,14 @@ import {useEffect, useState} from "react";
 import {NewMovieNightForm} from "./newMovieNightForm.tsx";
 import {getMovieNights} from "../connections/internal/movieNight.ts";
 import dayjs from "dayjs";
+import {MovieNightAttend} from "./movieNightAttend.tsx";
 
 
 export  const MovieCalendar = () => {
     const [date, setDate] = useState(null)
     const [nightDates, setNightDates] = useState<string[]>([]);
+    const [visibleAdd, setAddVisible] = useState(false);
+    const [visibleJoin, setJoinVisible] = useState(false)
 
     useEffect(() => {
         getMovieNights()
@@ -38,10 +41,24 @@ export  const MovieCalendar = () => {
             </div>
             <div className={'pageContentCalendar'}>
                 <div className={'melonStyleCalendar'}/>
-                    <Calendar value={date} dateTemplate={dateTemplate} onChange={(e) => setDate(e.value)} dateFormat="yy-mm-dd" inline/>
+                    <Calendar value={date}
+                              dateTemplate={dateTemplate}
+                              onChange={(e) => {
+                                  setDate(e.value);
+                                  if (nightDates.includes(dayjs(e.value).format('YYYY-MM-DD').split('T')[0]))  {
+                                      setJoinVisible(true);
+                                  } else {
+                                      setAddVisible(true);
+                                  }
+
+                              }}
+                              dateFormat="yy-mm-dd" inline/>
                 <div/>
                 <div>
-                    <NewMovieNightForm movieDate={date}/>
+                    <NewMovieNightForm movieDate={date} isVisible={visibleAdd} setVisible={setAddVisible}/>
+                </div>
+                <div>
+                    <MovieNightAttend movieDate={date} isVisible={visibleJoin} setVisible={setJoinVisible}/>
                 </div>
             </div>
         </>

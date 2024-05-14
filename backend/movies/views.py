@@ -1,5 +1,7 @@
+import datetime
+
 from django.core.serializers.json import DjangoJSONEncoder
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from django.http import HttpResponse
 from django.core import serializers
@@ -54,7 +56,13 @@ def rate(request):
 @csrf_exempt
 def new_night(request):
     if request.method == 'GET':
-        all_nights = serializers.serialize('python', MovieNight.objects.all())
+        date = request.GET.get('date', None)
+        if date:
+            parsed_date = datetime.datetime.strptime(date, "%d.%m.%Y")
+            all_nights = serializers.serialize('python', MovieNight.objects.filter(night_date__date=parsed_date))
+            print(all_nights)
+        else:
+            all_nights = serializers.serialize('python', MovieNight.objects.all())
         night_field = [d['fields'] for d in all_nights]
         return HttpResponse(json.dumps(night_field, cls=DjangoJSONEncoder), content_type='application/json')
     elif request.method == 'POST':

@@ -6,8 +6,9 @@ import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import {LoginPage} from "./pages/loginPage.tsx";
 import {getAccessToken} from "./utils/accessToken.ts";
 import {FC, ReactElement} from "react";
-import {CALENDAR, HOMEPAGE, LOGIN, NEW_MOVIE} from "./constants/paths.ts";
+import {CALENDAR, HOMEPAGE, LOGIN, MOVIES, NEW_MOVIE} from "./constants/paths.ts";
 import {MovieCalendar} from "./components/movieCalendar.tsx";
+import {MovieList} from "./components/movieList.tsx";
 
 
 const RequireAuth: FC<{ children: ReactElement }> = ({children}) => {
@@ -27,7 +28,8 @@ const App = () => {
                         <Route path={HOMEPAGE} element={<HomePage/>}/>
                         <Route path={LOGIN} element={<LoginPage/>}/>
                         <Route path={NEW_MOVIE} element={<RequireAuth><NewMovieForm/></RequireAuth>}/>
-                        <Route path={CALENDAR} element={<MovieCalendar/>}/>
+                        <Route path={CALENDAR} element={<RequireAuth><MovieCalendar/></RequireAuth>}/>
+                        <Route path={MOVIES} element={<RequireAuth><MovieList/></RequireAuth>}/>
                     </Routes>
                 </div>
             </Router>
