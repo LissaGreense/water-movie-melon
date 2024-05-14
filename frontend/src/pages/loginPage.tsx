@@ -33,7 +33,7 @@ export const LoginPage = () => {
   const handleLogoutEvent = (e) => {
     e.preventDefault();
     clearAccessToken();
-    navigate("/login");
+    navigate(LOGIN);
   };
   const handleInput = (e) => {
     const {name, value} = e.target;

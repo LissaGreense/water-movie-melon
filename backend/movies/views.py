@@ -7,7 +7,7 @@ import json
 
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Movie, Rate, MovieNight, Attendees
+from .models import Movie, Rate, MovieNight, Attendees, User
 
 
 # TODO: to remove, only for debugging purpose
@@ -103,3 +103,14 @@ def login_user(request):
 
         return HttpResponse(json.dumps({'error': 'Invalid credentials'}), content_type='application/json', status=401)
 
+@csrf_exempt
+def user_avatar(request, username):
+    if request.method == 'GET':
+        try:
+            user = User.objects.get(username=username)
+            avatar_url = user.avatar.url
+            return HttpResponse(json.dumps({'avatar_url': avatar_url}))
+        except User.DoesNotExist:
+            return HttpResponse(json.dumps({'error': 'User not found'}), status=404)
+    else:
+        return HttpResponse(json.dumps({'error': 'Only GET method is allowed'}), status=405)
