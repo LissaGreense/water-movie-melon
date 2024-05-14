@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Movie } from "../types/movie.ts";
-import { getMovies } from "../connections/movie.ts";
+import { Movie } from "../types/internal/movie.ts";
+import { getMovies } from "../connections/internal/movie.ts";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import { Avatar } from "primereact/avatar";
 import { Chip } from "primereact/chip";

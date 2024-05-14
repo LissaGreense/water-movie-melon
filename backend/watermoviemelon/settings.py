@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'movies',
     'corsheaders',
+    'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -133,4 +135,11 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
 ]
 
+AUTH_USER_MODEL = 'movies.User'
+
+REST_FRAMEWORK = {
+  'DEFAULT_AUTHENTICATION_CLASSES': [
+    'rest_framework.authentication.TokenAuthentication',
+  ],
+}
 
