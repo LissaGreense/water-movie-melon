@@ -1,13 +1,20 @@
 services:
+
   frontend:
     image: wmm-frontend
     ports:
-      - 5173:5173
+      - 4173:4173
     depends_on:
       - backend
     restart: always
+
   backend:
     image: wmm-backend
     ports:
       - 8000:8000
     restart: always
+    volumes:
+      - wmm-database:/home/wsgi/app/database
+
+volumes:
+  wmm-database:
