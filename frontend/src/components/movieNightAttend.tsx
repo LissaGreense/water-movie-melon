@@ -1,8 +1,10 @@
 import {Dispatch, FC, SetStateAction, useEffect, useState} from "react";
 import {Dialog} from "primereact/dialog";
-import {getMovieNight} from "../connections/internal/movieNight.ts";
-import {Movie} from "../types/internal/movie.ts";
-import {getMovies} from "../connections/internal/movie.ts";
+import {getAttendees, getMovieNight, joinMovieNight} from "../connections/internal/movieNight.ts";
+import {Button} from "primereact/button";
+import {getUsername} from "../utils/accessToken.ts";
+import dayjs from "dayjs";
+import {Attendees, MovieNight} from "../types/internal/movieNight.ts";
 
 interface MovieDateProps {
     movieDate: Date | null;
@@ -11,6 +13,23 @@ interface MovieDateProps {
 }
 export const MovieNightAttend: FC<MovieDateProps> = ({movieDate, isVisible, setVisible}): JSX.Element => {
     const [nightLocation, setNightLocation] = useState<string>("");
+    const [movieNightData, setMovieNightData] = useState<MovieNight>();
+    const [attendeesList, setAttendeesList] = useState<Attendees[]>();
+
+    useEffect(() => {
+        getMovieNight(movieDate).then((data) => {
+            setMovieNightData(data[0]);
+        })
+    }, []);
+
+    useEffect(() => {
+        getAttendees().then((attds) => {
+            setAttendeesList(attds);
+            console.log("LISTA");
+            console.log(attds?.map(val => dayjs(val.night.night_date).format('ddd MMM DD YYYY')));
+            console.log(attds);
+        })
+    }, []);
 
     useEffect(() => {
         getMovieNight(movieDate)
@@ -22,11 +41,28 @@ export const MovieNightAttend: FC<MovieDateProps> = ({movieDate, isVisible, setV
             console.error('Error fetching movies:', error);
         });
     }, []);
+
+    const handleJoinMovieNight = () => {
+        console.log(attendeesList);
+        joinMovieNight(
+            movieNightData,
+            getUsername(),
+            dayjs(Date()).format('YYYY-MM-DD HH:mm')
+        )
+        console.log("DATA");
+        console.log(dayjs(movieDate).format('ddd MMM DD YYYY'))
+    };
+
     return (
         <Dialog visible={isVisible} onHide={() => setVisible(false)}>
             <span>Tego dnia jest już zaplanowany wieczór filmowy</span>
             <span>Możesz do niego dołączyć ;)</span>
             <span>Miejsce oglądania: {nightLocation}.</span>
+            <Button label='Dołącz' onClick={handleJoinMovieNight} disabled={
+                attendeesList?.map(val => val.user).includes(getUsername() as string) &&
+                attendeesList?.map(val => dayjs(val.night.night_date).format('ddd MMM DD YYYY')).includes(dayjs(movieDate).format('ddd MMM DD YYYY'))}
+            >
+            </Button>
         </Dialog>
     )
 }

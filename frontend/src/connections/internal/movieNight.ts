@@ -1,8 +1,9 @@
 import axios from "axios";
-import {MovieNight} from "../../types/internal/movieNight.ts";
+import {Attendees, MovieNight,} from "../../types/internal/movieNight.ts";
 
 const backend_url = 'http://localhost:8000';
 const movie_nights_endpoint = '/movies/newNight';
+const attendees_endpoint = '/movies/attendees';
 
 export async function getMovieNights(): Promise<MovieNight[]> {
     try {
@@ -40,5 +41,30 @@ export async function postMovieNight(host: string, night_date: string, location:
         console.log(response.status);
     } catch (error) {
         console.error(error);
+    }
+}
+
+export async function joinMovieNight(night: MovieNight, user: string, accept_date: string) : Promise<void> {
+    const data = {
+        night: night,
+        user: user,
+        accept_date: accept_date,
+    }
+    try {
+        const response = await axios.post(backend_url + attendees_endpoint, data);
+        console.log(response.status);
+    } catch (error){
+        console.error(error);
+    }
+}
+
+export async function getAttendees() : Promise<Attendees[]> {
+    try {
+        const response = await axios.get<Attendees[]>(backend_url + attendees_endpoint);
+        console.log(response.status);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        return [];
     }
 }

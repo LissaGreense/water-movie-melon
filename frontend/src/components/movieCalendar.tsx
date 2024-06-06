@@ -50,7 +50,6 @@ export  const MovieCalendar = () => {
                                   } else {
                                       setAddVisible(true);
                                   }
-
                               }}
                               dateFormat="yy-mm-dd" inline/>
                 <div/>

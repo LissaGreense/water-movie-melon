@@ -6,9 +6,9 @@ from django.test.client import RequestFactory
 from . import models
 from . import views
 
-
 DB_FORMAT_STRING = '%Y-%m-%dT%H:%M:%SZ'
 PARAM_FORMAT_STRING = '%d.%m.%Y'
+
 
 class TestCalls(TestCase):
     def setUp(self):
@@ -49,4 +49,3 @@ class TestCalls(TestCase):
         movie_nights = json.loads(response.content)
         self.assertEqual(len(movie_nights), 1)
         self.assertEqual(movie_nights[0]['night_date'], night_date_expected_db_format)
-

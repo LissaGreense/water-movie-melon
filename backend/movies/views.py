@@ -9,7 +9,7 @@ import json
 
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Movie, Rate, MovieNight, Attendees
+from .models import Movie, Rate, MovieNight, Attendees, User
 
 
 # TODO: to remove, only for debugging purpose
@@ -60,7 +60,6 @@ def new_night(request):
         if date:
             parsed_date = datetime.datetime.strptime(date, "%d.%m.%Y")
             all_nights = serializers.serialize('python', MovieNight.objects.filter(night_date__date=parsed_date))
-            print(all_nights)
         else:
             all_nights = serializers.serialize('python', MovieNight.objects.all())
         night_field = [d['fields'] for d in all_nights]
@@ -81,13 +80,16 @@ def attendees(request):
     if request.method == 'GET':
         all_attendees = serializers.serialize('python', Attendees.objects.all())
         attendees_field = [d['fields'] for d in all_attendees]
-
+        #TODO kurwa jebane gówno zwraca id usera a nie nazwe, muwinajt tez btw
         return HttpResponse(json.dumps(attendees_field, cls=DjangoJSONEncoder), content_type='application/json')
 
     elif request.method == 'POST':
         attendee_from_body = json.loads(request.body)
+        night = MovieNight.objects.get(night_date=attendee_from_body['night']['night_date'])
+        user = User.objects.get(username=attendee_from_body['user'])
+        accept_date = attendee_from_body['accept_date']
         try:
-            new_attendee = Attendees(**attendee_from_body)
+            new_attendee = Attendees(night=night, user=user, accept_date=accept_date)
         except TypeError:
             return HttpResponse(json.dumps({'error': 'out of field'}), content_type='application/json', status=400)
 
