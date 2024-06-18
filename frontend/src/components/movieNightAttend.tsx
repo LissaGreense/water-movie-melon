@@ -14,43 +14,37 @@ interface MovieDateProps {
 export const MovieNightAttend: FC<MovieDateProps> = ({movieDate, isVisible, setVisible}): JSX.Element => {
     const [nightLocation, setNightLocation] = useState<string>("");
     const [movieNightData, setMovieNightData] = useState<MovieNight>();
-    const [attendeesList, setAttendeesList] = useState<Attendees[]>();
+    const [attendeesList, setAttendeesList] = useState<Attendees[]>([]);
 
     useEffect(() => {
         getMovieNight(movieDate).then((data) => {
             setMovieNightData(data[0]);
         })
-    }, []);
+    }, [movieDate]);
 
     useEffect(() => {
         getAttendees().then((attds) => {
             setAttendeesList(attds);
-            console.log("LISTA");
-            console.log(attds?.map(val => dayjs(val.night.night_date).format('ddd MMM DD YYYY')));
-            console.log(attds);
         })
-    }, []);
+    }, [movieDate]);
 
     useEffect(() => {
         getMovieNight(movieDate)
         .then((r) => {
             // TODO: when no elements returns error or something. Just handle that
-            setNightLocation(r[0].location)
+            setNightLocation(r[0].location);
         })
         .catch((error) => {
             console.error('Error fetching movies:', error);
         });
-    }, []);
+    }, [movieDate]);
 
     const handleJoinMovieNight = () => {
-        console.log(attendeesList);
         joinMovieNight(
             movieNightData,
             getUsername(),
             dayjs(Date()).format('YYYY-MM-DD HH:mm')
         )
-        console.log("DATA");
-        console.log(dayjs(movieDate).format('ddd MMM DD YYYY'))
     };
 
     return (
@@ -60,8 +54,8 @@ export const MovieNightAttend: FC<MovieDateProps> = ({movieDate, isVisible, setV
             <span>Miejsce oglądania: {nightLocation}.</span>
             <Button label='Dołącz' onClick={handleJoinMovieNight} disabled={
                 attendeesList?.map(val => val.user).includes(getUsername() as string) &&
-                attendeesList?.map(val => dayjs(val.night.night_date).format('ddd MMM DD YYYY')).includes(dayjs(movieDate).format('ddd MMM DD YYYY'))}
-            >
+                attendeesList?.map(val => dayjs(val.night.night_date).format('ddd MMM DD YYYY')).includes(dayjs(movieDate).format('ddd MMM DD YYYY'))
+            }>
             </Button>
         </Dialog>
     )

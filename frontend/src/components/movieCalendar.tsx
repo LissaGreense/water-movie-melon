@@ -35,6 +35,15 @@ export  const MovieCalendar = () => {
         }
     }
 
+    const handleJoinOrAdd = (e: any) => {
+        setDate(e.value);
+        if (nightDates.includes(dayjs(e.value).format('YYYY-MM-DD').split('T')[0]))  {
+            setJoinVisible(true);
+        } else {
+            setAddVisible(true);
+        }
+    }
+
     return (
         <>
             <div className={'logoBar'}>
@@ -43,14 +52,7 @@ export  const MovieCalendar = () => {
                 <div className={'melonStyleCalendar'}/>
                     <Calendar value={date}
                               dateTemplate={dateTemplate}
-                              onChange={(e) => {
-                                  setDate(e.value);
-                                  if (nightDates.includes(dayjs(e.value).format('YYYY-MM-DD').split('T')[0]))  {
-                                      setJoinVisible(true);
-                                  } else {
-                                      setAddVisible(true);
-                                  }
-                              }}
+                              onChange={handleJoinOrAdd}
                               dateFormat="yy-mm-dd" inline/>
                 <div/>
                 <div>

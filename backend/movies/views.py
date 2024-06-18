@@ -79,9 +79,24 @@ def new_night(request):
 def attendees(request):
     if request.method == 'GET':
         all_attendees = serializers.serialize('python', Attendees.objects.all())
-        attendees_field = [d['fields'] for d in all_attendees]
-        #TODO kurwa jebane gówno zwraca id usera a nie nazwe, muwinajt tez btw
-        return HttpResponse(json.dumps(attendees_field, cls=DjangoJSONEncoder), content_type='application/json')
+
+        attendees_response = []
+
+        for attendee in all_attendees:
+            attendee_fields = attendee["fields"]
+            accept_date = attendee_fields["accept_date"]
+            night = MovieNight.objects.get(pk=attendee_fields['night'])
+            user = User.objects.get(pk=attendee_fields['user'])
+
+            attendee_response = {
+                "accept_date": accept_date,
+                "night": serializers.serialize('python', [night, ])[0]['fields'],
+                "user": serializers.serialize('python', [user, ])[0]['fields']['username']  # first extract username and pass here
+            }
+
+            attendees_response.append(attendee_response)
+
+        return HttpResponse(json.dumps(attendees_response, cls=DjangoJSONEncoder), content_type='application/json')
 
     elif request.method == 'POST':
         attendee_from_body = json.loads(request.body)
