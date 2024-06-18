@@ -2,12 +2,12 @@ name: Docker
 
 on:
   push:
-    branches: [ "main", "cicd/dockerfile" ]
+    branches: [ "main, cicd/action" ]
     tags: [ 'v*.*.*' ]
 
 env:
-  IMAGE_NAME: water-movie-melon
-  IMAGE_TAG: backend
+  IMAGE_NAME: water-movie-melon-backend
+  IMAGE_TAG: ${{ github.ref }}
   REGISTRY: docker.io
 jobs:
   build:
@@ -35,5 +35,3 @@ jobs:
       
       - name: Docker push
         run: docker push ${{ env.REGISTRY }}/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
-      
-      
