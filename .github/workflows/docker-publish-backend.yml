@@ -2,8 +2,8 @@ name: Docker
 
 on:
   push:
-    branches: [ "main, cicd/action" ]
-    tags: [ 'v*.*.*' ]
+    branches: [ "main" ]
+    tags: [ 'backend-v*.*.*' ]
 
 env:
   IMAGE_NAME: water-movie-melon-backend
@@ -32,6 +32,14 @@ jobs:
 
       - name: Docker tag
         run: docker image tag ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} ${{ env.REGISTRY }}/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
+      
+      - name: Docker push
+        run: docker push ${{ env.REGISTRY }}/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
+        
+      # tag image for latest:
+      
+      - name: Docker tag
+        run: docker image tag ${{ env.IMAGE_NAME }}:latest ${{ env.REGISTRY }}/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
       
       - name: Docker push
         run: docker push ${{ env.REGISTRY }}/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
