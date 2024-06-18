@@ -2,12 +2,11 @@ name: Docker
 
 on:
   push:
-    branches: [ "main" ]
     tags: [ 'backend-v*.*.*' ]
 
 env:
   IMAGE_NAME: water-movie-melon-backend
-  IMAGE_TAG: ${{ github.ref }}
+  IMAGE_TAG: ${{ github.ref##*/ }}
   REGISTRY: docker.io
 jobs:
   build:
