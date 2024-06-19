@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from get_docker_secret import get_docker_secret
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -85,6 +86,14 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    },
+    "prod": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": get_docker_secret("DB_NAME", default="postgres"),
+        "USER": get_docker_secret("DB_USER", default="postgres"),
+        "PASSWORD": get_docker_secret("DB_PASSWORD", default="postgres"),
+        "HOST": get_docker_secret("DB_HOST", default="127.0.0.1"),
+        "PORT": get_docker_secret("DB_PORT", default="5432"),
     }
 }
 
