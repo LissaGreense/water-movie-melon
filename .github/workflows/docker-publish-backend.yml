@@ -6,7 +6,7 @@ on:
 
 env:
   IMAGE_NAME: water-movie-melon-backend
-  IMAGE_TAG: ${{ github.ref##*/ }}
+  IMAGE_TAG: ${{ github.ref_name }}
   REGISTRY: docker.io
 jobs:
   build:
