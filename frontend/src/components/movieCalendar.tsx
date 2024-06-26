@@ -4,6 +4,7 @@ import {NewMovieNightForm} from "./newMovieNightForm.tsx";
 import {getMovieNights} from "../connections/internal/movieNight.ts";
 import dayjs from "dayjs";
 import {MovieNightAttend} from "./movieNightAttend.tsx";
+import {MovieRate} from "./movieRate.tsx";
 
 
 export  const MovieCalendar = () => {
@@ -11,6 +12,7 @@ export  const MovieCalendar = () => {
     const [nightDates, setNightDates] = useState<string[]>([]);
     const [visibleAdd, setAddVisible] = useState(false);
     const [visibleJoin, setJoinVisible] = useState(false)
+    const [visibleRate, setRateVisible] = useState(false)
 
     useEffect(() => {
         getMovieNights()
@@ -37,9 +39,11 @@ export  const MovieCalendar = () => {
 
     const handleJoinOrAdd = (e: any) => {
         setDate(e.value);
-        if (nightDates.includes(dayjs(e.value).format('YYYY-MM-DD').split('T')[0]))  {
+        if (nightDates.includes(dayjs(e.value).format('YYYY-MM-DD').split('T')[0]) && dayjs(Date()) > dayjs(e.value))  {
+            setRateVisible(true);
+        } else if (nightDates.includes(dayjs(e.value).format('YYYY-MM-DD').split('T')[0])) {
             setJoinVisible(true);
-        } else {
+        }else {
             setAddVisible(true);
         }
     }
@@ -60,6 +64,9 @@ export  const MovieCalendar = () => {
                 </div>
                 <div>
                     <MovieNightAttend movieDate={date} isVisible={visibleJoin} setVisible={setJoinVisible}/>
+                </div>
+                <div>
+                    <MovieRate movieDate={date} isVisible={visibleRate} setVisible={setRateVisible}/>
                 </div>
             </div>
         </>

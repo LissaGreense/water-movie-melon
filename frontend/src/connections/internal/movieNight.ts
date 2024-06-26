@@ -26,6 +26,7 @@ export async function getMovieNight(nightDate: Date | null): Promise<MovieNight[
         console.log(response.data)
         return response.data
     } catch (error) {
+        console.log(error)
         return []
     }
 }

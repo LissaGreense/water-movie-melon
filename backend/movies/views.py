@@ -43,9 +43,11 @@ def rate(request):
 
     elif request.method == 'POST':
         rate_from_body = json.loads(request.body)
-
+        movie = Movie.objects.get(title=rate_from_body['movie']['title'])
+        user = User.objects.get(username=rate_from_body['user'])
+        rating = rate_from_body['rating']
         try:
-            new_rate = Rate(**rate_from_body)
+            new_rate = Rate(movie=movie, user=user, rating=rating)
         except TypeError:
             return HttpResponse(json.dumps({'error': 'out of field'}), content_type='application/json', status=400)
 
