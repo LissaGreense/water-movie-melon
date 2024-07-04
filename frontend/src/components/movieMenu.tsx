@@ -3,7 +3,7 @@ import {MenuItem} from 'primereact/menuitem';
 import {Avatar} from "primereact/avatar";
 import {clearAccessToken, getAccessToken, getUsername} from "../utils/accessToken.ts";
 import {useNavigate} from "react-router-dom";
-import {LOGIN} from "../constants/paths.ts";
+import {ACCOUNT, HOMEPAGE, LOGIN} from "../constants/paths.ts";
 
 
 export default function MovieMenu() {
@@ -37,14 +37,17 @@ export default function MovieMenu() {
       items: [
         {
           label: 'Ustawienia',
-          template: itemRenderer
+          template: itemRenderer,
+          command: () => {
+            navigate(ACCOUNT);
+          }
         },
         {
           label: 'Wyloguj',
           template: itemRenderer,
           command: () => {
             clearAccessToken();
-            navigate("/");
+            navigate(HOMEPAGE);
           }
         }
       ]
