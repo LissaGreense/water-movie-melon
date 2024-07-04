@@ -2,6 +2,7 @@ name: Docker
 
 on:
   push:
+    branches: ["main", "cicd/directory-fix"]
     tags: [ 'backend-v*.*.*' ]
 
 env:
