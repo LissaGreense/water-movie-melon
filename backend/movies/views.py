@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from django.http import HttpResponse
 from django.core import serializers
+from django.db.models import Count
 import json
 
 from django.views.decorators.csrf import csrf_exempt
@@ -154,5 +155,32 @@ def user_avatar(request, username):
         default_storage.delete(old_avatar_path)
         return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
 
+    else:
+        return HttpResponse(json.dumps({'error': 'Only GET or POST methods are allowed'}), status=405)
+
+@csrf_exempt
+def user_statistics(request, username):
+    if request.method == 'GET':
+        try:
+            user = User.objects.get(username=username)
+
+            movie_statistics = MovieNight.objects.aggregate(
+                added=Count("pk", filter=Q(user=username)),
+
+            )
+
+            statistics = {
+                'added_movies': movie_statistics['added'],
+                'seven_rated_movies': None,
+                'watched_movies': None,
+                'hosted_movies': None,
+                'highest_rated_movie': None,
+                'lowest_rated_movie': None
+            }
+
+
+            return HttpResponse(json.dumps(statistics))
+        except User.DoesNotExist:
+            return HttpResponse(json.dumps({'error': 'User not found'}), status=404)
     else:
         return HttpResponse(json.dumps({'error': 'Only GET method is allowed'}), status=405)
