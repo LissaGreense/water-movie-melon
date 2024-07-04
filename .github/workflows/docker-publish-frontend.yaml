@@ -2,7 +2,7 @@ name: Docker
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "cicd/directory-fix" ]
     tags: [ 'frontend-v*.*.*' ]
 
 env:
@@ -21,10 +21,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Change directory
-        run: cd backend
-
       - name: Docker build
+        working-directory: frontend
         run: docker build . --tag ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
         
       - name: Docker login
