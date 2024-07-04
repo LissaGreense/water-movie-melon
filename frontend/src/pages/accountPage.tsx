@@ -58,7 +58,6 @@ export const AccountPage = () => {
                     alert("Error fetching avatar...")
                 }
                 setAvatar(backend_url + r.avatar_url);
-                console.log(r.avatar_url)
             }
         )
     }, [showCropper])

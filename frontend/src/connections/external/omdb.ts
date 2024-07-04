@@ -9,7 +9,6 @@ export async function getMoviePosterUrl(title: string): Promise<string> {
   }
   try {
     const response = await axios.get<OmdbMovie>(omdbapi_url, {params});
-    console.log(response);
     return response.data.Poster;
   } catch (error) {
     console.log(error)
