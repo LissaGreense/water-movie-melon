@@ -31,7 +31,7 @@ export const MovieNightAttend: FC<MovieDateProps> = ({movieDate, isVisible, setV
     useEffect(() => {
         getMovieNight(movieDate)
         .then((r) => {
-            if (r.length == 0) {
+            if (r.length === 0) {
                 console.log("ni mom wieczorów")
             } else {
                 setNightLocation(r[0].location);
