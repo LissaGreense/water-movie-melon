@@ -1,0 +1,52 @@
+.watermelonPeel {
+    width: 100%;
+    height: 15%;
+    background-color: green;
+    overflow: hidden;
+}
+
+.accountContainer {
+    width: 50%;
+    height: 90%;
+    background-color: red;
+}
+
+.center {
+    justify-content:center;
+    align-items:center;
+}
+
+.statistics {
+    border-style: solid;
+    border-color: darkred;
+    margin: 4%;
+}
+
+.userSummary {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.half-left {
+    display: flex;
+    flex: 2;
+    padding: 3%;
+    align-items: flex-start;
+    flex-direction: row;
+}
+
+.half-right {
+    flex: 1;
+    padding: 3%;
+    float: right;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.avatar-space {
+    display: flex;
+    flex-direction: column;
+}

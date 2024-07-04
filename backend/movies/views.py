@@ -1,6 +1,8 @@
 import datetime
 
 from django.core.serializers.json import DjangoJSONEncoder
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from django.http import HttpResponse
@@ -130,3 +132,27 @@ def login_user(request):
 
         return HttpResponse(json.dumps({'error': 'Invalid credentials'}), content_type='application/json', status=401)
 
+@csrf_exempt
+def user_avatar(request, username):
+    if request.method == 'GET':
+        try:
+            user = User.objects.get(username=username)
+            avatar_url = user.avatar.url
+
+            return HttpResponse(json.dumps({'avatar_url': avatar_url}))
+        except User.DoesNotExist:
+            return HttpResponse(json.dumps({'error': 'User not found'}), status=404)
+    elif request.method == 'POST':
+        user = User.objects.get(username=username)
+        new_avatar = request.FILES["avatar"]
+        old_avatar_path = user.avatar.path
+
+        new_avatar_path = default_storage.save(new_avatar.name, ContentFile(new_avatar.read()))
+        user.avatar = new_avatar_path
+        user.save()
+
+        default_storage.delete(old_avatar_path)
+        return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
+
+    else:
+        return HttpResponse(json.dumps({'error': 'Only GET method is allowed'}), status=405)

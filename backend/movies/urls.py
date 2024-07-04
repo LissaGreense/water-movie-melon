@@ -8,4 +8,5 @@ urlpatterns = [
     path("newNight", views.new_night, name='newNight'),
     path("attendees", views.attendees, name='attendees'),
     path("login", views.login_user, name='login'),
+    path("userAvatar/<str:username>", views.user_avatar, name='userAvatar'),
 ]

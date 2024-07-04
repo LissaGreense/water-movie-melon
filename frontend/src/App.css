@@ -118,6 +118,25 @@ span {
   display: flex;
   border-bottom: 7px solid #213547;
 }
+.crop-container {
+  position: absolute;
+  top: 80px;
+  left: 0;
+  right: 0;
+  bottom: 80px;
+}
+
+.crop-controls {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  width: 50%;
+  transform: translateX(-15%);
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+
 .melonStyleContainer {
   height: 70%;
   width: 80%;
@@ -146,9 +165,6 @@ span {
 }
 .melonStyleContainerPeel {
   background-color: green;
-}
-.melonStyleCalendar {
-
 }
 .pageContentCalendar {
   display:flex;
