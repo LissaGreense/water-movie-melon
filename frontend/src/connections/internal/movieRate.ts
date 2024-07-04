@@ -11,8 +11,7 @@ export async function postRating(movie: Movie, user: string, rating: number): Pr
         rating: rating,
     }
     try {
-        const response = await axios.post(backend_url + rates_endpoint, data);
-        console.log(response.status);
+        await axios.post(backend_url + rates_endpoint, data);
     } catch (error) {
         console.error(error)
     }

@@ -15,7 +15,6 @@ export const MovieList = () => {
     getMovies()
     .then((moviesData) => {
       setMovies(moviesData);
-      console.log(moviesData)
     })
     .catch((error) => {
       console.error('Error fetching movies:', error);

@@ -23,16 +23,12 @@ export const MovieRate: FC<MovieDateProps> = ({movieDate, isVisible, setVisible}
     const [placeholderMovie, setPlaceholderMovie] = useState<Movie>()
     useEffect(() => {
         getMovies().then((movies) => {
-            console.log('tu pa hopie')
-            console.log(movies[0])
             setPlaceholderMovie(movies[0])
         })
     }, []);
 
     useEffect(() => {
         getMovieNight(movieDate).then((data) => {
-            console.log('pa tera')
-            console.log(data[0])
             setMovie(data[0].selected_movie)
         })
     }, []);

@@ -18,7 +18,6 @@ export  const MovieCalendar = () => {
         getMovieNights()
             .then((nights) => {
                 setNightDates(nights.map(x => x.night_date.split('T')[0]));
-                console.log(nights)
             })
             .catch((error) => {
                 console.error('Error fetching movies:', error);

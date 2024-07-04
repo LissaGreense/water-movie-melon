@@ -8,7 +8,6 @@ const attendees_endpoint = '/movies/attendees';
 export async function getMovieNights(): Promise<MovieNight[]> {
     try {
         const response = await axios.get<MovieNight[]>(backend_url + movie_nights_endpoint);
-        console.log(response);
         return response.data;
     } catch (error) {
         console.error(error);
@@ -23,10 +22,9 @@ export async function getMovieNight(nightDate: Date | null): Promise<MovieNight[
                 date: nightDate?.toLocaleDateString()
             }
         });
-        console.log(response.data)
         return response.data
     } catch (error) {
-        console.log(error)
+        console.error(error)
         return []
     }
 }
@@ -38,8 +36,7 @@ export async function postMovieNight(host: string, night_date: string, location:
         location: location,
     }
     try {
-        const response = await axios.post(backend_url + movie_nights_endpoint, data);
-        console.log(response.status);
+        await axios.post(backend_url + movie_nights_endpoint, data);
     } catch (error) {
         console.error(error);
     }
@@ -52,8 +49,7 @@ export async function joinMovieNight(night: MovieNight, user: string, accept_dat
         accept_date: accept_date,
     }
     try {
-        const response = await axios.post(backend_url + attendees_endpoint, data);
-        console.log(response.status);
+        await axios.post(backend_url + attendees_endpoint, data);
     } catch (error){
         console.error(error);
     }
@@ -62,7 +58,6 @@ export async function joinMovieNight(night: MovieNight, user: string, accept_dat
 export async function getAttendees() : Promise<Attendees[]> {
     try {
         const response = await axios.get<Attendees[]>(backend_url + attendees_endpoint);
-        console.log(response.status);
         return response.data;
     } catch (error) {
         console.error(error);

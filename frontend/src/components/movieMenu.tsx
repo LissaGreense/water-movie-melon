@@ -67,10 +67,6 @@ export default function MovieMenu() {
           }
         },
         {
-          label: 'Oceń Film',
-          template: itemRenderer
-        },
-        {
           label: 'Kalendarz',
           template: itemRenderer,
           command:() => {
