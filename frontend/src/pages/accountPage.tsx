@@ -79,7 +79,7 @@ export const AccountPage = () => {
                     }
                 </div>
                 <div className="crop-controls">
-                    <Button onClick={handleUploadImage}>Zaladuj</Button>
+                    <Button onClick={handleUploadImage}>Załaduj</Button>
                 </div>
             </Dialog>
             <div className={'accountContainer'}>
