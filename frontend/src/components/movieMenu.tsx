@@ -53,16 +53,25 @@ export default function MovieMenu() {
       label: 'Filmy',
       items: [
         {
+          label: 'Filmy',
+          template: itemRenderer,
+          command:() => {
+            navigate("movies")
+          }
+        },
+        {
           label: 'Dodaj Film',
-          template: itemRenderer
+          template: itemRenderer,
+          command:() => {
+            navigate("/new-movie")
+          }
         },
         {
-          label: 'Oceń Film',
-          template: itemRenderer
-        },
-        {
-          label: 'Wieczory',
-          template: itemRenderer
+          label: 'Kalendarz',
+          template: itemRenderer,
+          command:() => {
+            navigate("/calendar")
+          }
         },
       ]
     },

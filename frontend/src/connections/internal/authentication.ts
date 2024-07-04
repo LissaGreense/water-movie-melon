@@ -12,7 +12,6 @@ export async function login(username: string, password: string): Promise<Token> 
   }
   try {
     const response = await axios.post<Token>(backend_url + login_endpoint, data);
-    console.log(response);
     return response.data;
   } catch (error) {
     console.error(error);

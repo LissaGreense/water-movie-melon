@@ -7,7 +7,6 @@ const movies_endpoint = '/movies/';
 export async function getMovies(): Promise<Movie[]> {
   try {
     const response = await axios.get<Movie[]>(backend_url + movies_endpoint);
-    console.log(response);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -26,8 +25,7 @@ export async function postMovie(title: string, link: string, user: string, date_
     cover_link: cover_link
   }
   try {
-    const response = await axios.post(backend_url + movies_endpoint, data);
-    console.log(response.status);
+    await axios.post(backend_url + movies_endpoint, data);
   } catch (error) {
     console.error(error);
   }

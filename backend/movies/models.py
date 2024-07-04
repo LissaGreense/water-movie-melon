@@ -10,7 +10,6 @@ class Movie(models.Model):
     genre = models.CharField(max_length=20)
     cover_link = models.CharField(max_length=150, default='')
     duration = models.IntegerField(default=1)
-    is_watched = models.BooleanField(default=False)
 
 
 class User(AbstractUser):
@@ -35,6 +34,7 @@ class MovieNight(models.Model):
     host = models.CharField(max_length=50)
     night_date = models.DateTimeField('night_date')
     location = models.CharField(max_length=100)
+    selected_movie = models.ForeignKey(Movie, on_delete=models.CASCADE, null=True)
 
 
 class Attendees(models.Model):
