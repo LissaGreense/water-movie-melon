@@ -1,4 +1,5 @@
 import datetime
+from random import choice
 
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.files.base import ContentFile
@@ -132,6 +133,7 @@ def login_user(request):
 
         return HttpResponse(json.dumps({'error': 'Invalid credentials'}), content_type='application/json', status=401)
 
+
 @csrf_exempt
 def user_avatar(request, username):
     if request.method == 'GET':
@@ -156,3 +158,16 @@ def user_avatar(request, username):
 
     else:
         return HttpResponse(json.dumps({'error': 'Only GET method is allowed'}), status=405)
+
+
+@csrf_exempt
+def rand_movie(request):
+    if request.method == 'GET':
+        movies = serializers.serialize('python', Movie.objects.all())  # get it by diff of two sets (pk of selected movies from movie nights and all movies)
+        nights = serializers.serialize('python', MovieNight.objects.all())  # request should include date and this one should be got by it
+
+        while True:
+            selected_movie = choice(movies)  # first check if gotten night has selected movie. If have-> skip and return title, Otherwise -> rand it. This will be more optimized
+            if selected_movie not in nights:
+                break
+        return HttpResponse(json.dumps(selected_movie.title, cls=DjangoJSONEncoder),  content_type='application/json')
