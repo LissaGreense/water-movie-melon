@@ -1,12 +1,12 @@
 
 import {useEffect, useState} from 'react';
-import { DataScroller } from 'primereact/datascroller';
 import { Rating } from 'primereact/rating';
 import {getMovies} from "../connections/internal/movie.ts";
 import {Movie} from "../types/internal/movie.ts";
 import {Button} from "primereact/button";
 import { Sidebar } from 'primereact/sidebar';
 import cover from '../assets/coverplaceholder.jpg'
+import {VirtualScroller} from "primereact/virtualscroller";
 
 interface TopFilms {
     title: string;
@@ -64,7 +64,7 @@ export default function TopMovies() {
             <Sidebar visible={visible} onHide={() => setVisible(false)}>
                 <h2>Top Movies</h2>
                 <div className="card">
-                    <DataScroller value={movies} itemTemplate={itemTemplate} rows={7} inline scrollHeight="500px"/>
+                    <VirtualScroller items={movies} itemTemplate={itemTemplate} itemSize={7} scrollHeight="500px"/>
                 </div>
             </Sidebar>
             <Button label='TOP MOVIES' onClick={() => setVisible(true)}/>

@@ -1,3 +1,5 @@
+import datetime
+
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
@@ -43,9 +45,11 @@ def rate(request):
 
     elif request.method == 'POST':
         rate_from_body = json.loads(request.body)
-
+        movie = Movie.objects.get(title=rate_from_body['movie']['title'])
+        user = User.objects.get(username=rate_from_body['user'])
+        rating = rate_from_body['rating']
         try:
-            new_rate = Rate(**rate_from_body)
+            new_rate = Rate(movie=movie, user=user, rating=rating)
         except TypeError:
             return HttpResponse(json.dumps({'error': 'out of field'}), content_type='application/json', status=400)
 
@@ -56,7 +60,12 @@ def rate(request):
 @csrf_exempt
 def new_night(request):
     if request.method == 'GET':
-        all_nights = serializers.serialize('python', MovieNight.objects.all())
+        date = request.GET.get('date', None)
+        if date:
+            parsed_date = datetime.datetime.strptime(date, "%d.%m.%Y")
+            all_nights = serializers.serialize('python', MovieNight.objects.filter(night_date__date=parsed_date))
+        else:
+            all_nights = serializers.serialize('python', MovieNight.objects.all())
         night_field = [d['fields'] for d in all_nights]
         return HttpResponse(json.dumps(night_field, cls=DjangoJSONEncoder), content_type='application/json')
     elif request.method == 'POST':
@@ -74,14 +83,32 @@ def new_night(request):
 def attendees(request):
     if request.method == 'GET':
         all_attendees = serializers.serialize('python', Attendees.objects.all())
-        attendees_field = [d['fields'] for d in all_attendees]
 
-        return HttpResponse(json.dumps(attendees_field, cls=DjangoJSONEncoder), content_type='application/json')
+        attendees_response = []
+
+        for attendee in all_attendees:
+            attendee_fields = attendee["fields"]
+            accept_date = attendee_fields["accept_date"]
+            night = MovieNight.objects.get(pk=attendee_fields['night'])
+            user = User.objects.get(pk=attendee_fields['user'])
+
+            attendee_response = {
+                "accept_date": accept_date,
+                "night": serializers.serialize('python', [night, ])[0]['fields'],
+                "user": serializers.serialize('python', [user, ])[0]['fields']['username']
+            }
+
+            attendees_response.append(attendee_response)
+
+        return HttpResponse(json.dumps(attendees_response, cls=DjangoJSONEncoder), content_type='application/json')
 
     elif request.method == 'POST':
         attendee_from_body = json.loads(request.body)
+        night = MovieNight.objects.get(night_date=attendee_from_body['night']['night_date'])
+        user = User.objects.get(username=attendee_from_body['user'])
+        accept_date = attendee_from_body['accept_date']
         try:
-            new_attendee = Attendees(**attendee_from_body)
+            new_attendee = Attendees(night=night, user=user, accept_date=accept_date)
         except TypeError:
             return HttpResponse(json.dumps({'error': 'out of field'}), content_type='application/json', status=400)
 
