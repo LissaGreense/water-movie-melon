@@ -93,7 +93,7 @@ def attendees(request):
             attendee_response = {
                 "accept_date": accept_date,
                 "night": serializers.serialize('python', [night, ])[0]['fields'],
-                "user": serializers.serialize('python', [user, ])[0]['fields']['username']  # first extract username and pass here
+                "user": serializers.serialize('python', [user, ])[0]['fields']['username']
             }
 
             attendees_response.append(attendee_response)

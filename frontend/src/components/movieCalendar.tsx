@@ -8,11 +8,12 @@ import {MovieRate} from "./movieRate.tsx";
 
 
 export  const MovieCalendar = () => {
-    const [date, setDate] = useState(null)
+    const dateFormat = 'YYYY-MM-DD';
+    const [date, setDate] = useState<Date | null>(null);
     const [nightDates, setNightDates] = useState<string[]>([]);
-    const [visibleAdd, setAddVisible] = useState(false);
-    const [visibleJoin, setJoinVisible] = useState(false)
-    const [visibleRate, setRateVisible] = useState(false)
+    const [visibleAdd, setAddVisible] = useState<boolean>(false);
+    const [visibleJoin, setJoinVisible] = useState<boolean>(false);
+    const [visibleRate, setRateVisible] = useState<boolean>(false);
 
     useEffect(() => {
         getMovieNights()
@@ -25,7 +26,7 @@ export  const MovieCalendar = () => {
     }, []);
 
     const dateTemplate = (calendarDate: any) => {
-        const formattedDate = dayjs(new Date(calendarDate.year, calendarDate.month, calendarDate.day)).format('YYYY-MM-DD')
+        const formattedDate = dayjs(new Date(calendarDate.year, calendarDate.month, calendarDate.day)).format(dateFormat)
         if (nightDates.includes(formattedDate)) {
             return (
                 <strong style={{ textDecoration: 'line-through' }}>{calendarDate.day}</strong>
@@ -38,9 +39,9 @@ export  const MovieCalendar = () => {
 
     const handleJoinOrAdd = (e: any) => {
         setDate(e.value);
-        if (nightDates.includes(dayjs(e.value).format('YYYY-MM-DD').split('T')[0]) && dayjs(Date()) > dayjs(e.value))  {
+        if (nightDates.includes(dayjs(e.value).format(dateFormat).split('T')[0]) && dayjs(Date()) > dayjs(e.value))  {
             setRateVisible(true);
-        } else if (nightDates.includes(dayjs(e.value).format('YYYY-MM-DD').split('T')[0])) {
+        } else if (nightDates.includes(dayjs(e.value).format(dateFormat).split('T')[0])) {
             setJoinVisible(true);
         }else {
             setAddVisible(true);

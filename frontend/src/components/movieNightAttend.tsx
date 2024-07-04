@@ -31,8 +31,11 @@ export const MovieNightAttend: FC<MovieDateProps> = ({movieDate, isVisible, setV
     useEffect(() => {
         getMovieNight(movieDate)
         .then((r) => {
-            // TODO: when no elements returns error or something. Just handle that
-            setNightLocation(r[0].location);
+            if (r.length == 0) {
+                console.log("ni mom wieczorów")
+            } else {
+                setNightLocation(r[0].location);
+            }
         })
         .catch((error) => {
             console.error('Error fetching movies:', error);

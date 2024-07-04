@@ -14,7 +14,7 @@ interface MovieDateProps {
 }
 
 export const NewMovieNightForm: FC<MovieDateProps> = ({movieDate, isVisible, setVisible}): JSX.Element => {
-    const [nightTime, setNightTime] = useState();
+    const [nightTime, setNightTime] = useState<Date>();
 
     return (
         <Dialog visible={isVisible} onHide={() => setVisible(false)}>

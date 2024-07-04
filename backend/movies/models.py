@@ -10,7 +10,6 @@ class Movie(models.Model):
     genre = models.CharField(max_length=20)
     cover_link = models.CharField(max_length=150, default='')
     duration = models.IntegerField(default=1)
-    is_watched = models.BooleanField(default=False)
 
 
 class User(AbstractUser):
