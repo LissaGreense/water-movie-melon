@@ -15,7 +15,7 @@ export const LoginPage = () => {
     password: "",
   });
 
-  const handleSubmitEvent = (e) => {
+  const handleSubmitEvent = (e: any) => {
     e.preventDefault();
     if (input.username !== "" && input.password !== "") {
       login(input.username, input.password).then(r => {
@@ -30,12 +30,12 @@ export const LoginPage = () => {
       alert("Username and password should be filled!")
     }
   };
-  const handleLogoutEvent = (e) => {
+  const handleLogoutEvent = (e: any) => {
     e.preventDefault();
     clearAccessToken();
     navigate(LOGIN);
   };
-  const handleInput = (e) => {
+  const handleInput = (e: any) => {
     const {name, value} = e.target;
     setInput((prev) => ({
       ...prev,
