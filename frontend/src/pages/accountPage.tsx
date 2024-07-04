@@ -19,7 +19,7 @@ export const AccountPage = () => {
     const [currentImage, setCurrentImage] = useState<string | ArrayBuffer | undefined>();
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
     const [crop, setCrop] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
-    const [zoom, setZoom] = useState(1)
+    const [zoom, setZoom] = useState<number>(1)
     const handleLogoutEvent = (e: any) => {
         e.preventDefault();
         clearAccessToken();
