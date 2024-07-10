@@ -16,7 +16,7 @@ export const AccountPage = () => {
     const backend_url = 'http://localhost:8000';
     const [avatar, setAvatar] = useState<string>('');
     const [showCropper, setShowCropper] = useState<boolean>(false);
-    const [currentImage, setCurrentImage] = useState<string | ArrayBuffer | undefined>();
+    const [currentImage, setCurrentImage] = useState<string | ArrayBuffer | null>();
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
     const [crop, setCrop] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
     const [zoom, setZoom] = useState<number>(1)
@@ -28,7 +28,7 @@ export const AccountPage = () => {
     const handleAvatarChangeError = () => {
         alert("Cos poszło nie tak kiedy dodawałeś swoją arbuzową fotę!");
     };
-    const onCropComplete = useCallback((croppedArea: Area, croppedAreaPixels: Area) => {
+    const onCropComplete = useCallback((_: Area, croppedAreaPixels: Area) => {
         setCroppedAreaPixels(croppedAreaPixels);
     }, []);
 
@@ -43,7 +43,6 @@ export const AccountPage = () => {
         }
         setShowCropper(true);
         setCurrentImage(undefined);
-
     };
 
     const handleUploadImage = async () => {
