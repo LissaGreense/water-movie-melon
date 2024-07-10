@@ -1,6 +1,6 @@
-import {Area} from "react-easy-crop";
+import { Area } from "react-easy-crop";
 
-const createImage = (url: string | ArrayBuffer | undefined): Promise<HTMLImageElement> =>
+const createImage = (url: string | ArrayBuffer | null | undefined): Promise<HTMLImageElement> =>
     new Promise((resolve, reject) => {
         const image = new Image();
         image.addEventListener('load', () => resolve(image));
@@ -10,7 +10,11 @@ const createImage = (url: string | ArrayBuffer | undefined): Promise<HTMLImageEl
         }
     });
 
-const getCroppedImg = async (imageSrc: string | ArrayBuffer | undefined, crop: Area | null): Promise<unknown | Blob> => {
+const getCroppedImg = async (imageSrc: string | ArrayBuffer | null | undefined, crop: Area | null): Promise<Blob | null> => {
+    if (!crop || !imageSrc) {
+        return null;
+    }
+
     const image = await createImage(imageSrc);
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -19,13 +23,20 @@ const getCroppedImg = async (imageSrc: string | ArrayBuffer | undefined, crop: A
         throw new Error('Could not get canvas context');
     }
 
-    const { x, y, width, height } = crop;
+    canvas.width = crop.width;
+    canvas.height = crop.height;
 
-    canvas.width = width;
-    canvas.height = height;
-
-    ctx.drawImage(image, x, y, width, height, 0, 0, width, height);
-
+    ctx.drawImage(
+        image,
+        crop.x,
+        crop.y,
+        crop.width,
+        crop.height,
+        0,
+        0,
+        crop.width,
+        crop.height
+    );
     return new Promise((resolve) => {
         canvas.toBlob((blob) => {
             if (blob) {
@@ -35,7 +46,7 @@ const getCroppedImg = async (imageSrc: string | ArrayBuffer | undefined, crop: A
                 resolve(null);
             }
         }, 'image/jpeg');
-    });
+    }) as Promise<Blob> | Promise<null>;
 };
 
 export default getCroppedImg;

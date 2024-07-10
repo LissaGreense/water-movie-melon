@@ -3,7 +3,7 @@ import {MenuItem} from 'primereact/menuitem';
 import {Avatar} from "primereact/avatar";
 import {clearAccessToken, getAccessToken, getUsername} from "../utils/accessToken.ts";
 import {useNavigate} from "react-router-dom";
-import {ACCOUNT, HOMEPAGE, LOGIN} from "../constants/paths.ts";
+import {ACCOUNT, CALENDAR, HOMEPAGE, LOGIN, MOVIES, NEW_MOVIE} from "../constants/paths.ts";
 
 
 export default function MovieMenu() {
@@ -20,16 +20,13 @@ export default function MovieMenu() {
     {
       template: () => {
         return (
-            <button>
+            <button onClick={() => navigate(ACCOUNT)}>
               <Avatar label='u' className="mr-2" shape="circle"/>
               <div className="flex flex-column align">
                 <span className="font-bold">{getUsername()}</span>
               </div>
             </button>
         );
-      },
-      command: () => {
-        navigate(ACCOUNT);
       }
     },
     {
@@ -55,21 +52,21 @@ export default function MovieMenu() {
           label: 'Filmy',
           template: itemRenderer,
           command:() => {
-            navigate("movies")
+            navigate(MOVIES)
           }
         },
         {
           label: 'Dodaj Film',
           template: itemRenderer,
           command:() => {
-            navigate("/new-movie")
+            navigate(NEW_MOVIE)
           }
         },
         {
           label: 'Kalendarz',
           template: itemRenderer,
           command:() => {
-            navigate("/calendar")
+            navigate(CALENDAR)
           }
         },
       ]
