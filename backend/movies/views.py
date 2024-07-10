@@ -6,9 +6,10 @@ from django.core.files.storage import default_storage
 from django.utils.dateparse import parse_datetime
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
+from django.utils import timezone
 from django.http import HttpResponse
 from django.core import serializers
-from django.db.models import Count
+from django.db.models import Count, Q, Avg
 import json
 
 from django.views.decorators.csrf import csrf_exempt
@@ -174,20 +175,29 @@ def user_statistics(request, username):
         try:
             user = User.objects.get(username=username)
 
-            movie_statistics = MovieNight.objects.aggregate(
-                added=Count("pk", filter=Q(user=username)),
+            current_date = timezone.now().date()
+            hosted_nights = MovieNight.objects.filter(host=username, night_date__lte=current_date).count()
 
-            )
+            movies_with_avg_ratings = Movie.objects.filter(user=username).annotate(
+                avg_rating=Avg('rate__rating')
+            ).exclude(
+                avg_rating=None
+            ).order_by('-avg_rating')
+
+            seven_rated_movies = Movie.objects.filter(user=username).annotate(
+                avg_rating=Avg('rate__rating')
+            ).filter(
+                avg_rating__gte=7
+            ).count()
 
             statistics = {
-                'added_movies': movie_statistics['added'],
-                'seven_rated_movies': None,
-                'watched_movies': None,
-                'hosted_movies': None,
-                'highest_rated_movie': None,
-                'lowest_rated_movie': None
+                'added_movies': Movie.objects.filter(user=username).count(),
+                'seven_rated_movies': seven_rated_movies,
+                'watched_movies': Attendees.objects.filter(user=user.id).count() + hosted_nights,
+                'hosted_movie_nights': hosted_nights,
+                'highest_rated_movie': movies_with_avg_ratings.first().title if len(movies_with_avg_ratings) > 0 else None,
+                'lowest_rated_movie': movies_with_avg_ratings.last().title if len(movies_with_avg_ratings) > 0 else None,
             }
-
 
             return HttpResponse(json.dumps(statistics))
         except User.DoesNotExist:
