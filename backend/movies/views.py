@@ -4,6 +4,7 @@ from random import choice
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
+from django.utils.dateparse import parse_datetime
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from django.http import HttpResponse
@@ -63,7 +64,7 @@ def new_night(request):
     if request.method == 'GET':
         date = request.GET.get('date', None)
         if date:
-            parsed_date = datetime.datetime.strptime(date, "%d.%m.%Y")
+            parsed_date = datetime.datetime.strptime(date, "%m/%d/%Y")
             all_nights = serializers.serialize('python', MovieNight.objects.filter(night_date__date=parsed_date))
         else:
             all_nights = serializers.serialize('python', MovieNight.objects.all())
@@ -72,6 +73,9 @@ def new_night(request):
     elif request.method == 'POST':
         night_from_body = json.loads(request.body)
         try:
+            night_date = parse_datetime(night_from_body.get('night_date'))
+            if MovieNight.objects.filter(night_date__date=night_date.date()).exists():
+                return HttpResponse(json.dumps({'error': 'A MovieNight already exists for this date.'}), status=400)
             new_movie_night = MovieNight(**night_from_body)
         except TypeError:
             return HttpResponse(json.dumps({'error': 'out of field'}), content_type='application/json', status=400)
@@ -110,10 +114,9 @@ def attendees(request):
         accept_date = attendee_from_body['accept_date']
         try:
             new_attendee = Attendees(night=night, user=user, accept_date=accept_date)
+            new_attendee.save()
         except TypeError:
             return HttpResponse(json.dumps({'error': 'out of field'}), content_type='application/json', status=400)
-
-        new_attendee.save()
         return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
 
 
@@ -139,6 +142,9 @@ def user_avatar(request, username):
     if request.method == 'GET':
         try:
             user = User.objects.get(username=username)
+
+            if not user.avatar or not hasattr(user.avatar, 'url'):
+                return HttpResponse(json.dumps({'avatar_url': ''}))
             avatar_url = user.avatar.url
 
             return HttpResponse(json.dumps({'avatar_url': avatar_url}))
@@ -147,15 +153,19 @@ def user_avatar(request, username):
     elif request.method == 'POST':
         user = User.objects.get(username=username)
         new_avatar = request.FILES["avatar"]
-        old_avatar_path = user.avatar.path
+
+        old_avatar_path = None
+        if user.avatar and hasattr(user.avatar, 'url'):
+            old_avatar_path = user.avatar.path
 
         new_avatar_path = default_storage.save(new_avatar.name, ContentFile(new_avatar.read()))
         user.avatar = new_avatar_path
         user.save()
 
-        default_storage.delete(old_avatar_path)
-        return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
+        if old_avatar_path:
+            default_storage.delete(old_avatar_path)
 
+        return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
     else:
         return HttpResponse(json.dumps({'error': 'Only GET method is allowed'}), status=405)
 
