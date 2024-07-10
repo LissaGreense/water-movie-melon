@@ -26,7 +26,7 @@ export const NewMovieNightForm: FC<MovieDateProps> = ({movieDate, isVisible, set
                 <div className="p-inputgroup flex-1">
                     <span className="p-inputgroup-addon">Data Wieczoru</span>
                     <Calendar value={movieDate} dateFormat={'dd-mm-yy'} disabled/>
-                    <Calendar value={nightTime} onChange={(e) => setNightTime(e.value)} timeOnly hourFormat="24"/>
+                    <Calendar value={nightTime} onChange={(e) => setNightTime(e.value as Date | undefined)} timeOnly hourFormat="24"/>
                 </div>
                 <div className="p-inputgroup flex-1">
                     <span className="p-inputgroup-addon">Lokacja</span>

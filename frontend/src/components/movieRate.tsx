@@ -15,7 +15,7 @@ interface MovieDateProps {
 }
 
 export const MovieRate: FC<MovieDateProps> = ({movieDate, isVisible, setVisible}): JSX.Element => {
-    const [rating, setRating] = useState<number>();
+    const [rating, setRating] = useState<number | undefined>();
     const [movie, setMovie] = useState<Movie>();
 
 
@@ -45,7 +45,7 @@ export const MovieRate: FC<MovieDateProps> = ({movieDate, isVisible, setVisible}
         <Dialog visible={isVisible} onHide={() => setVisible(false)}>
             <span>Jak spodobał ci się seans filmu</span>
             <span>{movie?.title}?</span>
-            <Rating value={rating} onChange={(e) => setRating(e.value)} cancel={false} stars={7}/>
+            <Rating value={rating} onChange={(e) => setRating(e.value as number | undefined)} cancel={false} stars={7}/>
             <Button label="Dodaj ocenę" onClick={handleRateMovie}></Button>
         </Dialog>
     )

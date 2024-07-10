@@ -8,16 +8,16 @@ const avatar_endpoint = '/movies/userAvatar';
 export async function getAvatar(username: string): Promise<Avatar> {
     try {
         const response = await axios.get<Avatar>(backend_url + avatar_endpoint + '/' + username);
-        return response.data as Promise<Avatar>;
+        return response.data;
     } catch (error) {
         return {"avatar_url": ""};
     }
 }
 
-export async function uploadAvatar(username: string | null, image) {
+export async function uploadAvatar(username: string | null, image: Blob | unknown) {
     try {
         const formData = new FormData();
-        formData.append('avatar', image);
+        formData.append('avatar', image as Blob);
 
         const response = await axios.post<Avatar>(backend_url + avatar_endpoint + '/' + username
         , formData);

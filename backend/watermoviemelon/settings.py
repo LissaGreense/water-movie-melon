@@ -135,6 +135,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Allowed urls to GET
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
+    'http://localhost:4173',
 ]
 
 AUTH_USER_MODEL = 'movies.User'
