@@ -42,7 +42,7 @@ export async function postMovieNight(host: string, night_date: string, location:
     }
 }
 
-export async function joinMovieNight(night: MovieNight, user: string, accept_date: string) : Promise<void> {
+export async function joinMovieNight(night: MovieNight | undefined, user: string | null, accept_date: string) : Promise<void> {
     const data = {
         night: night,
         user: user,

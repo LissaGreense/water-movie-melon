@@ -18,7 +18,7 @@ export  const MovieCalendar = () => {
     useEffect(() => {
         getMovieNights()
             .then((nights) => {
-                setNightDates(nights.map(x => x.night_date.split('T')[0]));
+                setNightDates(nights.map(x => x.night_date?.split('T')[0]));
             })
             .catch((error) => {
                 console.error('Error fetching movies:', error);
