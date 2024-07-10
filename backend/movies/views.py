@@ -4,6 +4,7 @@ from random import choice
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
+from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
@@ -173,11 +174,20 @@ def user_avatar(request, username):
 @csrf_exempt
 def rand_movie(request):
     if request.method == 'GET':
-        movies = serializers.serialize('python', Movie.objects.all())  # get it by diff of two sets (pk of selected movies from movie nights and all movies)
-        nights = serializers.serialize('python', MovieNight.objects.all())  # request should include date and this one should be got by it
+        upcoming_nights = MovieNight.objects.filter(selected_movie__isnull=True).order_by('night_date')
+        next_night = upcoming_nights[0]
 
-        while True:
-            selected_movie = choice(movies)  # first check if gotten night has selected movie. If have-> skip and return title, Otherwise -> rand it. This will be more optimized
-            if selected_movie not in nights:
-                break
+        if timezone.now() > next_night.night_date + datetime.timedelta(seconds=10):
+            return HttpResponse(json.dumps({'error': 'Too soon, try again later'}), status=425)
+
+        movies_not_watched = Movie.objects.all().difference(MovieNight.objects.all())
+        serialized_movies_not_watched = serializers.serialize('python', movies_not_watched)
+
+        selected_movie = choice(serialized_movies_not_watched)
+
+        next_night.selected_movie.value = selected_movie
+        next_night.save()
+
         return HttpResponse(json.dumps(selected_movie.title, cls=DjangoJSONEncoder),  content_type='application/json')
+    else:
+        return HttpResponse(json.dumps({'error': 'Only GET method is allowed'}), status=405)

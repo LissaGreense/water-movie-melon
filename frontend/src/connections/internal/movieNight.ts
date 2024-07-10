@@ -4,6 +4,7 @@ import {Attendees, MovieNight,} from "../../types/internal/movieNight.ts";
 const backend_url = 'http://localhost:8000';
 const movie_nights_endpoint = '/movies/newNight';
 const attendees_endpoint = '/movies/attendees';
+const rand_movie_endpoint = '/movies/getSelectedMovie'
 
 export async function getMovieNights(): Promise<MovieNight[]> {
     try {
@@ -62,5 +63,15 @@ export async function getAttendees() : Promise<Attendees[]> {
     } catch (error) {
         console.error(error);
         return [];
+    }
+}
+
+export async function getRandomMovie() {
+    try {
+        const response = await axios.get(backend_url + rand_movie_endpoint)
+        return response.data
+    } catch (error) {
+        console.error(error)
+        return []
     }
 }

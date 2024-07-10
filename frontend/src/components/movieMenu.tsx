@@ -4,6 +4,7 @@ import {Avatar} from "primereact/avatar";
 import {clearAccessToken, getAccessToken, getUsername} from "../utils/accessToken.ts";
 import {useNavigate} from "react-router-dom";
 import {ACCOUNT, CALENDAR, HOMEPAGE, LOGIN, MOVIES, NEW_MOVIE} from "../constants/paths.ts";
+import {getRandomMovie} from "../connections/internal/movieNight.ts";
 
 
 export default function MovieMenu() {
@@ -67,6 +68,13 @@ export default function MovieMenu() {
           template: itemRenderer,
           command:() => {
             navigate(CALENDAR)
+          }
+        },
+        {
+          label: 'guzikdoklikania',
+          template: itemRenderer,
+          command:() => {
+            getRandomMovie()
           }
         },
       ]
