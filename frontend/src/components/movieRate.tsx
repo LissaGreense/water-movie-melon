@@ -1,6 +1,6 @@
 import {Dispatch, FC, SetStateAction, useEffect, useState} from "react";
 import {Dialog} from "primereact/dialog";
-import {Rating} from "primereact/rating";
+import {Rating, RatingChangeEvent} from "primereact/rating";
 import {Movie} from "../types/internal/movie.ts";
 import {Button} from "primereact/button";
 import {postRating} from "../connections/internal/movieRate.ts";
@@ -41,11 +41,13 @@ export const MovieRate: FC<MovieDateProps> = ({movieDate, isVisible, setVisible}
         )
     }
 
+
     return (
         <Dialog visible={isVisible} onHide={() => setVisible(false)}>
             <span>Jak spodobał ci się seans filmu</span>
             <span>{movie?.title}?</span>
-            <Rating value={rating} onChange={(e) => setRating(e.value)} cancel={false} stars={7}/>
+            <Rating value={rating?.valueOf()} onChange={(e) =>
+                setRating(e.value)} cancel={false} stars={7}/>
             <Button label="Dodaj ocenę" onClick={handleRateMovie}></Button>
         </Dialog>
     )
