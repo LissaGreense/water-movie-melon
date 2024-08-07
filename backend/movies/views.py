@@ -6,8 +6,10 @@ from django.core.files.storage import default_storage
 from django.utils.dateparse import parse_datetime
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
+from django.utils import timezone
 from django.http import HttpResponse
 from django.core import serializers
+from django.db.models import Count, Q, Avg
 import json
 
 from django.views.decorators.csrf import csrf_exempt
@@ -164,5 +166,41 @@ def user_avatar(request, username):
             default_storage.delete(old_avatar_path)
 
         return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
+    else:
+        return HttpResponse(json.dumps({'error': 'Only GET or POST methods are allowed'}), status=405)
+
+@csrf_exempt
+def user_statistics(request, username):
+    if request.method == 'GET':
+        try:
+            user = User.objects.get(username=username)
+
+            current_date = timezone.now().date()
+            hosted_nights = MovieNight.objects.filter(host=username, night_date__lte=current_date).count()
+
+            movies_with_avg_ratings = Movie.objects.filter(user=username).annotate(
+                avg_rating=Avg('rate__rating')
+            ).exclude(
+                avg_rating=None
+            ).order_by('-avg_rating')
+
+            seven_rated_movies = Movie.objects.filter(user=username).annotate(
+                avg_rating=Avg('rate__rating')
+            ).filter(
+                avg_rating__gte=7
+            ).count()
+
+            statistics = {
+                'added_movies': Movie.objects.filter(user=username).count(),
+                'seven_rated_movies': seven_rated_movies,
+                'watched_movies': Attendees.objects.filter(user=user.id).count() + hosted_nights,
+                'hosted_movie_nights': hosted_nights,
+                'highest_rated_movie': movies_with_avg_ratings.first().title if len(movies_with_avg_ratings) > 0 else None,
+                'lowest_rated_movie': movies_with_avg_ratings.last().title if len(movies_with_avg_ratings) > 0 else None,
+            }
+
+            return HttpResponse(json.dumps(statistics))
+        except User.DoesNotExist:
+            return HttpResponse(json.dumps({'error': 'User not found'}), status=404)
     else:
         return HttpResponse(json.dumps({'error': 'Only GET method is allowed'}), status=405)

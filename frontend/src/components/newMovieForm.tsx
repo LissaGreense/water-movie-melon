@@ -4,6 +4,7 @@ import {Accordion, AccordionTab} from "primereact/accordion";
 import {postMovie} from "../connections/internal/movie.ts";
 import dayjs from 'dayjs'
 import {InputNumber} from "primereact/inputnumber";
+import {getUsername} from "../utils/accessToken.ts";
 
 export const NewMovieForm = () => {
   return (
@@ -11,7 +12,7 @@ export const NewMovieForm = () => {
         <AccordionTab className="melonStyleContainerPeel textSansNoBorder" header={'Dodaj Film'}>
           <form onSubmit={(e: any) => {
             e.preventDefault();
-            postMovie(e.target.title.value, e.target.link.value,'testUser', dayjs().format('YYYY-MM-DD HH:mm'), e.target.genre.value, e.target.cover_link.value, e.target.duration.value);
+            postMovie(e.target.title.value, e.target.link.value, getUsername(), dayjs().format('YYYY-MM-DD HH:mm'), e.target.genre.value, e.target.cover_link.value, e.target.duration.value);
           }}>
 
             <div className="melonStyleContainerPeel p-inputgroup flex-1">

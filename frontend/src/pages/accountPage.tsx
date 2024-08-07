@@ -4,12 +4,13 @@ import {Image} from 'primereact/image';
 import {clearAccessToken, getUsername} from "../utils/accessToken.ts";
 import {useNavigate} from "react-router-dom";
 import {LOGIN} from "../constants/paths.ts";
-import {getAvatar, uploadAvatar} from "../connections/internal/user.ts";
+import {getAvatar, getStatistics, uploadAvatar} from "../connections/internal/user.ts";
 import {useCallback, useEffect, useState} from "react";
 import {FileUpload} from "primereact/fileupload";
 import Cropper, {Area} from "react-easy-crop";
 import {Dialog} from "primereact/dialog";
 import getCroppedImg from "../utils/image.ts";
+import {Statistics} from "../types/internal/user.ts";
 
 export const AccountPage = () => {
     const navigate = useNavigate();
@@ -19,6 +20,7 @@ export const AccountPage = () => {
     const [currentImage, setCurrentImage] = useState<string | ArrayBuffer | null>();
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
     const [crop, setCrop] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+    const [userStatistics, setUserStatistics] = useState<Statistics | null>(null);
     const [zoom, setZoom] = useState<number>(1)
     const handleLogoutEvent = (e: any) => {
         e.preventDefault();
@@ -54,12 +56,22 @@ export const AccountPage = () => {
     useEffect(() => {
         getAvatar(getUsername() as string).then((r) => {
                 if (r.avatar_url == '') {
-                    alert("Error fetching avatar...")
+                    alert("Error fetching avatar...");
                 }
                 setAvatar(backend_url + r.avatar_url);
             }
         )
     }, [showCropper])
+
+    useEffect(() => {
+        getStatistics(getUsername() as string).then(async (r) => {
+            if (r === null) {
+                alert("Error fetching statistics...");
+            } else {
+                setUserStatistics(await r);
+            }
+        })
+    }, []);
 
     return (
         <div className={'pageContent center'}>
@@ -104,12 +116,12 @@ export const AccountPage = () => {
                     </div>
                 </div>
                 <div className={'statistics'}>
-                    <h3>DODANE FILMY: </h3>
-                    <h3>FILMY Z OCENĄ 7: </h3>
-                    <h3>OBEJRZANE FILMY: </h3>
-                    <h3>HOSTOWANE WIECZORY: </h3>
-                    <h3>NAJWYŻEJ OCENIANY FILM: </h3>
-                    <h3>NAJNIŻEJ OCENIANY FILM: </h3>
+                    <h3>DODANE FILMY: {userStatistics?.added_movies}</h3>
+                    <h3>FILMY Z OCENĄ 7: {userStatistics?.seven_rated_movies}</h3>
+                    <h3>OBEJRZANE FILMY: {userStatistics?.watched_movies}</h3>
+                    <h3>HOSTOWANE WIECZORY: {userStatistics?.hosted_movie_nights}</h3>
+                    <h3>NAJWYŻEJ OCENIANY FILM: {userStatistics?.highest_rated_movie ? userStatistics.highest_rated_movie: "Brak danych"}</h3>
+                    <h3>NAJNIŻEJ OCENIANY FILM: {userStatistics?.lowest_rated_movie ? userStatistics.lowest_rated_movie: "Brak danych"}</h3>
                 </div>
             </div>
         </div>
