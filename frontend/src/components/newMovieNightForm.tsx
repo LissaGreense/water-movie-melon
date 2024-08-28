@@ -21,7 +21,7 @@ export const NewMovieNightForm: FC<MovieDateProps> = ({movieDate, isVisible, set
         <Dialog visible={isVisible} onHide={() => setVisible(false)}>
             <form onSubmit={(e: any) => {
                 e.preventDefault();
-                postMovieNight(getUsername(), dayjs(movieDate).format('YYYY-MM-DD ') + dayjs(nightTime).format('HH:mm'), e.target.location.value);
+                postMovieNight(getUsername() as string, dayjs(movieDate).format('YYYY-MM-DD ') + dayjs(nightTime).format('HH:mm'), e.target.location.value);
             }}>
 
                 <div className="p-inputgroup flex-1">
