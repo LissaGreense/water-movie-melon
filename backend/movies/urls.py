@@ -9,5 +9,7 @@ urlpatterns = [
     path("attendees", views.attendees, name='attendees'),
     path("login", views.login_user, name='login'),
     path("userAvatar/<str:username>", views.user_avatar, name='userAvatar'),
-    path("getSelectedMovie", views.rand_movie, name='getSelectedMovie')
+    path("getSelectedMovie", views.rand_movie, name='getSelectedMovie'),
+    path("getMovieDate", views.movie_date, name='getMovieDate'),
+    path("checkForNights", views.check_for_nights, name='checkForNights'),
 ]

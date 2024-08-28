@@ -1,10 +1,13 @@
 import axios from "axios";
 import {Attendees, MovieNight,} from "../../types/internal/movieNight.ts";
+import dayjs from "dayjs";
 
 const backend_url = 'http://localhost:8000';
 const movie_nights_endpoint = '/movies/newNight';
+const movie_date_endpoint = '/movies/getMovieDate';
 const attendees_endpoint = '/movies/attendees';
 const rand_movie_endpoint = '/movies/getSelectedMovie'
+const night_check_endpoint = '/movies/checkForNights'
 
 export async function getMovieNights(): Promise<MovieNight[]> {
     try {
@@ -66,12 +69,32 @@ export async function getAttendees() : Promise<Attendees[]> {
     }
 }
 
-export async function getRandomMovie() {
+export async function getRandomMovie(): Promise<string> {
     try {
         const response = await axios.get(backend_url + rand_movie_endpoint)
         return response.data
     } catch (error) {
         console.error(error)
-        return []
+        return ''
+    }
+}
+
+export async function getMovieDate(): Promise<Date> {
+    try {
+        const response = await axios.get(backend_url + movie_date_endpoint)
+        return dayjs(response.data).toDate()
+    } catch (error) {
+        console.error(error)
+        return new Date()
+    }
+}
+
+export async function checkForNights(): Promise<boolean> {
+    try {
+        const response = await axios.get(backend_url + night_check_endpoint)
+        return response.data as boolean
+    } catch (error) {
+        console.error(error)
+        return false
     }
 }

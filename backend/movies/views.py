@@ -175,19 +175,51 @@ def user_avatar(request, username):
 def rand_movie(request):
     if request.method == 'GET':
         upcoming_nights = MovieNight.objects.filter(selected_movie__isnull=True).order_by('night_date')
+        if len(upcoming_nights) == 0:
+            return []
+
         next_night = upcoming_nights[0]
 
-        if timezone.now() > next_night.night_date + datetime.timedelta(seconds=10):
+        if timezone.now() < next_night.night_date - datetime.timedelta(seconds=10):
             return HttpResponse(json.dumps({'error': 'Too soon, try again later'}), status=425)
 
-        movies_not_watched = Movie.objects.all().difference(MovieNight.objects.all())
-        serialized_movies_not_watched = serializers.serialize('python', movies_not_watched)
+        movies_not_watched = Movie.objects.filter(watched_movie=None)
 
-        selected_movie = choice(serialized_movies_not_watched)
+        if len(movies_not_watched) == 0:
+            return []
 
-        next_night.selected_movie.value = selected_movie
+        selected_movie = choice(movies_not_watched)
+        next_night.selected_movie = selected_movie
         next_night.save()
 
         return HttpResponse(json.dumps(selected_movie.title, cls=DjangoJSONEncoder),  content_type='application/json')
+    else:
+        return HttpResponse(json.dumps({'error': 'Only GET method is allowed'}), status=405)
+
+
+@csrf_exempt
+def movie_date(request):
+    if request.method == 'GET':
+        upcoming_nights = MovieNight.objects.filter(selected_movie__isnull=True).order_by('night_date')
+
+        if len(upcoming_nights) == 0:
+            return []
+
+        next_night = upcoming_nights[0]
+        next_night_date = next_night.night_date - datetime.timedelta(hours=2)
+
+        return HttpResponse(json.dumps(next_night_date, cls=DjangoJSONEncoder),  content_type='application/json')
+    else:
+        return HttpResponse(json.dumps({'error': 'Only GET method is allowed'}), status=405)
+
+
+@csrf_exempt
+def check_for_nights(request):
+    if request.method == 'GET':
+        upcoming_nights = MovieNight.objects.filter(selected_movie__isnull=True).order_by('night_date')
+
+        if len(upcoming_nights) != 0:
+            return HttpResponse(json.dumps(True, cls=DjangoJSONEncoder), content_type='application/json')
+        return HttpResponse(json.dumps(False, cls=DjangoJSONEncoder), content_type='application/json')
     else:
         return HttpResponse(json.dumps({'error': 'Only GET method is allowed'}), status=405)

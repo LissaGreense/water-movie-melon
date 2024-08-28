@@ -5,6 +5,7 @@ import {Dispatch, FC, SetStateAction, useState} from "react";
 import {Calendar} from "primereact/calendar";
 import dayjs from "dayjs";
 import {Dialog} from "primereact/dialog";
+import {getUsername} from "../utils/accessToken.ts";
 
 
 interface MovieDateProps {
@@ -20,7 +21,7 @@ export const NewMovieNightForm: FC<MovieDateProps> = ({movieDate, isVisible, set
         <Dialog visible={isVisible} onHide={() => setVisible(false)}>
             <form onSubmit={(e: any) => {
                 e.preventDefault();
-                postMovieNight('test_user', dayjs(movieDate).format('YYYY-MM-DD ') + dayjs(nightTime).format('HH:mm'), e.target.location.value);
+                postMovieNight(getUsername() as string, dayjs(movieDate).format('YYYY-MM-DD ') + dayjs(nightTime).format('HH:mm'), e.target.location.value);
             }}>
 
                 <div className="p-inputgroup flex-1">
