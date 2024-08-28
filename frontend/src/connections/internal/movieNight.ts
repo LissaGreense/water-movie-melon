@@ -33,7 +33,7 @@ export async function getMovieNight(nightDate: Date | null): Promise<MovieNight[
     }
 }
 
-export async function postMovieNight(host: string, night_date: string, location: string): Promise<void> {
+export async function postMovieNight(host: string | null, night_date: string, location: string): Promise<void> {
     const data = {
         host: host,
         night_date: night_date,
