@@ -14,7 +14,7 @@ export async function getMovies(): Promise<Movie[]> {
   }
 }
 
-export async function postMovie(title: string, link: string, user: string, date_added: string, genre: string, cover_link: string, duration: number): Promise<void> {
+export async function postMovie(title: string, link: string, user: string | null, date_added: string, genre: string, cover_link: string, duration: number): Promise<void> {
   const data = {
     title: title,
     link: link,

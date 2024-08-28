@@ -12,4 +12,5 @@ urlpatterns = [
     path("getSelectedMovie", views.rand_movie, name='getSelectedMovie'),
     path("getMovieDate", views.movie_date, name='getMovieDate'),
     path("checkForNights", views.check_for_nights, name='checkForNights'),
+    path("userStatistics/<str:username>", views.user_statistics, name='userStatistics'),
 ]
