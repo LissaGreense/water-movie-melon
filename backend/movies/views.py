@@ -218,7 +218,8 @@ def rand_movie(request):
 
         next_night = upcoming_nights[0]
 
-        if timezone.now() < next_night.night_date - datetime.timedelta(seconds=10):
+        # TODO: temporary solution, need to set the backend timezone to GMT+2
+        if timezone.now() < next_night.night_date - datetime.timedelta(hours=2) - datetime.timedelta(seconds=10):
             return HttpResponse(json.dumps({'error': 'Too soon, try again later'}), status=425)
 
         movies_not_watched = Movie.objects.filter(watched_movie=None)
