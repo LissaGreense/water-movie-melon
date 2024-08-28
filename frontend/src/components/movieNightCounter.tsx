@@ -53,6 +53,8 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({nextNightDate}) =
     return Math.floor(countDown as number % millisecondsInYear / millisecondsInDay
     );
   }
+
+  // TODO: @LissaGreense this part "(1000 * 60 * 60 * 24)) / (1000 * 60 * 60)" is not clear. Move it to func/var and name properly. As a developer we shouldn't write complex code to check others intelligence ;P
   const getHourValue = () => {
     return Math.floor((countDown as number % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
     );
