@@ -10,9 +10,12 @@ export const HomePage = () => {
     const [currentDate, setCurrentDate] = useState<Date>()
 
     useEffect(() => {
-        getMovieDate().then((d) => {
+        try {
+            getMovieDate().then((d) => {
             setCurrentDate(d)
-        })
+        })} catch(error) {
+            console.error(error)
+        }
     }, []);
 
 

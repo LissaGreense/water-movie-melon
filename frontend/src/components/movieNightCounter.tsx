@@ -11,12 +11,18 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({nextNightDate}) =
   const [nextNightTime, setNextNightTime] = useState<number>()
   const [todaysMovie, setTodaysMovie] = useState<string>("");
   const [countDown, setCountDown] = useState<number>(7);
-  const [areThereNights, setAreThereNights] = useState<boolean>(false)
+  const [areThereNights, setAreThereNights] = useState<boolean>(false);
+  const millisecondsInYear = (1000 * 60 * 60 * 24 * 365);
+  const millisecondsInDay = (1000 * 60 * 60 * 24);
 
   useEffect(() => {
-    checkForNights().then((data) => {
-      setAreThereNights(data);
-    })
+    try {
+      checkForNights().then((data) => {
+        setAreThereNights(data);
+      })
+    } catch(error) {
+      console.error(error)
+    }
   }, [null]);
 
 
@@ -26,9 +32,13 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({nextNightDate}) =
   }, []);
 
   useEffect(() => {
-    getRandomMovie().then((m) => {
-      setTodaysMovie(m)
-    })
+    try{
+      getRandomMovie().then((m) => {
+        setTodaysMovie(m)
+      })
+    } catch (error){
+      console.error(error)
+    }
   }, [countDown as number <= 0]);
 
   useEffect(() => {
@@ -40,10 +50,9 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({nextNightDate}) =
   }, [nextNightTime]);
 
   const getDaysValue = () => {
-    return Math.floor((countDown as number % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24)
+    return Math.floor(countDown as number % millisecondsInYear / millisecondsInDay
     );
   }
-
   const getHourValue = () => {
     return Math.floor((countDown as number % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
     );
@@ -56,7 +65,6 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({nextNightDate}) =
   }
 
   if (!areThereNights) {
-    console.log(areThereNights)
     return (
         <div className={"counterContainer"}>
           <h2>Nie ma planów :|</h2>

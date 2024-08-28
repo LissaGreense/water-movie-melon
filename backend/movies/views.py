@@ -214,7 +214,7 @@ def rand_movie(request):
     if request.method == 'GET':
         upcoming_nights = MovieNight.objects.filter(selected_movie__isnull=True).order_by('night_date')
         if len(upcoming_nights) == 0:
-            return []
+            return HttpResponse(json.dumps([], cls=DjangoJSONEncoder),  content_type='application/json')
 
         next_night = upcoming_nights[0]
 
@@ -224,7 +224,7 @@ def rand_movie(request):
         movies_not_watched = Movie.objects.filter(watched_movie=None)
 
         if len(movies_not_watched) == 0:
-            return []
+            return HttpResponse(json.dumps([], cls=DjangoJSONEncoder),  content_type='application/json')
 
         selected_movie = choice(movies_not_watched)
         next_night.selected_movie = selected_movie
@@ -241,9 +241,10 @@ def movie_date(request):
         upcoming_nights = MovieNight.objects.filter(selected_movie__isnull=True).order_by('night_date')
 
         if len(upcoming_nights) == 0:
-            return []
+            return HttpResponse(json.dumps([], cls=DjangoJSONEncoder),  content_type='application/json')
 
         next_night = upcoming_nights[0]
+        # TODO: temporary solution, need to set the backend timezone to GMT+2
         next_night_date = next_night.night_date - datetime.timedelta(hours=2)
 
         return HttpResponse(json.dumps(next_night_date, cls=DjangoJSONEncoder),  content_type='application/json')
