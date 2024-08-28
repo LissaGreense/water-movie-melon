@@ -10,4 +10,6 @@ urlpatterns = [
     path("login", views.login_user, name='login'),
     path("userAvatar/<str:username>", views.user_avatar, name='userAvatar'),
     path("userStatistics/<str:username>", views.user_statistics, name='userStatistics'),
+    path("register", views.user_register, name='userRegister'),
+    path("registerQuestion", views.register_question, name='registerQuestion'),
 ]
