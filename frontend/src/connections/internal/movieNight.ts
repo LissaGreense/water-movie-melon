@@ -4,10 +4,10 @@ import dayjs from "dayjs";
 
 const backend_url = 'http://localhost:8000';
 const movie_nights_endpoint = '/movies/newNight';
-const movie_date_endpoint = '/movies/getMovieDate';
+const movie_date_endpoint = '/movies/movieDate';
 const attendees_endpoint = '/movies/attendees';
-const rand_movie_endpoint = '/movies/getSelectedMovie'
-const night_check_endpoint = '/movies/checkForNights'
+const rand_movie_endpoint = '/movies/selectedMovie'
+const night_check_endpoint = '/movies/upcomingNights'
 
 export async function getMovieNights(): Promise<MovieNight[]> {
     try {

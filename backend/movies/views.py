@@ -214,11 +214,11 @@ def movie_date(request):
 
 
 @csrf_exempt
-def check_for_nights(request):
+def upcoming_nights(request):
     if request.method == 'GET':
-        upcoming_nights = MovieNight.objects.filter(selected_movie__isnull=True).order_by('night_date')
+        upcoming_night = MovieNight.objects.filter(selected_movie__isnull=True).order_by('night_date')
 
-        if len(upcoming_nights) != 0:
+        if len(upcoming_night) != 0:
             return HttpResponse(json.dumps(True, cls=DjangoJSONEncoder), content_type='application/json')
         return HttpResponse(json.dumps(False, cls=DjangoJSONEncoder), content_type='application/json')
     else:

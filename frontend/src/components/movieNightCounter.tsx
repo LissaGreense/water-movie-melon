@@ -15,7 +15,6 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({nextNightDate}) =
 
   useEffect(() => {
     checkForNights().then((data) => {
-      console.log(data)
       setAreThereNights(data);
     })
   }, [null]);
