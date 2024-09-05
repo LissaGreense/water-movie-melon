@@ -7,6 +7,10 @@ import {Question} from "../types/internal/authentication.ts";
 import {LOGIN} from "../constants/paths.ts";
 import {useNavigate} from "react-router-dom";
 
+const TOO_MANY_ATTEMPTS_ERROR_MSG = "Wykorzystałeś swoje trzy próby logowania. Spróbuj ponownie jutro! Może jutrzejsze arbuzowe pytanie będzie łatwiejsze ;)";
+const USER_ALREADY_EXISTS_ERROR_MSG = "Użytkownik o takiej nazwie już istnieje!";
+const WRONG_ANSWER_ERROR_MSG = "Nie znasz odpowiedzi na dzisiejsze arbuzowe pytanie? ;)";
+const REGISTRATION_FAILED_ERROR_MSG = "Nie udało się zarejestrować! skontaktuj się z administracją.";
 export const RegisterPage = () => {
     const navigate = useNavigate();
     const [password, setPassword] = useState<string>('');
@@ -22,22 +26,30 @@ export const RegisterPage = () => {
     }, [])
 
     function handleRegister() {
+        function handleErrorResponse(r) {
+            const errorStatus = r["response"]["status"];
+
+            if (errorStatus === 403) {
+                alert(TOO_MANY_ATTEMPTS_ERROR_MSG);
+            } else if (errorStatus === 400) {
+                const errorMsg = r["response"]["data"]["error"]
+
+                if (errorMsg === "USER ALREADY EXISTS") {
+                    alert(USER_ALREADY_EXISTS_ERROR_MSG);
+                } else if (errorMsg === "BAD ANSWER") {
+                    alert(WRONG_ANSWER_ERROR_MSG);
+                }
+            } else {
+                alert(REGISTRATION_FAILED_ERROR_MSG);
+            }
+        }
+
         register(username, password, answer).then((r) => {
             if (r && "result" in r && r["result"] === "OK") {
                 alert("Zostałeś filmowym arbuzem! Yey!");
                 navigate(LOGIN);
             } else {
-                const errorStatus = r["response"]["status"];
-
-                if (errorStatus === 403) {
-                    alert("Wykorzystałeś swoje trzy próby logowania. Spróbuj ponownie jutro! Może jutrzejsze arbuzowe pytanie będzie łatwiejsze ;)");
-                } else if (errorStatus === 400 && r["response"]["data"]["error"] === "USER ALREADY EXISTS") {
-                    alert("Użytkownik o takiej nazwie już istnieje!");
-                } else if (errorStatus === 400 && r["response"]["data"]["error"] === "BAD ANSWER") {
-                    alert("Nie znasz odpowiedzi na dzisiejsze arbuzowe pytanie? ;)");
-                } else {
-                    alert("Nie udało się zarejestrować! skontaktuj się z administracją.");
-                }
+                handleErrorResponse(r);
             }
         });
     }
