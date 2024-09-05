@@ -13,4 +13,6 @@ urlpatterns = [
     path("movieDate", views.movie_date, name='movieDate'),
     path("upcomingNights", views.upcoming_nights, name='upcomingNights'),
     path("userStatistics/<str:username>", views.user_statistics, name='userStatistics'),
+    path("register", views.user_register, name='userRegister'),
+    path("registerQuestion", views.register_question, name='registerQuestion'),
 ]

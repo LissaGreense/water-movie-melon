@@ -2,9 +2,9 @@ import datetime
 from random import choice
 
 from django.core.serializers.json import DjangoJSONEncoder
+from django_ratelimit.decorators import ratelimit
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
-from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
@@ -12,11 +12,12 @@ from django.utils import timezone
 from django.http import HttpResponse
 from django.core import serializers
 from django.db.models import Count, Q, Avg
+from django.db import IntegrityError
 import json
 
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Movie, Rate, MovieNight, Attendees, User
+from .models import Movie, Rate, MovieNight, Attendees, User, RegisterQuestion
 
 
 # TODO: to remove, only for debugging purpose
@@ -207,6 +208,35 @@ def user_statistics(request, username):
             return HttpResponse(json.dumps({'error': 'User not found'}), status=404)
     else:
         return HttpResponse(json.dumps({'error': 'Only GET method is allowed'}), status=405)
+
+
+@csrf_exempt
+@ratelimit(key='ip', rate='3/d')
+def user_register(request):
+    if request.method == 'POST':
+        user_data = json.loads(request.body)
+        question = RegisterQuestion.objects.get(day=datetime.datetime.today().weekday())
+
+        if user_data['answer'].strip().lower() == question.answer.strip().lower():
+            try:
+                user = User.objects.create_user(username=user_data["username"], password=user_data["password"])
+                user.save()
+
+                return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
+            except IntegrityError:
+                return HttpResponse(json.dumps({'error': 'USER ALREADY EXISTS'}), status=400)
+        else:
+            return HttpResponse(json.dumps({'error': 'BAD ANSWER'}), content_type='application/json', status=400)
+    else:
+        return HttpResponse(json.dumps({'error': 'Only POST method is allowed'}), status=405)
+
+
+@csrf_exempt
+def register_question(request):
+    if request.method == 'GET':
+        question = RegisterQuestion.objects.get(day=datetime.datetime.today().weekday())
+
+        return HttpResponse(json.dumps({"question": question.question}), content_type='application/json')
 
 
 @csrf_exempt

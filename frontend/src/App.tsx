@@ -6,10 +6,11 @@ import {LoginPage} from "./pages/loginPage.tsx";
 import {getAccessToken} from "./utils/accessToken.ts";
 import {FC, ReactElement} from "react";
 import {AccountPage} from "./pages/accountPage.tsx";
-import {ACCOUNT, CALENDAR, HOMEPAGE, LOGIN, MOVIES, NEW_MOVIE} from "./constants/paths.ts";
+import {ACCOUNT, CALENDAR, HOMEPAGE, LOGIN, MOVIES, NEW_MOVIE, REGISTER} from "./constants/paths.ts";
 import {MovieCalendar} from "./components/movieCalendar.tsx";
 import {MovieList} from "./components/movieList.tsx";
 import {MoviePage} from "./components/moviePage.tsx";
+import {RegisterPage} from "./pages/registerPage.tsx";
 
 
 const RequireAuth: FC<{ children: ReactElement }> = ({children}) => {
@@ -28,6 +29,7 @@ const App = () => {
                     <Routes>
                         <Route path={HOMEPAGE} element={<HomePage/>}/>
                         <Route path={LOGIN} element={<LoginPage/>}/>
+                        <Route path={REGISTER} element={<RegisterPage/>}/>
                         <Route path={NEW_MOVIE} element={<RequireAuth><MoviePage/></RequireAuth>}/>
                         <Route path={ACCOUNT} element={<RequireAuth><AccountPage/></RequireAuth>}/>
                         <Route path={CALENDAR} element={<RequireAuth><MovieCalendar/></RequireAuth>}/>

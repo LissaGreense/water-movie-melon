@@ -46,3 +46,17 @@ class Attendees(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['night', 'user'], name='unique_night_user_attendee')
         ]
+
+class RegisterQuestion(models.Model):
+    QUESTION_DAY = [
+        ("1", "Monday"),
+        ("2", "Tuesday"),
+        ("3", "Wednesday"),
+        ("4", "Thursday"),
+        ("5", "Friday"),
+        ("6", "Saturday"),
+        ("7", "Sunday"),
+    ]
+    question = models.CharField(max_length=150)
+    answer = models.CharField(max_length=100)
+    day = models.CharField(max_length=2, choices=QUESTION_DAY, unique=True)
