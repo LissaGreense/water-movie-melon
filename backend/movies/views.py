@@ -1,9 +1,11 @@
 import datetime
+from random import choice
 
 from django.core.serializers.json import DjangoJSONEncoder
 from django_ratelimit.decorators import ratelimit
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
+from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
@@ -139,6 +141,7 @@ def login_user(request):
 
         return HttpResponse(json.dumps({'error': 'Invalid credentials'}), content_type='application/json', status=401)
 
+
 @csrf_exempt
 def user_avatar(request, username):
     if request.method == 'GET':
@@ -228,11 +231,66 @@ def user_register(request):
     else:
         return HttpResponse(json.dumps({'error': 'Only POST method is allowed'}), status=405)
 
+
 @csrf_exempt
 def register_question(request):
     if request.method == 'GET':
         question = RegisterQuestion.objects.get(day=datetime.datetime.today().weekday())
 
         return HttpResponse(json.dumps({"question": question.question}), content_type='application/json')
+
+
+@csrf_exempt
+def rand_movie(request):
+    if request.method == 'GET':
+        upcoming_nights = MovieNight.objects.filter(selected_movie__isnull=True).order_by('night_date')
+        if len(upcoming_nights) == 0:
+            return HttpResponse(json.dumps([], cls=DjangoJSONEncoder),  content_type='application/json')
+
+        next_night = upcoming_nights[0]
+
+        # TODO: temporary solution, need to set the backend timezone to GMT+2
+        if timezone.now() < next_night.night_date - datetime.timedelta(hours=2) - datetime.timedelta(seconds=10):
+            return HttpResponse(json.dumps({'error': 'Too soon, try again later'}), status=425)
+
+        movies_not_watched = Movie.objects.filter(watched_movie=None)
+
+        if len(movies_not_watched) == 0:
+            return HttpResponse(json.dumps([], cls=DjangoJSONEncoder),  content_type='application/json')
+
+        selected_movie = choice(movies_not_watched)
+        next_night.selected_movie = selected_movie
+        next_night.save()
+
+        return HttpResponse(json.dumps(selected_movie.title, cls=DjangoJSONEncoder),  content_type='application/json')
+    else:
+        return HttpResponse(json.dumps({'error': 'Only GET method is allowed'}), status=405)
+
+
+@csrf_exempt
+def movie_date(request):
+    if request.method == 'GET':
+        upcoming_nights = MovieNight.objects.filter(selected_movie__isnull=True).order_by('night_date')
+
+        if len(upcoming_nights) == 0:
+            return HttpResponse(json.dumps([], cls=DjangoJSONEncoder),  content_type='application/json')
+
+        next_night = upcoming_nights[0]
+        # TODO: temporary solution, need to set the backend timezone to GMT+2
+        next_night_date = next_night.night_date - datetime.timedelta(hours=2)
+
+        return HttpResponse(json.dumps(next_night_date, cls=DjangoJSONEncoder),  content_type='application/json')
+    else:
+        return HttpResponse(json.dumps({'error': 'Only GET method is allowed'}), status=405)
+
+
+@csrf_exempt
+def upcoming_nights(request):
+    if request.method == 'GET':
+        upcoming_night = MovieNight.objects.filter(selected_movie__isnull=True).order_by('night_date')
+
+        if len(upcoming_night) != 0:
+            return HttpResponse(json.dumps(True, cls=DjangoJSONEncoder), content_type='application/json')
+        return HttpResponse(json.dumps(False, cls=DjangoJSONEncoder), content_type='application/json')
     else:
         return HttpResponse(json.dumps({'error': 'Only GET method is allowed'}), status=405)

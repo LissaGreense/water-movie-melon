@@ -41,6 +41,7 @@ export const MovieRate: FC<MovieDateProps> = ({movieDate, isVisible, setVisible}
         )
     }
 
+
     return (
         <Dialog visible={isVisible} onHide={() => setVisible(false)}>
             <span>Jak spodobał ci się seans filmu</span>
