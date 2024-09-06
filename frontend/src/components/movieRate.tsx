@@ -1,12 +1,10 @@
 import {Dispatch, FC, SetStateAction, useEffect, useState} from "react";
 import {Dialog} from "primereact/dialog";
 import {Rating} from "primereact/rating";
-import {Movie} from "../types/internal/movie.ts";
 import {Button} from "primereact/button";
 import {postRating} from "../connections/internal/movieRate.ts";
 import {getUsername} from "../utils/accessToken.ts";
 import {getMovieNight} from "../connections/internal/movieNight.ts";
-import {getMovies} from "../connections/internal/movie.ts";
 
 interface MovieDateProps {
     movieDate: Date | null;
@@ -16,26 +14,20 @@ interface MovieDateProps {
 
 export const MovieRate: FC<MovieDateProps> = ({movieDate, isVisible, setVisible}): JSX.Element => {
     const [rating, setRating] = useState<number | undefined>();
-    const [movie, setMovie] = useState<Movie>();
-
-
-    //TODO tu placeholder na dodawanie ratingu, usunąc gdy losowanie będzie
-    const [placeholderMovie, setPlaceholderMovie] = useState<Movie>()
-    useEffect(() => {
-        getMovies().then((movies) => {
-            setPlaceholderMovie(movies[0])
-        })
-    }, []);
+    const [movieNightTitle, setMovieNightTitle] = useState<string>('')
 
     useEffect(() => {
         getMovieNight(movieDate).then((data) => {
-            setMovie(data[0].selected_movie)
+            console.log("ssss")
+            console.log(data)
+            setMovieNightTitle(data[0].selected_movie as string)
         })
     }, []);
 
+
     const handleRateMovie = () => {
         postRating(
-            placeholderMovie,
+            movieNightTitle,
             getUsername(),
             rating,
         )
@@ -45,7 +37,7 @@ export const MovieRate: FC<MovieDateProps> = ({movieDate, isVisible, setVisible}
     return (
         <Dialog visible={isVisible} onHide={() => setVisible(false)}>
             <span>Jak spodobał ci się seans filmu</span>
-            <span>{movie?.title}?</span>
+            <span>{movieNightTitle}?</span>
             <Rating value={rating} onChange={(e) => setRating(e.value as number | undefined)} cancel={false} stars={7}/>
             <Button label="Dodaj ocenę" onClick={handleRateMovie}></Button>
         </Dialog>

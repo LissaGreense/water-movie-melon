@@ -13,6 +13,7 @@ from django.http import HttpResponse
 from django.core import serializers
 from django.db.models import Count, Q, Avg
 from django.db import IntegrityError
+from dateutil import parser
 import json
 
 from django.views.decorators.csrf import csrf_exempt
@@ -45,9 +46,23 @@ def index(request):
 def rate(request):
     if request.method == 'GET':
         all_ratings = serializers.serialize('python', Rate.objects.all())
-        rating_field = [d['fields'] for d in all_ratings]
+        ratings_response = []
 
-        return HttpResponse(json.dumps(rating_field, cls=DjangoJSONEncoder), content_type='application/json')
+        for rating in all_ratings:
+            rating_fields = rating['fields']
+            movie = Movie.objects.get(pk=rating_fields['movie'])
+            user_object = User.objects.get(pk=rating_fields['user'])
+            user = user_object.username
+            rating = rating_fields['rating']
+
+            rating_response = {
+                "movie": serializers.serialize('python', [movie, ])[0]['fields'],
+                "user": user,
+                "rating": rating,
+            }
+            ratings_response.append(rating_response)
+
+        return HttpResponse(json.dumps(ratings_response, cls=DjangoJSONEncoder), content_type='application/json')
 
     elif request.method == 'POST':
         rate_from_body = json.loads(request.body)
@@ -68,8 +83,16 @@ def new_night(request):
     if request.method == 'GET':
         date = request.GET.get('date', None)
         if date:
-            parsed_date = datetime.datetime.strptime(date, "%m/%d/%Y")
+            parsed_date = parser.parse(date)
             all_nights = serializers.serialize('python', MovieNight.objects.filter(night_date__date=parsed_date))
+            movie = Movie.objects.get(pk=all_nights[0]['fields']['selected_movie'])
+            nights_response = {
+                "host": all_nights[0]['fields']['host'],
+                "night_date": date,
+                "location": all_nights[0]['fields']['location'],
+                "selected_movie": movie.title,
+            }
+            return HttpResponse(json.dumps(nights_response, cls=DjangoJSONEncoder), content_type='application/json')
         else:
             all_nights = serializers.serialize('python', MovieNight.objects.all())
         night_field = [d['fields'] for d in all_nights]

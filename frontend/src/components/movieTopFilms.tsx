@@ -1,34 +1,30 @@
 
 import {useEffect, useState} from 'react';
 import { Rating } from 'primereact/rating';
-import {getMovies} from "../connections/internal/movie.ts";
 import {Movie} from "../types/internal/movie.ts";
 import {Button} from "primereact/button";
 import { Sidebar } from 'primereact/sidebar';
 import cover from '../assets/coverplaceholder.jpg'
 import {VirtualScroller} from "primereact/virtualscroller";
+import {getRating} from "../connections/internal/movieRate.ts";
 
 interface TopFilms {
-    title: string;
-    link: string;
+    movie: Movie;
     user: string;
-    date_added: string;
-    genre: string;
     rating: number;
-    image: string;
 }
 
 export default function TopMovies() {
-    const [movies, setMovies] = useState<Movie[]>([]);
+    const [ratings, setRatings] = useState();
     const [visible, setVisible] = useState<boolean>(false);
 
     useEffect(() => {
-        getMovies()
-            .then((moviesData) => {
-                setMovies(moviesData);
+        getRating()
+            .then((ratingData) => {
+                setRatings(ratingData);
             })
             .catch((error) => {
-                console.error('Error fetching movies:', error);
+                console.error('Error fetching ratings:', error);
             });
     }, []);
 
@@ -37,19 +33,19 @@ export default function TopMovies() {
 
             <div className={'topMovieDiv'}>
                 <div className={'topMovieCoverDiv'}>
-                    <img className="topMovieCover" src={cover} alt={data.title}/>
+                    <img className="topMovieCover" src={cover} alt={data.movie.title}/>
                 </div>
                 <div
                     className="topMovieCoverData">
                     <div>
                         <div>
-                            <div className="textSans">{data.title}</div>
+                            <div className="textSans">{data.movie.title}</div>
                         </div>
                         <div className="flex flex-column gap-2">
-                            <Rating value={data.rating} readOnly cancel={false}></Rating>
+                            <Rating value={data.rating} readOnly cancel={false} stars={7}></Rating>
                             <span className="flex align-items-center gap-2">
                                     <i className="pi pi-tag product-category-icon"></i>
-                                    <span className="textSansNoBorder">{data.genre}</span>
+                                    <span className="textSansNoBorder">{data.movie.genre}</span>
                                 </span>
                         </div>
                     </div>
@@ -64,7 +60,7 @@ export default function TopMovies() {
             <Sidebar visible={visible} onHide={() => setVisible(false)}>
                 <h2>Top Movies</h2>
                 <div className="card">
-                    <VirtualScroller items={movies} itemTemplate={itemTemplate} itemSize={7} scrollHeight="500px"/>
+                    <VirtualScroller items={ratings} itemTemplate={itemTemplate} itemSize={7} scrollHeight="500px"/>
                 </div>
             </Sidebar>
             <Button label='TOP MOVIES' onClick={() => setVisible(true)}/>
