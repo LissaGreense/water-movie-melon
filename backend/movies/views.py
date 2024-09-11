@@ -83,14 +83,14 @@ def new_night(request):
     if request.method == 'GET':
         date = request.GET.get('date', None)
         if date:
-            parsed_date = parser.parse(date)
-            all_nights = serializers.serialize('python', MovieNight.objects.filter(night_date__date=parsed_date))
-            movie = Movie.objects.get(pk=all_nights[0]['fields']['selected_movie'])
+            parsed_date = parser.parse(date, dayfirst=True)
+            movie_night = MovieNight.objects.get(night_date__date=parsed_date)
+
             nights_response = {
-                "host": all_nights[0]['fields']['host'],
+                "host": movie_night.host,
                 "night_date": date,
-                "location": all_nights[0]['fields']['location'],
-                "selected_movie": movie.title,
+                "location": movie_night.location,
+                "selected_movie": movie_night.selected_movie.title,
             }
             return HttpResponse(json.dumps(nights_response, cls=DjangoJSONEncoder), content_type='application/json')
         else:
@@ -270,9 +270,7 @@ def rand_movie(request):
             return HttpResponse(json.dumps([], cls=DjangoJSONEncoder),  content_type='application/json')
 
         next_night = upcoming_nights[0]
-
-        # TODO: temporary solution, need to set the backend timezone to GMT+2
-        if timezone.now() < next_night.night_date - datetime.timedelta(hours=2) - datetime.timedelta(seconds=10):
+        if timezone.now() < next_night.night_date - datetime.timedelta(seconds=10):
             return HttpResponse(json.dumps({'error': 'Too soon, try again later'}), status=425)
 
         movies_not_watched = Movie.objects.filter(watched_movie=None)
@@ -298,8 +296,7 @@ def movie_date(request):
             return HttpResponse(json.dumps([], cls=DjangoJSONEncoder),  content_type='application/json')
 
         next_night = upcoming_nights[0]
-        # TODO: temporary solution, need to set the backend timezone to GMT+2
-        next_night_date = next_night.night_date - datetime.timedelta(hours=2)
+        next_night_date = next_night.night_date
 
         return HttpResponse(json.dumps(next_night_date, cls=DjangoJSONEncoder),  content_type='application/json')
     else:

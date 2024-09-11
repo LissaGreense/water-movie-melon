@@ -20,7 +20,7 @@ export const MovieRate: FC<MovieDateProps> = ({movieDate, isVisible, setVisible}
         getMovieNight(movieDate).then((data) => {
             console.log("ssss")
             console.log(data)
-            setMovieNightTitle(data[0].selected_movie as string)
+            setMovieNightTitle(data.selected_movie as string)
         })
     }, []);
 

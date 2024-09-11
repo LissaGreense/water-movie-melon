@@ -19,9 +19,9 @@ export async function getMovieNights(): Promise<MovieNight[]> {
     }
 }
 
-export async function getMovieNight(nightDate: Date | null) {
+export async function getMovieNight(nightDate: Date | null): Promise<Promise<MovieNight> | null> {
     try {
-        const response = await axios.get<MovieNight[]>(backend_url + movie_nights_endpoint, {
+        const response = await axios.get<MovieNight>(backend_url + movie_nights_endpoint, {
             params: {
                 date: nightDate?.toLocaleDateString()
             }
@@ -29,7 +29,7 @@ export async function getMovieNight(nightDate: Date | null) {
         return response.data
     } catch (error) {
         console.error(error)
-        return []
+        return null
     }
 }
 
