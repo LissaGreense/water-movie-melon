@@ -5,7 +5,7 @@ const rates_endpoint = '/movies/rate'
 
 export async function postRating(movie: string | undefined, user: string | null, rating: number | undefined | null): Promise<void> {
     const data = {
-        movie: movie,
+        movieTitle: movie,
         user: user,
         rating: rating,
     }

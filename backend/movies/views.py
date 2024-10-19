@@ -66,7 +66,7 @@ def rate(request):
 
     elif request.method == 'POST':
         rate_from_body = json.loads(request.body)
-        movie = Movie.objects.get(title=rate_from_body['movie']['title'])
+        movie = Movie.objects.get(title=rate_from_body['movieTitle'])
         user = User.objects.get(username=rate_from_body['user'])
         rating = rate_from_body['rating']
         try:

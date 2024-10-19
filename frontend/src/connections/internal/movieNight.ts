@@ -19,7 +19,7 @@ export async function getMovieNights(): Promise<MovieNight[]> {
     }
 }
 
-export async function getMovieNight(nightDate: Date | null): Promise<Promise<MovieNight> | null> {
+export async function getMovieNight(nightDate: Date | null): Promise<MovieNight | null> {
     try {
         const response = await axios.get<MovieNight>(backend_url + movie_nights_endpoint, {
             params: {
