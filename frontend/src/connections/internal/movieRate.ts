@@ -1,8 +1,9 @@
 import {Movie} from "../../types/internal/movie.ts";
 import axios from "axios";
+import {getAuthHeadersConfig} from "../../utils/accessToken.ts";
 
 const backend_url = 'http://localhost:8000';
-const rates_endpoint = '/movies/rate'
+const rates_endpoint = '/movies/rate/'
 
 export async function postRating(movie: Movie | undefined, user: string | null, rating: number | undefined | null): Promise<void> {
     const data = {
@@ -11,7 +12,7 @@ export async function postRating(movie: Movie | undefined, user: string | null, 
         rating: rating,
     }
     try {
-        await axios.post(backend_url + rates_endpoint, data);
+        await axios.post(backend_url + rates_endpoint, data, getAuthHeadersConfig());
     } catch (error) {
         console.error(error)
     }

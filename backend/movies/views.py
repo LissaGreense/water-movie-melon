@@ -8,28 +8,27 @@ from django.core.files.storage import default_storage
 from django.utils.dateparse import parse_datetime
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 from django.utils import timezone
 from django.http import HttpResponse
 from django.core import serializers
-from django.db.models import Count, Q, Avg
+from django.db.models import Avg
 from django.db import IntegrityError
 import json
 
-from django.views.decorators.csrf import csrf_exempt
-
 from .models import Movie, Rate, MovieNight, Attendees, User, RegisterQuestion
 
+class MoviesObject(APIView):
+    permission_classes = [IsAuthenticated]
 
-# TODO: to remove, only for debugging purpose
-@csrf_exempt
-def index(request):
-    if request.method == 'GET':
+    def get(self, request, format=None):
         all_movies = serializers.serialize('python', Movie.objects.all())
         movies_field = [d['fields'] for d in all_movies]
 
         return HttpResponse(json.dumps(movies_field, cls=DjangoJSONEncoder), content_type='application/json')
 
-    elif request.method == 'POST':
+    def post(self, request, format=None):
         movie_from_body = json.loads(request.body)
         try:
             new_movie = Movie(**movie_from_body)
@@ -41,56 +40,67 @@ def index(request):
         return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
 
 
-@csrf_exempt
-def rate(request):
-    if request.method == 'GET':
+class Rate(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
         all_ratings = serializers.serialize('python', Rate.objects.all())
         rating_field = [d['fields'] for d in all_ratings]
 
         return HttpResponse(json.dumps(rating_field, cls=DjangoJSONEncoder), content_type='application/json')
 
-    elif request.method == 'POST':
+    def post(self, request, format=None):
         rate_from_body = json.loads(request.body)
         movie = Movie.objects.get(title=rate_from_body['movie']['title'])
         user = User.objects.get(username=rate_from_body['user'])
         rating = rate_from_body['rating']
+
         try:
             new_rate = Rate(movie=movie, user=user, rating=rating)
         except TypeError:
             return HttpResponse(json.dumps({'error': 'out of field'}), content_type='application/json', status=400)
 
         new_rate.save()
+
         return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
 
 
-@csrf_exempt
-def new_night(request):
-    if request.method == 'GET':
+class Night(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
         date = request.GET.get('date', None)
+
         if date:
             parsed_date = datetime.datetime.strptime(date, "%m/%d/%Y")
             all_nights = serializers.serialize('python', MovieNight.objects.filter(night_date__date=parsed_date))
         else:
             all_nights = serializers.serialize('python', MovieNight.objects.all())
+
         night_field = [d['fields'] for d in all_nights]
+
         return HttpResponse(json.dumps(night_field, cls=DjangoJSONEncoder), content_type='application/json')
-    elif request.method == 'POST':
+
+    def post(self, request, format=None):
         night_from_body = json.loads(request.body)
         try:
             night_date = parse_datetime(night_from_body.get('night_date'))
             if MovieNight.objects.filter(night_date__date=night_date.date()).exists():
                 return HttpResponse(json.dumps({'error': 'A MovieNight already exists for this date.'}), status=400)
+
             new_movie_night = MovieNight(**night_from_body)
+
         except TypeError:
             return HttpResponse(json.dumps({'error': 'out of field'}), content_type='application/json', status=400)
 
         new_movie_night.save()
+
         return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
 
+class AttendeesView(APIView):
+    permission_classes = [IsAuthenticated]
 
-@csrf_exempt
-def attendees(request):
-    if request.method == 'GET':
+    def get(self, request, format=None):
         all_attendees = serializers.serialize('python', Attendees.objects.all())
 
         attendees_response = []
@@ -111,22 +121,24 @@ def attendees(request):
 
         return HttpResponse(json.dumps(attendees_response, cls=DjangoJSONEncoder), content_type='application/json')
 
-    elif request.method == 'POST':
+    def post(self, request, format=None):
         attendee_from_body = json.loads(request.body)
         night = MovieNight.objects.get(night_date=attendee_from_body['night']['night_date'])
         user = User.objects.get(username=attendee_from_body['user'])
         accept_date = attendee_from_body['accept_date']
+
         try:
             new_attendee = Attendees(night=night, user=user, accept_date=accept_date)
             new_attendee.save()
+
         except TypeError:
             return HttpResponse(json.dumps({'error': 'out of field'}), content_type='application/json', status=400)
+
         return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
 
 
-@csrf_exempt
-def login_user(request):
-    if request.method == 'POST':
+class Login(APIView):
+    def post(self, request, format=None):
         user_data = json.loads(request.body)
         username = user_data["username"]
         password = user_data["password"]
@@ -141,20 +153,23 @@ def login_user(request):
         return HttpResponse(json.dumps({'error': 'Invalid credentials'}), content_type='application/json', status=401)
 
 
-@csrf_exempt
-def user_avatar(request, username):
-    if request.method == 'GET':
+class Avatar(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, username, format=None):
         try:
             user = User.objects.get(username=username)
 
             if not user.avatar or not hasattr(user.avatar, 'url'):
                 return HttpResponse(json.dumps({'avatar_url': ''}))
-            avatar_url = user.avatar.url
 
+            avatar_url = user.avatar.url
             return HttpResponse(json.dumps({'avatar_url': avatar_url}))
+
         except User.DoesNotExist:
             return HttpResponse(json.dumps({'error': 'User not found'}), status=404)
-    elif request.method == 'POST':
+
+    def post(self, request, username, format=None):
         user = User.objects.get(username=username)
         new_avatar = request.FILES["avatar"]
 
@@ -170,12 +185,11 @@ def user_avatar(request, username):
             default_storage.delete(old_avatar_path)
 
         return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
-    else:
-        return HttpResponse(json.dumps({'error': 'Only GET or POST methods are allowed'}), status=405)
 
-@csrf_exempt
-def user_statistics(request, username):
-    if request.method == 'GET':
+class UserStatistics(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, username, format=None):
         try:
             user = User.objects.get(username=username)
 
@@ -202,15 +216,12 @@ def user_statistics(request, username):
                 'highest_rated_movie': movies_with_avg_ratings.first().title if len(movies_with_avg_ratings) > 0 else None,
                 'lowest_rated_movie': movies_with_avg_ratings.last().title if len(movies_with_avg_ratings) > 0 else None,
             }
-
             return HttpResponse(json.dumps(statistics))
+
         except User.DoesNotExist:
             return HttpResponse(json.dumps({'error': 'User not found'}), status=404)
-    else:
-        return HttpResponse(json.dumps({'error': 'Only GET method is allowed'}), status=405)
 
 
-@csrf_exempt
 @ratelimit(key='ip', rate='3/d')
 def user_register(request):
     if request.method == 'POST':
@@ -231,17 +242,15 @@ def user_register(request):
         return HttpResponse(json.dumps({'error': 'Only POST method is allowed'}), status=405)
 
 
-@csrf_exempt
-def register_question(request):
-    if request.method == 'GET':
+class RegisterQuestions(APIView):
+    def get(self, request, format=None):
         question = RegisterQuestion.objects.get(day=datetime.datetime.today().weekday())
 
         return HttpResponse(json.dumps({"question": question.question}), content_type='application/json')
 
 
-@csrf_exempt
-def rand_movie(request):
-    if request.method == 'GET':
+class RandMovie(APIView):
+    def get(self, request, format=None):
         upcoming_nights = MovieNight.objects.filter(selected_movie__isnull=True).order_by('night_date')
         if len(upcoming_nights) == 0:
             return HttpResponse(json.dumps([], cls=DjangoJSONEncoder),  content_type='application/json')
@@ -262,34 +271,27 @@ def rand_movie(request):
         next_night.save()
 
         return HttpResponse(json.dumps(selected_movie.title, cls=DjangoJSONEncoder),  content_type='application/json')
-    else:
-        return HttpResponse(json.dumps({'error': 'Only GET method is allowed'}), status=405)
 
 
-@csrf_exempt
-def movie_date(request):
-    if request.method == 'GET':
+class MovieDate(APIView):
+    def get(self, request, format=None):
         upcoming_nights = MovieNight.objects.filter(selected_movie__isnull=True).order_by('night_date')
 
         if len(upcoming_nights) == 0:
-            return HttpResponse(json.dumps([], cls=DjangoJSONEncoder),  content_type='application/json')
+            return HttpResponse(json.dumps([], cls=DjangoJSONEncoder), content_type='application/json')
 
         next_night = upcoming_nights[0]
         # TODO: temporary solution, need to set the backend timezone to GMT+2
         next_night_date = next_night.night_date - datetime.timedelta(hours=2)
 
-        return HttpResponse(json.dumps(next_night_date, cls=DjangoJSONEncoder),  content_type='application/json')
-    else:
-        return HttpResponse(json.dumps({'error': 'Only GET method is allowed'}), status=405)
+        return HttpResponse(json.dumps(next_night_date, cls=DjangoJSONEncoder), content_type='application/json')
 
 
-@csrf_exempt
-def upcoming_nights(request):
-    if request.method == 'GET':
+class UpcomingNights(APIView):
+    def get(self, request, format=None):
         upcoming_night = MovieNight.objects.filter(selected_movie__isnull=True).order_by('night_date')
 
         if len(upcoming_night) != 0:
             return HttpResponse(json.dumps(True, cls=DjangoJSONEncoder), content_type='application/json')
+
         return HttpResponse(json.dumps(False, cls=DjangoJSONEncoder), content_type='application/json')
-    else:
-        return HttpResponse(json.dumps({'error': 'Only GET method is allowed'}), status=405)

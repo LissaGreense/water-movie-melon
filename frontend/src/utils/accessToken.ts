@@ -16,3 +16,13 @@ export const clearAccessToken = () => {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(USER_KEY);
 }
+
+export const getAuthHeadersConfig = () => {
+  return {
+    headers: {
+      "Authorization": `Token ${getAccessToken()}`,
+      "User": `${getUsername()}`,
+      "Access-Control-Allow-Origin": "*",
+    }
+  };
+}
