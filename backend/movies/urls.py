@@ -4,7 +4,7 @@ from . import views
 
 urlpatterns = [
     path("", views.MoviesObject.as_view(), name="moviesObject"),
-    path("rate/", views.Rate.as_view(), name="rate"),
+    path("rate/", views.RateAPI.as_view(), name="rate"),
     path("newNight/", views.Night.as_view(), name='newNight'),
     path("attendees/", views.AttendeesView.as_view(), name='attendees'),
     path("login/", views.Login.as_view(), name='login'),
@@ -15,4 +15,5 @@ urlpatterns = [
     path("userStatistics/<str:username>/", views.UserStatistics.as_view(), name='userStatistics'),
     path("register/", views.user_register, name='userRegister'),
     path("registerQuestion/", views.RegisterQuestions.as_view(), name='registerQuestion'),
+    path("average_ratings/", views.AverageRatings.as_view(), name='averageRatings'),
 ]

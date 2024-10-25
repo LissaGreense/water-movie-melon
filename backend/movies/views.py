@@ -40,8 +40,8 @@ class MoviesObject(APIView):
 
         return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
 
-def average_ratings(request):
-    if request.method == 'GET':
+class AverageRatings(APIView):
+    def get(self, request, format=None):
         all_movies = Movie.objects.all()
         movie_ratings = Rate.objects.all()
         average_ratings_response = []
@@ -53,24 +53,18 @@ def average_ratings(request):
                 if movie == rating.movie:
                     ratings += 1
                     ratings_sum += rating.rating
-
-            average_rating = ratings_sum / ratings
+                average_rating = ratings_sum / ratings
             rating_response = {
                 'movie': serializers.serialize('python', [movie, ])[0]['fields'],
                 'average_rating': average_rating
             }
 
             average_ratings_response.append(rating_response)
-            print(average_ratings_response)
 
         return HttpResponse(json.dumps(average_ratings_response, cls=DjangoJSONEncoder), content_type='application/json')
 
-    else:
-        return HttpResponse(json.dumps({'error': 'Only GET method is allowed'}), status=405)
 
-
-
-class Rate(APIView):
+class RateAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
