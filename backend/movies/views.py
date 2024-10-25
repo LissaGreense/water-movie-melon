@@ -43,22 +43,14 @@ class MoviesObject(APIView):
 class AverageRatings(APIView):
     def get(self, request, format=None):
         all_movies = Movie.objects.all()
-        movie_ratings = Rate.objects.all()
         average_ratings_response = []
 
         for movie in all_movies:
-            ratings = 0
-            ratings_sum = 0
-            for rating in movie_ratings:
-                if movie == rating.movie:
-                    ratings += 1
-                    ratings_sum += rating.rating
-                average_rating = ratings_sum / ratings
+            average_rating = Rate.objects.filter(movie=movie).aggregate(Avg('rating'))['rating__avg']
             rating_response = {
                 'movie': serializers.serialize('python', [movie, ])[0]['fields'],
                 'average_rating': average_rating
             }
-
             average_ratings_response.append(rating_response)
 
         return HttpResponse(json.dumps(average_ratings_response, cls=DjangoJSONEncoder), content_type='application/json')

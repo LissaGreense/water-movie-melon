@@ -1,5 +1,6 @@
 import axios from "axios";
 import {getAuthHeadersConfig} from "../../utils/accessToken.ts";
+import {MovieRate, MovieRateAverage} from "../../types/internal/movieRate.ts";
 
 const backend_url = 'http://localhost:8000';
 const rates_endpoint = '/movies/rate/'
@@ -18,7 +19,7 @@ export async function postRating(movie: string, user: string | null, rating: num
     }
 }
 
-export async function getRating() {
+export async function getRating(): Promise<MovieRate[]> {
     try {
         const response = await axios.get(backend_url + rates_endpoint)
         return response.data
@@ -28,7 +29,7 @@ export async function getRating() {
     }
 }
 
-export async function getAverageRatings() {
+export async function getAverageRatings(): Promise<MovieRateAverage[]> {
     try {
         const response = await axios.get(backend_url + average_rates_endpoint)
         return response.data

@@ -7,6 +7,7 @@ import { Sidebar } from 'primereact/sidebar';
 import cover from '../assets/coverplaceholder.jpg'
 import {VirtualScroller} from "primereact/virtualscroller";
 import {getAverageRatings} from "../connections/internal/movieRate.ts";
+import {MovieRateAverage} from "../types/internal/movieRate.ts";
 
 interface TopFilms {
     movie: Movie;
@@ -14,13 +15,12 @@ interface TopFilms {
 }
 
 export default function TopMovies() {
-    const [ratings, setRatings] = useState();
+    const [ratings, setRatings] = useState<MovieRateAverage[]>();
     const [visible, setVisible] = useState<boolean>(false);
 
     useEffect(() => {
         getAverageRatings()
             .then((ratingData) => {
-                console.log(ratingData);
                 setRatings(ratingData);
             })
             .catch((error) => {
