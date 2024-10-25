@@ -11,6 +11,9 @@ const TOO_MANY_ATTEMPTS_ERROR_MSG = "Wykorzystałeś swoje trzy próby logowania
 const USER_ALREADY_EXISTS_ERROR_MSG = "Użytkownik o takiej nazwie już istnieje!";
 const WRONG_ANSWER_ERROR_MSG = "Nie znasz odpowiedzi na dzisiejsze arbuzowe pytanie? ;)";
 const REGISTRATION_FAILED_ERROR_MSG = "Nie udało się zarejestrować! skontaktuj się z administracją.";
+const WEAK_PASSWORD_MSG = "Imperator Cię zhackuje w ciągu tygodnia z takim hasłem";
+const MEDIUM_PASSWORD_MSG = "Imperator Cię zhackuje w ciągu roku z takim hasłem";
+const STRONG_PASSWORD_MSG = "Imperator Cię nie zhackuje, gratuluję!";
 export const RegisterPage = () => {
     const navigate = useNavigate();
     const [password, setPassword] = useState<string>('');
@@ -26,7 +29,7 @@ export const RegisterPage = () => {
     }, [])
 
     function handleRegister() {
-        function handleErrorResponse(r) {
+        function handleErrorResponse(r: any) {
             const errorStatus = r["response"]["status"];
 
             if (errorStatus === 403) {
@@ -77,9 +80,9 @@ export const RegisterPage = () => {
                 <div>
                     <p>Hasło:</p>
                     <Password name={"password"} type="password" placeholder="Password"
-                              weakLabel="Julian Cię zhackuje w ciągu tygodnia z takim hasłem"
-                              mediumLabel="Julian Cię zhackuje w ciągu roku z takim hasłem"
-                              strongLabel="Julian Cię nie zhackuje, gratuluję!"
+                              weakLabel={WEAK_PASSWORD_MSG}
+                              mediumLabel={MEDIUM_PASSWORD_MSG}
+                              strongLabel={STRONG_PASSWORD_MSG}
                               value={password} onChange={(e) => setPassword(e.target.value)}
                     />
                 </div>

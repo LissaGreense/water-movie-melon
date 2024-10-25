@@ -27,8 +27,29 @@ SECRET_KEY = 'django-insecure-+s79vni27$!xhv0_f7=(d2mq1v2k!*g(ev-v7$(d!%mq45w379
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://localhost:4173",
+    "https://localhost:5173",
+    "https://localhost:4173",
+]
 
+CORS_ALLOW_HEADERS = [
+    'content-type',
+    'authorization',
+    'x-requested-with',
+    'x-custom-header',
+    'access-control-allow-origin',
+    'access-control-allow-headers',
+    'accept',
+    'origin',
+    'user-agent',
+    'accept-encoding',
+    'access-control-request-method',
+    'access-control-request-headers',
+    'user'
+]
 
 # Application definition
 
@@ -48,7 +69,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     # CORS
     "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware",
     # DEFAULT
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -131,12 +151,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Allowed urls to GET
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
-    'http://localhost:4173',
-]
 
 AUTH_USER_MODEL = 'movies.User'
 

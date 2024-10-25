@@ -3,16 +3,16 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("", views.index, name="index"),
-    path("rate", views.rate, name="rate"),
-    path("newNight", views.new_night, name='newNight'),
-    path("attendees", views.attendees, name='attendees'),
-    path("login", views.login_user, name='login'),
-    path("userAvatar/<str:username>", views.user_avatar, name='userAvatar'),
-    path("selectedMovie", views.rand_movie, name='selectedMovie'),
-    path("movieDate", views.movie_date, name='movieDate'),
-    path("upcomingNights", views.upcoming_nights, name='upcomingNights'),
-    path("userStatistics/<str:username>", views.user_statistics, name='userStatistics'),
-    path("register", views.user_register, name='userRegister'),
-    path("registerQuestion", views.register_question, name='registerQuestion'),
+    path("", views.MoviesObject.as_view(), name="moviesObject"),
+    path("rate/", views.Rate.as_view(), name="rate"),
+    path("newNight/", views.Night.as_view(), name='newNight'),
+    path("attendees/", views.AttendeesView.as_view(), name='attendees'),
+    path("login/", views.Login.as_view(), name='login'),
+    path("userAvatar/<str:username>/", views.Avatar.as_view(), name='userAvatar'),
+    path("selectedMovie/", views.RandMovie.as_view(), name='selectedMovie'),
+    path("movieDate/", views.MovieDate.as_view(), name='movieDate'),
+    path("upcomingNights/", views.UpcomingNights.as_view(), name='upcomingNights'),
+    path("userStatistics/<str:username>/", views.UserStatistics.as_view(), name='userStatistics'),
+    path("register/", views.user_register, name='userRegister'),
+    path("registerQuestion/", views.RegisterQuestions.as_view(), name='registerQuestion'),
 ]
