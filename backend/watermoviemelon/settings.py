@@ -33,7 +33,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:4173",
     "https://localhost:5173",
     "https://localhost:4173",
-    "https://your-production-domain.com",
 ]
 
 CORS_ALLOW_HEADERS = [
