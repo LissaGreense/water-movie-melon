@@ -6,12 +6,11 @@ import {Button} from "primereact/button";
 import { Sidebar } from 'primereact/sidebar';
 import cover from '../assets/coverplaceholder.jpg'
 import {VirtualScroller} from "primereact/virtualscroller";
-import {getRating} from "../connections/internal/movieRate.ts";
+import {getAverageRatings} from "../connections/internal/movieRate.ts";
 
 interface TopFilms {
     movie: Movie;
-    user: string;
-    rating: number;
+    average_rating: number;
 }
 
 export default function TopMovies() {
@@ -19,8 +18,9 @@ export default function TopMovies() {
     const [visible, setVisible] = useState<boolean>(false);
 
     useEffect(() => {
-        getRating()
+        getAverageRatings()
             .then((ratingData) => {
+                console.log(ratingData);
                 setRatings(ratingData);
             })
             .catch((error) => {
@@ -42,7 +42,7 @@ export default function TopMovies() {
                             <div className="textSans">{data.movie.title}</div>
                         </div>
                         <div className="flex flex-column gap-2">
-                            <Rating value={data.rating} readOnly cancel={false} stars={7}></Rating>
+                            <Rating value={data.average_rating} readOnly cancel={false} stars={7}></Rating>
                             <span className="flex align-items-center gap-2">
                                     <i className="pi pi-tag product-category-icon"></i>
                                     <span className="textSansNoBorder">{data.movie.genre}</span>

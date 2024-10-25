@@ -15,4 +15,5 @@ urlpatterns = [
     path("userStatistics/<str:username>", views.user_statistics, name='userStatistics'),
     path("register", views.user_register, name='userRegister'),
     path("registerQuestion", views.register_question, name='registerQuestion'),
+    path("average_ratings", views.average_ratings, name='averageRatings'),
 ]
