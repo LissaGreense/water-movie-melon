@@ -15,6 +15,7 @@ from django.http import HttpResponse
 from django.core import serializers
 from django.db.models import Avg
 from django.db import IntegrityError
+from dateutil import parser
 import json
 
 from .models import Movie, Rate, MovieNight, Attendees, User, RegisterQuestion
@@ -39,19 +40,62 @@ class MoviesObject(APIView):
 
         return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
 
+def average_ratings(request):
+    if request.method == 'GET':
+        all_movies = Movie.objects.all()
+        movie_ratings = Rate.objects.all()
+        average_ratings_response = []
+
+        for movie in all_movies:
+            ratings = 0
+            ratings_sum = 0
+            for rating in movie_ratings:
+                if movie == rating.movie:
+                    ratings += 1
+                    ratings_sum += rating.rating
+
+            average_rating = ratings_sum / ratings
+            rating_response = {
+                'movie': serializers.serialize('python', [movie, ])[0]['fields'],
+                'average_rating': average_rating
+            }
+
+            average_ratings_response.append(rating_response)
+            print(average_ratings_response)
+
+        return HttpResponse(json.dumps(average_ratings_response, cls=DjangoJSONEncoder), content_type='application/json')
+
+    else:
+        return HttpResponse(json.dumps({'error': 'Only GET method is allowed'}), status=405)
+
+
 
 class Rate(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
         all_ratings = serializers.serialize('python', Rate.objects.all())
-        rating_field = [d['fields'] for d in all_ratings]
+        ratings_response = []
 
-        return HttpResponse(json.dumps(rating_field, cls=DjangoJSONEncoder), content_type='application/json')
+        for rating in all_ratings:
+            rating_fields = rating['fields']
+            movie = Movie.objects.get(pk=rating_fields['movie'])
+            user_object = User.objects.get(pk=rating_fields['user'])
+            user = user_object.username
+            rating = rating_fields['rating']
+
+            rating_response = {
+                "movie": serializers.serialize('python', [movie, ])[0]['fields'],
+                "user": user,
+                "rating": rating,
+            }
+            ratings_response.append(rating_response)
+
+        return HttpResponse(json.dumps(ratings_response, cls=DjangoJSONEncoder), content_type='application/json')
 
     def post(self, request, format=None):
         rate_from_body = json.loads(request.body)
-        movie = Movie.objects.get(title=rate_from_body['movie']['title'])
+        movie = Movie.objects.get(title=rate_from_body['movieTitle'])
         user = User.objects.get(username=rate_from_body['user'])
         rating = rate_from_body['rating']
 
@@ -72,8 +116,16 @@ class Night(APIView):
         date = request.GET.get('date', None)
 
         if date:
-            parsed_date = datetime.datetime.strptime(date, "%m/%d/%Y")
-            all_nights = serializers.serialize('python', MovieNight.objects.filter(night_date__date=parsed_date))
+            parsed_date = parser.parse(date, dayfirst=True)
+            movie_night = MovieNight.objects.get(night_date__date=parsed_date)
+
+            nights_response = {
+                "host": movie_night.host,
+                "night_date": date,
+                "location": movie_night.location,
+                "selected_movie": movie_night.selected_movie.title,
+            }
+            return HttpResponse(json.dumps(nights_response, cls=DjangoJSONEncoder), content_type='application/json')
         else:
             all_nights = serializers.serialize('python', MovieNight.objects.all())
 
@@ -256,9 +308,7 @@ class RandMovie(APIView):
             return HttpResponse(json.dumps([], cls=DjangoJSONEncoder),  content_type='application/json')
 
         next_night = upcoming_nights[0]
-
-        # TODO: temporary solution, need to set the backend timezone to GMT+2
-        if timezone.now() < next_night.night_date - datetime.timedelta(hours=2) - datetime.timedelta(seconds=10):
+        if timezone.now() < next_night.night_date - datetime.timedelta(seconds=10):
             return HttpResponse(json.dumps({'error': 'Too soon, try again later'}), status=425)
 
         movies_not_watched = Movie.objects.filter(watched_movie=None)
@@ -281,8 +331,7 @@ class MovieDate(APIView):
             return HttpResponse(json.dumps([], cls=DjangoJSONEncoder), content_type='application/json')
 
         next_night = upcoming_nights[0]
-        # TODO: temporary solution, need to set the backend timezone to GMT+2
-        next_night_date = next_night.night_date - datetime.timedelta(hours=2)
+        next_night_date = next_night.night_date
 
         return HttpResponse(json.dumps(next_night_date, cls=DjangoJSONEncoder), content_type='application/json')
 

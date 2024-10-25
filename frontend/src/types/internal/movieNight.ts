@@ -4,7 +4,7 @@ export interface MovieNight {
     host: string;
     night_date: string;
     location: string;
-    selected_movie: Movie;
+    selected_movie: Movie | string;
 }
 
 export interface Attendees {
