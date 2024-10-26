@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, {AxiosRequestConfig} from "axios";
 import {Attendees, MovieNight,} from "../../types/internal/movieNight.ts";
 import dayjs from "dayjs";
 import {getAuthHeadersConfig} from "../../utils/accessToken.ts";
@@ -22,8 +22,12 @@ export async function getMovieNights(): Promise<MovieNight[]> {
 }
 
 export async function getMovieNight(nightDate: Date | null): Promise<MovieNight[]> {
-    const config: any = getAuthHeadersConfig();
-    config['params']['date'] = nightDate?.toLocaleDateString();
+    const config: AxiosRequestConfig = getAuthHeadersConfig();
+    if (nightDate !== null) {
+        config['params'] = {
+            'date': nightDate.toLocaleDateString()
+        }
+    }
     try {
         const response = await axios.get<MovieNight[]>(backend_url + movie_nights_endpoint, config);
         return response.data as MovieNight[]
