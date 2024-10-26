@@ -23,7 +23,11 @@ export async function getMovieNights(): Promise<MovieNight[]> {
 
 export async function getMovieNight(nightDate: Date | null): Promise<MovieNight[]> {
     const config: AxiosRequestConfig = getAuthHeadersConfig();
-    config['params']['date'] = nightDate?.toLocaleDateString();
+    if (nightDate !== null) {
+        config['params'] = {
+            'date': nightDate.toLocaleDateString()
+        }
+    }
     try {
         const response = await axios.get<MovieNight[]>(backend_url + movie_nights_endpoint, config);
         return response.data as MovieNight[]

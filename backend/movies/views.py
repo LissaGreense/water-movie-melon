@@ -105,13 +105,15 @@ class Night(APIView):
             parsed_date = parser.parse(date, dayfirst=True)
             movie_night = MovieNight.objects.get(night_date__date=parsed_date)
 
+            print(movie_night)
+
             nights_response = {
                 "host": movie_night.host,
                 "night_date": date,
                 "location": movie_night.location,
-                "selected_movie": movie_night.selected_movie.title,
+                "selected_movie": serializers.serialize('python', [movie_night.selected_movie, ])[0]['fields'],
             }
-            return HttpResponse(json.dumps(nights_response, cls=DjangoJSONEncoder), content_type='application/json')
+            return HttpResponse(json.dumps([nights_response], cls=DjangoJSONEncoder), content_type='application/json')
         else:
             all_nights = serializers.serialize('python', MovieNight.objects.all())
 

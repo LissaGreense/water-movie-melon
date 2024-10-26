@@ -34,7 +34,6 @@ export const MovieNightAttend: FC<MovieDateProps> = ({movieDate, isVisible, setV
             if (r === null) {
                 console.log("ni mom wieczorów")
             } else {
-                console.log(r)
                 setNightLocation(r[0].location);
             }
         })

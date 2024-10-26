@@ -18,7 +18,7 @@ export const MovieRate: FC<MovieDateProps> = ({movieDate, isVisible, setVisible}
 
     useEffect(() => {
         getMovieNight(movieDate).then((night) => {
-            setMovieTitle(night[0].selected_movie as string)
+            setMovieTitle(night[0].selected_movie.title)
         })
     }, [movieDate]);
 
