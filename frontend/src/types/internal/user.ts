@@ -10,3 +10,8 @@ export interface Statistics {
     highest_rated_movie: string | null;
     lowest_rated_movie: string | null;
 }
+
+export interface PasswordUpdate {
+    old_password: string;
+    new_password: string;
+}

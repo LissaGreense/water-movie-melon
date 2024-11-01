@@ -1,10 +1,11 @@
-import {Avatar, Statistics} from "../../types/internal/user.ts";
+import {Avatar, PasswordUpdate, Statistics} from "../../types/internal/user.ts";
 import axios from "axios";
 import {getAuthHeadersConfig} from "../../utils/accessToken.ts";
 
 const backend_url = 'http://localhost:8000';
 const avatar_endpoint = '/movies/userAvatar/';
 const statistics_endpoint = '/movies/userStatistics/';
+const password_change_endpoint = '/movies/userPassword/';
 
 
 export async function getAvatar(username: string): Promise<Avatar> {
@@ -34,5 +35,19 @@ export async function uploadAvatar(username: string | null, image: Blob | unknow
         return response.data;
     } catch (error) {
         return {"error": error};
+    }
+}
+
+export async function postNewPassword(username: string | null, oldPassword: string, newPassword: string) {
+    try {
+        const data: PasswordUpdate = {
+            old_password: oldPassword,
+            new_password: newPassword
+        }
+        const response = await axios.post<PasswordUpdate>(backend_url + password_change_endpoint + username + '/', data, getAuthHeadersConfig());
+
+        return response.data;
+    } catch (error) {
+        throw error;
     }
 }
