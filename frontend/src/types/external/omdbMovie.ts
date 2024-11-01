@@ -30,3 +30,7 @@ export interface OmdbRating {
   Source: string
   Value: string
 }
+
+export interface OmdbSearchResponse {
+  Search: OmdbMovie[]
+}

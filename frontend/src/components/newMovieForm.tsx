@@ -5,19 +5,58 @@ import {postMovie} from "../connections/internal/movie.ts";
 import dayjs from 'dayjs'
 import {InputNumber} from "primereact/inputnumber";
 import {getUsername} from "../utils/accessToken.ts";
+import {getMoviePosterUrl} from "../connections/external/omdb.ts";
+import {useState} from "react";
 
 export const NewMovieForm = () => {
+  const [movieTitle, setMovieTitle] = useState<string>("");
+  const [posterUrls, setPosterUrls] = useState<string[]>([]);
+  const [link, setLink] = useState<string>("");
+
+  const handleMoviePoster = () => {
+    const moviePosterUrls: string[] = [];
+    getMoviePosterUrl(movieTitle).then((poster) => {
+      if (poster) {
+        const posterData = poster['Search']
+        if (posterData.length > 4) {
+          for (let i = 0; i < 5; i++) {
+            moviePosterUrls.push(posterData[i]["Poster"]);
+          }
+        } else {
+          for (const poster of posterData) {
+            moviePosterUrls.push(poster["Poster"]);
+          }
+        }
+        setPosterUrls(moviePosterUrls);
+      }})
+
+  }
+
+  const ShowPosters = () => {
+    if (posterUrls.length !== 0) {
+      return (
+          posterUrls.map(url =>
+              <>
+                <img className="melonStyleContainerPeel p-inputgroup flex-1" src={url}></img>
+                <Button className="melonStyleContainerPeel" onClick={() => setLink(url)} type={"button"}>Wybierz okładkę</Button>
+              </>
+          )
+      )
+    }
+
+  }
+
   return (
       <Accordion className={"addMovies"} activeIndex={1}>
         <AccordionTab className="melonStyleContainerPeel textSansNoBorder" header={'Dodaj Film'}>
-          <form onSubmit={(e: any) => {
+          <form onSubmit={(e) => {
             e.preventDefault();
             postMovie(e.target.title.value, e.target.link.value, getUsername(), dayjs().format('YYYY-MM-DD HH:mm'), e.target.genre.value, e.target.cover_link.value, e.target.duration.value);
-          }}>
+          }} id="new_movie_form" name="new_movie_form">
 
             <div className="melonStyleContainerPeel p-inputgroup flex-1">
               <span className="melonStyleContainerPeel p-inputgroup-addon">Tytuł</span>
-              <InputText className="melonStyleContainerPeel" placeholder="eg. Superzioło" name={'title'}/>
+              <InputText className="melonStyleContainerPeel" placeholder="eg. Superzioło" name={'title'} onChange={(e) => setMovieTitle(e.target.value)} />
             </div>
             <div className="melonStyleContainerPeel p-inputgroup flex-1">
               <span className="melonStyleContainerPeel p-inputgroup-addon">Gatunek</span>
@@ -33,13 +72,16 @@ export const NewMovieForm = () => {
             </div>
             <div className="melonStyleContainerPeel p-inputgroup flex-1">
               <span className="melonStyleContainerPeel p-inputgroup-addon">Link do okładki</span>
-              <InputText className="melonStyleContainerPeel" placeholder="eg. google.com/..." name={'cover_link'}/>
+              <InputText className="melonStyleContainerPeel" placeholder="eg. google.com/..." name={'cover_link'} value={link} disabled/>
             </div>
+            <div>
+              {ShowPosters()}
+            </div>
+            <Button className="melonStyleContainerPeel" label="Wczytaj okładkę" icon="pi pi-check" onClick={handleMoviePoster} type={"button"}></Button>
             <Button className="melonStyleContainerPeel" label="Dodaj Film" icon="pi pi-check" type={"submit"}/>
           </form>
         </AccordionTab>
       </Accordion>
   )
-
 }
 
