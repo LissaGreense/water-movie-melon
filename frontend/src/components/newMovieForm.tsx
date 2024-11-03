@@ -10,8 +10,11 @@ import {useState} from "react";
 
 export const NewMovieForm = () => {
   const [movieTitle, setMovieTitle] = useState<string>("");
+  const [movieLink, setMovieLink] = useState<string>("")
+  const [movieGenre, setMovieGenre] = useState<string>("")
+  const [movieCoverLink, setMovieCoverLink] = useState<string>("")
+  const [movieDuration, setMovieDuration] = useState<number>(0)
   const [posterUrls, setPosterUrls] = useState<string[]>([]);
-  const [link, setLink] = useState<string>("");
 
   const handleMoviePoster = () => {
     const moviePosterUrls: string[] = [];
@@ -38,7 +41,7 @@ export const NewMovieForm = () => {
           posterUrls.map(url =>
               <>
                 <img className="melonStyleContainerPeel p-inputgroup flex-1" src={url}></img>
-                <Button className="melonStyleContainerPeel" onClick={() => setLink(url)} type={"button"}>Wybierz okładkę</Button>
+                <Button className="melonStyleContainerPeel" onClick={() => setMovieCoverLink(url)} type={"button"}>Wybierz okładkę</Button>
               </>
           )
       )
@@ -51,7 +54,7 @@ export const NewMovieForm = () => {
         <AccordionTab className="melonStyleContainerPeel textSansNoBorder" header={'Dodaj Film'}>
           <form onSubmit={(e) => {
             e.preventDefault();
-            postMovie(e.target.title.value, e.target.link.value, getUsername(), dayjs().format('YYYY-MM-DD HH:mm'), e.target.genre.value, e.target.cover_link.value, e.target.duration.value);
+            postMovie(movieTitle, movieLink, getUsername(), dayjs().format('YYYY-MM-DD HH:mm'), movieGenre, movieCoverLink, movieDuration);
           }} id="new_movie_form" name="new_movie_form">
 
             <div className="melonStyleContainerPeel p-inputgroup flex-1">
@@ -60,19 +63,19 @@ export const NewMovieForm = () => {
             </div>
             <div className="melonStyleContainerPeel p-inputgroup flex-1">
               <span className="melonStyleContainerPeel p-inputgroup-addon">Gatunek</span>
-              <InputText className="melonStyleContainerPeel" placeholder="eg. komedia" name={'genre'}/>
+              <InputText className="melonStyleContainerPeel" placeholder="eg. komedia" name={'genre'} onChange={(e) => setMovieGenre(e.target.value)}/>
             </div>
             <div className="melonStyleContainerPeel p-inputgroup flex-1">
               <span className="melonStyleContainerPeel p-inputgroup-addon">Czas trwania</span>
-              <InputNumber className="melonStyleContainerPeel" placeholder="w minutach" name={'duration'}/>
+              <InputNumber className="melonStyleContainerPeel" placeholder="w minutach" name={'duration'} onChange={(e) => setMovieDuration(e.value as number)}/>
             </div>
             <div className="melonStyleContainerPeel p-inputgroup flex-1">
               <span className="melonStyleContainerPeel p-inputgroup-addon">Link do filmu</span>
-              <InputText className="melonStyleContainerPeel" placeholder="eg. cda.pl/..." name={'link'}/>
+              <InputText className="melonStyleContainerPeel" placeholder="eg. cda.pl/..." name={'link'} onChange={(e) => setMovieLink(e.target.value)}/>
             </div>
             <div className="melonStyleContainerPeel p-inputgroup flex-1">
               <span className="melonStyleContainerPeel p-inputgroup-addon">Link do okładki</span>
-              <InputText className="melonStyleContainerPeel" placeholder="eg. google.com/..." name={'cover_link'} value={link} disabled/>
+              <InputText className="melonStyleContainerPeel" placeholder="eg. google.com/..." name={'cover_link'} value={movieCoverLink} disabled/>
             </div>
             <div>
               {ShowPosters()}
