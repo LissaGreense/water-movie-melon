@@ -141,7 +141,7 @@ class AttendeesView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        all_attendees = serializers.serKONTOialize('python', Attendees.objects.all())
+        all_attendees = serializers.serialize('python', Attendees.objects.all())
 
         attendees_response = []
 
