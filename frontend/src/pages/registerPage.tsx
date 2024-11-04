@@ -1,6 +1,6 @@
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "primereact/button";
 import {
   getRegisterQuestion,
@@ -9,6 +9,7 @@ import {
 import { Question } from "../types/internal/authentication.ts";
 import { LOGIN } from "../constants/paths.ts";
 import { useNavigate } from "react-router-dom";
+import { AxiosResponse } from "axios";
 
 const TOO_MANY_ATTEMPTS_ERROR_MSG =
   "Wykorzystałeś swoje trzy próby logowania. Spróbuj ponownie jutro! Może jutrzejsze arbuzowe pytanie będzie łatwiejsze ;)";
@@ -31,19 +32,23 @@ export const RegisterPage = () => {
   const [currenQuestion, setCurrenQuestion] = useState<string>("");
 
   useEffect(() => {
-    getRegisterQuestion().then((r: Question) => {
-      setCurrenQuestion(r.question);
-    });
+    getRegisterQuestion()
+      .then((r: Question) => {
+        setCurrenQuestion(r.question);
+      })
+      .catch((error) => {
+        console.error(error.toString());
+      });
   }, []);
 
   function handleRegister() {
-    function handleErrorResponse(r: any) {
-      const errorStatus = r["response"]["status"];
+    function handleErrorResponse(r: AxiosResponse) {
+      const errorStatus = r.data["response"]["status"];
 
       if (errorStatus === 403) {
         alert(TOO_MANY_ATTEMPTS_ERROR_MSG);
       } else if (errorStatus === 400) {
-        const errorMsg = r["response"]["data"]["error"];
+        const errorMsg = r.data["response"]["data"]["error"];
 
         if (errorMsg === "USER ALREADY EXISTS") {
           alert(USER_ALREADY_EXISTS_ERROR_MSG);
@@ -55,17 +60,19 @@ export const RegisterPage = () => {
       }
     }
 
-    register(username, password, answer).then((r) => {
-      if (r && "result" in r && r["result"] === "OK") {
-        alert("Zostałeś filmowym arbuzem! Yey!");
-        navigate(LOGIN);
-      } else {
-        handleErrorResponse(r);
-      }
-    });
+    register(username, password, answer)
+      .then((r) => {
+        if (r && "result" in r && r["result"] === "OK") {
+          alert("Zostałeś filmowym arbuzem! Yey!");
+          navigate(LOGIN);
+        }
+      })
+      .catch((error) => {
+        handleErrorResponse(error);
+      });
   }
 
-  const handleSubmitEvent = (event: any) => {
+  const handleSubmitEvent = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (username == "") {
       alert("Username should be filled!");

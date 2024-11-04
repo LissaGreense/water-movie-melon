@@ -1,5 +1,5 @@
 import { Menu } from "primereact/menu";
-import { MenuItem } from "primereact/menuitem";
+import { MenuItem, MenuItemCommandEvent } from "primereact/menuitem";
 import { Avatar } from "primereact/avatar";
 import {
   clearAccessToken,
@@ -15,14 +15,24 @@ import {
   MOVIES,
   NEW_MOVIE,
 } from "../constants/paths.ts";
+import React from "react";
 
 export default function MovieMenu() {
   const navigate = useNavigate();
-  const itemRenderer = (item: any) => (
+  const itemRenderer = (item: MenuItem) => (
     <div className="p-menuitem-content">
       <a
         className="flex align-items-center p-menuitem-link"
-        onClick={item.command}
+        onClick={(e: React.MouseEvent) => {
+          e.preventDefault();
+
+          if (item.command) {
+            item.command({
+              originalEvent: e,
+              item,
+            } as MenuItemCommandEvent);
+          }
+        }}
       >
         <span className={item.icon} />
         <span className="textSans">{item.label}</span>

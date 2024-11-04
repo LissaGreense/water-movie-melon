@@ -9,7 +9,7 @@ import {
   getStatistics,
   uploadAvatar,
 } from "../connections/internal/user.ts";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FileUpload } from "primereact/fileupload";
 import Cropper, { Area } from "react-easy-crop";
 import { Dialog } from "primereact/dialog";
@@ -28,7 +28,7 @@ export const AccountPage = () => {
   const [crop, setCrop] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [userStatistics, setUserStatistics] = useState<Statistics | null>(null);
   const [zoom, setZoom] = useState<number>(1);
-  const handleLogoutEvent = (e: any) => {
+  const handleLogoutEvent = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     clearAccessToken();
     navigate(LOGIN);

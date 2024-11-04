@@ -5,6 +5,7 @@ import { postMovie } from "../connections/internal/movie.ts";
 import dayjs from "dayjs";
 import { InputNumber } from "primereact/inputnumber";
 import { getUsername } from "../utils/accessToken.ts";
+import React from "react";
 
 export const NewMovieForm = () => {
   return (
@@ -14,16 +15,17 @@ export const NewMovieForm = () => {
         header={"Dodaj Film"}
       >
         <form
-          onSubmit={(e: any) => {
+          onSubmit={(e: React.FormEvent) => {
             e.preventDefault();
+            const target = e.currentTarget as HTMLFormElement;
             postMovie(
-              e.target.title.value,
-              e.target.link.value,
+              target.movieTitle.value,
+              target.link.value,
               getUsername(),
               dayjs().format("YYYY-MM-DD HH:mm"),
-              e.target.genre.value,
-              e.target.cover_link.value,
-              e.target.duration.value,
+              target.genre.value,
+              target.cover_link.value,
+              target.duration.value,
             );
           }}
         >
@@ -34,7 +36,7 @@ export const NewMovieForm = () => {
             <InputText
               className="melonStyleContainerPeel"
               placeholder="eg. Superzioło"
-              name={"title"}
+              name="movieTitle"
             />
           </div>
           <div className="melonStyleContainerPeel p-inputgroup flex-1">
@@ -44,7 +46,7 @@ export const NewMovieForm = () => {
             <InputText
               className="melonStyleContainerPeel"
               placeholder="eg. komedia"
-              name={"genre"}
+              name="genre"
             />
           </div>
           <div className="melonStyleContainerPeel p-inputgroup flex-1">
@@ -54,7 +56,7 @@ export const NewMovieForm = () => {
             <InputNumber
               className="melonStyleContainerPeel"
               placeholder="w minutach"
-              name={"duration"}
+              name="duration"
             />
           </div>
           <div className="melonStyleContainerPeel p-inputgroup flex-1">
@@ -64,7 +66,7 @@ export const NewMovieForm = () => {
             <InputText
               className="melonStyleContainerPeel"
               placeholder="eg. cda.pl/..."
-              name={"link"}
+              name="link"
             />
           </div>
           <div className="melonStyleContainerPeel p-inputgroup flex-1">
@@ -74,14 +76,14 @@ export const NewMovieForm = () => {
             <InputText
               className="melonStyleContainerPeel"
               placeholder="eg. google.com/..."
-              name={"cover_link"}
+              name="cover_link"
             />
           </div>
           <Button
             className="melonStyleContainerPeel"
             label="Dodaj Film"
             icon="pi pi-check"
-            type={"submit"}
+            type="submit"
           />
         </form>
       </AccordionTab>

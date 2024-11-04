@@ -27,12 +27,12 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({
     } catch (error) {
       console.error(error);
     }
-  }, [null]);
+  }, []);
 
   useEffect(() => {
     setNextNightTime(nextNightDate.getTime());
     setCountDown(nextNightDate.getTime() - new Date().getTime());
-  }, []);
+  }, [nextNightDate]);
 
   useEffect(() => {
     try {

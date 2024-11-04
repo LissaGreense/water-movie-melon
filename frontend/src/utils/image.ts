@@ -1,5 +1,9 @@
 import { Area } from "react-easy-crop";
 
+interface NamedBlob extends Blob {
+  name: string;
+}
+
 const createImage = (
   url: string | ArrayBuffer | null | undefined,
 ): Promise<HTMLImageElement> =>
@@ -42,16 +46,17 @@ const getCroppedImg = async (
     crop.width,
     crop.height,
   );
-  return new Promise((resolve) => {
+  return new Promise<Blob | null>((resolve) => {
     canvas.toBlob((blob) => {
       if (blob) {
-        (blob as any).name = "cropped.jpg";
-        resolve(blob);
+        const namedBlob = blob as NamedBlob;
+        namedBlob.name = "cropped.jpg";
+        resolve(namedBlob);
       } else {
         resolve(null);
       }
     }, "image/jpeg");
-  }) as Promise<Blob> | Promise<null>;
+  });
 };
 
 export default getCroppedImg;

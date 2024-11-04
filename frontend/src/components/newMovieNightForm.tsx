@@ -23,13 +23,14 @@ export const NewMovieNightForm: FC<MovieDateProps> = ({
   return (
     <Dialog visible={isVisible} onHide={() => setVisible(false)}>
       <form
-        onSubmit={(e: any) => {
+        onSubmit={(e) => {
           e.preventDefault();
+          const target = e.currentTarget;
           postMovieNight(
             getUsername() as string,
             dayjs(movieDate).format("YYYY-MM-DD ") +
               dayjs(nightTime).format("HH:mm"),
-            e.target.location.value,
+            target.location.value,
           );
         }}
       >

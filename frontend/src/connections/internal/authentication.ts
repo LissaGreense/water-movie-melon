@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Question, Token } from "../../types/internal/authentication.ts";
+import { ResultResponse } from "../../types/internal/common.ts";
 
 const backend_url = "http://localhost:8000";
 const login_endpoint = "/movies/login/";
@@ -30,31 +31,21 @@ export async function register(
   username: string,
   password: string,
   answer: string,
-) {
+): Promise<ResultResponse> {
   const data = {
     username: username,
     password: password,
     answer: answer,
   };
+  const response = await axios.post(backend_url + register_endpoint, data);
 
-  try {
-    const response = await axios.post(backend_url + register_endpoint, data);
-
-    return response.data;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
+  return response.data;
 }
 
 export async function getRegisterQuestion(): Promise<Question> {
-  try {
-    const response = await axios.get<Question>(
-      backend_url + register_question_endpoint,
-    );
+  const response = await axios.get<Question>(
+    backend_url + register_question_endpoint,
+  );
 
-    return response.data as Question;
-  } catch (error: any) {
-    return error.data;
-  }
+  return response.data as Question;
 }

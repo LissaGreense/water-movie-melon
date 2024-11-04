@@ -1,10 +1,11 @@
-import { Calendar } from "primereact/calendar";
+import { Calendar, CalendarDateTemplateEvent } from "primereact/calendar";
 import { useEffect, useState } from "react";
 import { NewMovieNightForm } from "./newMovieNightForm.tsx";
 import { getMovieNights } from "../connections/internal/movieNight.ts";
 import dayjs from "dayjs";
 import { MovieNightAttend } from "./movieNightAttend.tsx";
 import { MovieRate } from "./movieRate.tsx";
+import { FormEvent } from "primereact/ts-helpers";
 
 export const MovieCalendar = () => {
   const dateFormat = "YYYY-MM-DD";
@@ -24,7 +25,7 @@ export const MovieCalendar = () => {
       });
   }, []);
 
-  const dateTemplate = (calendarDate: any) => {
+  const dateTemplate = (calendarDate: CalendarDateTemplateEvent) => {
     const formattedDate = dayjs(
       new Date(calendarDate.year, calendarDate.month, calendarDate.day),
     ).format(dateFormat);
@@ -39,7 +40,7 @@ export const MovieCalendar = () => {
     }
   };
 
-  const handleJoinOrAdd = (e: any) => {
+  const handleJoinOrAdd = (e: FormEvent) => {
     setDate(e.value);
     if (
       nightDates.includes(dayjs(e.value).format(dateFormat).split("T")[0]) &&

@@ -1,7 +1,7 @@
 import { InputText } from "primereact/inputtext";
 import "./loginPage.css";
 import { Button } from "primereact/button";
-import { useState } from "react";
+import React, { ChangeEvent, MouseEventHandler, useState } from "react";
 import { login } from "../connections/internal/authentication.ts";
 import { useNavigate } from "react-router-dom";
 import {
@@ -18,7 +18,7 @@ export const LoginPage = () => {
     password: "",
   });
 
-  const handleSubmitEvent = (e: any) => {
+  const handleSubmitEvent: MouseEventHandler<HTMLElement> = (e) => {
     e.preventDefault();
     if (input.username !== "" && input.password !== "") {
       login(input.username, input.password).then((r) => {
@@ -33,13 +33,13 @@ export const LoginPage = () => {
       alert("Username and password should be filled!");
     }
   };
-  const handleLogoutEvent = (e: any) => {
+  const handleLogoutEvent = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     clearAccessToken();
     navigate(LOGIN);
   };
-  const handleInput = (e: any) => {
-    const { name, value } = e.target;
+  const handleInput = (e: ChangeEvent) => {
+    const { name, value } = e.currentTarget as HTMLInputElement;
     setInput((prev) => ({
       ...prev,
       [name]: value,
