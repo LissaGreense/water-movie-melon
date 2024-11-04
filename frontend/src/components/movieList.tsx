@@ -26,7 +26,11 @@ export const MovieList = () => {
         <Accordion className="align-content-start" activeIndex={1}>
               <AccordionTab className="melonStyleContainerFruit" header={data.title} key={data.title}>
                   <div className="floatLeft movieCoverDiv">
-                    <img src={cover}/>
+                    <img src={data.cover_link} alt="Okładka filmu" onError={event => {
+                        const target = event.target as HTMLImageElement;
+                        target.src = cover
+                        target.onerror = null
+                    }}/>
                   </div>
                   <div className="align-content-start movieData">
                     <p><a href={data.link}>link</a></p>

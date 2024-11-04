@@ -4,7 +4,6 @@ import { Rating } from 'primereact/rating';
 import {Movie} from "../types/internal/movie.ts";
 import {Button} from "primereact/button";
 import { Sidebar } from 'primereact/sidebar';
-import cover from '../assets/coverplaceholder.jpg'
 import {VirtualScroller} from "primereact/virtualscroller";
 import {getAverageRatings} from "../connections/internal/movieRate.ts";
 import {MovieRateAverage} from "../types/internal/movieRate.ts";
@@ -33,7 +32,7 @@ export default function TopMovies() {
 
             <div className={'topMovieDiv'}>
                 <div className={'topMovieCoverDiv'}>
-                    <img className="topMovieCover" src={cover} alt={data.movie.title}/>
+                    <img className="topMovieCover" src={data.movie.cover_link} alt={data.movie.title}/>
                 </div>
                 <div
                     className="topMovieCoverData">
