@@ -19,6 +19,8 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({
   const millisecondsInYear = 1000 * 60 * 60 * 24 * 365;
   const millisecondsInDay = 1000 * 60 * 60 * 24;
 
+  const isCountDownFinished = (countDown as number) <= 0;
+
   useEffect(() => {
     try {
       checkForNights().then((data) => {
@@ -42,7 +44,7 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({
     } catch (error) {
       console.error(error);
     }
-  }, [(countDown as number) <= 0]);
+  }, [isCountDownFinished]);
 
   useEffect(() => {
     const interval = setInterval(() => {
