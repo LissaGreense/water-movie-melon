@@ -1,12 +1,12 @@
 export interface Avatar {
-    avatar_url: string;
+  avatar_url: string;
 }
 
 export interface Statistics {
-    added_movies: number;
-    seven_rated_movies: number;
-    watched_movies: number;
-    hosted_movie_nights: number;
-    highest_rated_movie: string | null;
-    lowest_rated_movie: string | null;
+  added_movies: number;
+  seven_rated_movies: number;
+  watched_movies: number;
+  hosted_movie_nights: number;
+  highest_rated_movie: string | null;
+  lowest_rated_movie: string | null;
 }
