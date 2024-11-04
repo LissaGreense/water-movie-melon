@@ -140,7 +140,7 @@ class Night(APIView):
 class AttendeesView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, format=None):
+    def get(self, request):
         all_attendees = serializers.serialize('python', Attendees.objects.all())
 
         attendees_response = []
@@ -280,6 +280,27 @@ def user_register(request):
             return HttpResponse(json.dumps({'error': 'BAD ANSWER'}), content_type='application/json', status=400)
     else:
         return HttpResponse(json.dumps({'error': 'Only POST method is allowed'}), status=405)
+
+class UserPassword(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, username):
+        try:
+            user = User.objects.get(username=username)
+            password_data = json.loads(request.body)
+
+            if not user.check_password(password_data['old_password']):
+                return HttpResponse(json.dumps({'error': 'Wrong password provided'}), status=400)
+
+            user.set_password(password_data['new_password'])
+            user.save()
+
+            return HttpResponse(json.dumps({'result': 'OK'}))
+
+        except User.DoesNotExist:
+            return HttpResponse(json.dumps({'error': 'User not found'}), status=404)
+
+
 
 
 class RegisterQuestions(APIView):
