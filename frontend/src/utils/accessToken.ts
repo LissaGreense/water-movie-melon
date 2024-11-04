@@ -7,22 +7,22 @@ export const saveAccessToken = (token: string, username: string) => {
 
 export const getAccessToken = (): string | null => {
   return localStorage.getItem(TOKEN_KEY);
-}
+};
 export const getUsername = (): string | null => {
   return localStorage.getItem(USER_KEY);
-}
+};
 
 export const clearAccessToken = () => {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(USER_KEY);
-}
+};
 
 export const getAuthHeadersConfig = () => {
   return {
     headers: {
-      "Authorization": `Token ${getAccessToken()}`,
-      "User": `${getUsername()}`,
+      Authorization: `Token ${getAccessToken()}`,
+      User: `${getUsername()}`,
       "Access-Control-Allow-Origin": "*",
-    }
+    },
   };
-}
+};

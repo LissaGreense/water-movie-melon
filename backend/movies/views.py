@@ -81,7 +81,7 @@ class RateAPI(APIView):
 
     def post(self, request, format=None):
         rate_from_body = json.loads(request.body)
-        movie = Movie.objects.get(title=rate_from_body['movieTitle'])
+        movie = Movie.objects.get(title=rate_from_body['movie'])
         user = User.objects.get(username=rate_from_body['user'])
         rating = rate_from_body['rating']
 

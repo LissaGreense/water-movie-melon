@@ -1,14 +1,17 @@
 import { Movie } from "../../types/internal/movie.ts";
 import axios from "axios";
-import {getAuthHeadersConfig} from "../../utils/accessToken.ts";
+import { getAuthHeadersConfig } from "../../utils/accessToken.ts";
 
-const backend_url = 'http://localhost:8000';
-const movies_endpoint = '/movies/';
+const backend_url = "http://localhost:8000";
+const movies_endpoint = "/movies/";
 
 export async function getMovies(): Promise<Movie[]> {
   const config = getAuthHeadersConfig();
   try {
-    const response = await axios.get<Movie[]>(backend_url + movies_endpoint, config);
+    const response = await axios.get<Movie[]>(
+      backend_url + movies_endpoint,
+      config,
+    );
     return response.data as Movie[];
   } catch (error) {
     console.error(error);
@@ -18,7 +21,11 @@ export async function getMovies(): Promise<Movie[]> {
 
 export async function postMovie(movie: Movie): Promise<void> {
   try {
-    await axios.post(backend_url + movies_endpoint, movie, getAuthHeadersConfig());
+    await axios.post(
+      backend_url + movies_endpoint,
+      movie,
+      getAuthHeadersConfig(),
+    );
   } catch (error) {
     console.error(error);
   }
