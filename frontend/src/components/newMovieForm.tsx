@@ -7,6 +7,7 @@ import {InputNumber} from "primereact/inputnumber";
 import {getUsername} from "../utils/accessToken.ts";
 import {getMoviePosterUrl} from "../connections/external/omdb.ts";
 import {useState} from "react";
+import {Movie} from "../types/internal/movie.ts";
 
 export const NewMovieForm = () => {
   const [movieTitle, setMovieTitle] = useState<string>("");
@@ -35,7 +36,18 @@ export const NewMovieForm = () => {
 
   }
 
-  const ShowPosters = () => {
+  const showChosenPoster = () => {
+    if (movieCoverLink !== "") {
+      return (
+          <>
+            <span className="melonStyleContainerPeel p-inputgroup-addon">Wybrana okładka</span>
+            <img className="melonStyleContainerPeel" src={movieCoverLink} alt="Wybrana okładka filmu"/>
+          </>
+    )
+    }
+  }
+
+  const showPosters = () => {
     if (posterUrls.length !== 0) {
       return (
           posterUrls.map(url =>
@@ -54,7 +66,16 @@ export const NewMovieForm = () => {
         <AccordionTab className="melonStyleContainerPeel textSansNoBorder" header={'Dodaj Film'}>
           <form onSubmit={(e) => {
             e.preventDefault();
-            postMovie(movieTitle, movieLink, getUsername(), dayjs().format('YYYY-MM-DD HH:mm'), movieGenre, movieCoverLink, movieDuration);
+            const movie: Movie = {
+              title: movieTitle,
+              link: movieLink,
+              user: getUsername() as string,
+              date_added: dayjs().format('YYYY-MM-DD HH:mm'),
+              genre: movieGenre,
+              cover_link: movieCoverLink,
+              duration: movieDuration,
+            }
+            postMovie(movie);
           }} id="new_movie_form" name="new_movie_form">
 
             <div className="melonStyleContainerPeel p-inputgroup flex-1">
@@ -74,14 +95,13 @@ export const NewMovieForm = () => {
               <InputText className="melonStyleContainerPeel" placeholder="eg. cda.pl/..." name={'link'} onChange={(e) => setMovieLink(e.target.value)}/>
             </div>
             <div className="melonStyleContainerPeel p-inputgroup flex-1">
-              <span className="melonStyleContainerPeel p-inputgroup-addon">Link do okładki</span>
-              <InputText className="melonStyleContainerPeel" placeholder="eg. google.com/..." name={'cover_link'} value={movieCoverLink} disabled/>
-            </div>
-            <div>
-              {ShowPosters()}
+              {showChosenPoster()}
             </div>
             <Button className="melonStyleContainerPeel" label="Wczytaj okładkę" icon="pi pi-check" onClick={handleMoviePoster} type={"button"}></Button>
             <Button className="melonStyleContainerPeel" label="Dodaj Film" icon="pi pi-check" type={"submit"}/>
+            <div>
+              {showPosters()}
+            </div>
           </form>
         </AccordionTab>
       </Accordion>
