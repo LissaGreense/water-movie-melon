@@ -102,16 +102,19 @@ class Night(APIView):
         date = request.GET.get('date', None)
 
         if date:
-            parsed_date = parser.parse(date, dayfirst=True)
+            parsed_date = parser.parse(date)
             movie_night = MovieNight.objects.get(night_date__date=parsed_date)
 
-            print(movie_night)
+            if movie_night.selected_movie is not None:
+                selected_movie = serializers.serialize('python', [movie_night.selected_movie, ])[0]['fields']
+            else:
+                selected_movie = None
 
             nights_response = {
                 "host": movie_night.host,
                 "night_date": date,
                 "location": movie_night.location,
-                "selected_movie": serializers.serialize('python', [movie_night.selected_movie, ])[0]['fields'],
+                "selected_movie": selected_movie,
             }
             return HttpResponse(json.dumps([nights_response], cls=DjangoJSONEncoder), content_type='application/json')
         else:
@@ -163,7 +166,9 @@ class AttendeesView(APIView):
 
     def post(self, request, format=None):
         attendee_from_body = json.loads(request.body)
-        night = MovieNight.objects.get(night_date=attendee_from_body['night']['night_date'])
+        night_date = parser.parse(attendee_from_body['night']['night_date'])
+
+        night = MovieNight.objects.get(night_date__date=night_date)
         user = User.objects.get(username=attendee_from_body['user'])
         accept_date = attendee_from_body['accept_date']
 
