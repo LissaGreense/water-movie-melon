@@ -28,7 +28,7 @@ jobs:
 
       - name: Run ESLint check
         working-directory: ./frontend
-        run: npm run lint
+        run: npm run eslint:check
 
       - name: Display message if checks fail
         if: failure()
