@@ -4,31 +4,25 @@ import { Image } from "primereact/image";
 import { clearAccessToken, getUsername } from "../utils/accessToken.ts";
 import { useNavigate } from "react-router-dom";
 import { LOGIN } from "../constants/paths.ts";
-import {
-  getAvatar,
-  getStatistics,
-  uploadAvatar,
-} from "../connections/internal/user.ts";
-import React, { useCallback, useEffect, useState } from "react";
+import { getAvatar, getStatistics } from "../connections/internal/user.ts";
+import React, { useEffect, useState } from "react";
 import { FileUpload } from "primereact/fileupload";
-import Cropper, { Area } from "react-easy-crop";
-import { Dialog } from "primereact/dialog";
-import getCroppedImg from "../utils/image.ts";
 import { Statistics } from "../types/internal/user.ts";
+import { CropperDialog } from "../components/cropperDialog.tsx";
+import { PasswordChangeDialog } from "../components/passwordChangeDialog.tsx";
 
 export const AccountPage = () => {
   const navigate = useNavigate();
   const backend_url = "http://localhost:8000";
   const [avatar, setAvatar] = useState<string>("");
   const [showCropper, setShowCropper] = useState<boolean>(false);
+  const [showPasswordChange, setShowPasswordChange] = useState<boolean>(false);
   const [currentImage, setCurrentImage] = useState<
     string | ArrayBuffer | null
   >();
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
-  const [crop, setCrop] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [userStatistics, setUserStatistics] = useState<Statistics | null>(null);
-  const [zoom, setZoom] = useState<number>(1);
-  const handleLogoutEvent = (e: React.MouseEvent<HTMLButtonElement>) => {
+
+  const handleLogoutEvent = (e: React.MouseEvent) => {
     e.preventDefault();
     clearAccessToken();
     navigate(LOGIN);
@@ -36,9 +30,6 @@ export const AccountPage = () => {
   const handleAvatarChangeError = () => {
     alert("Cos poszło nie tak kiedy dodawałeś swoją arbuzową fotę!");
   };
-  const onCropComplete = useCallback((_: Area, croppedAreaPixels: Area) => {
-    setCroppedAreaPixels(croppedAreaPixels);
-  }, []);
 
   const handleCropImage = (e: { files: File[] }) => {
     const file = e.files.pop();
@@ -50,13 +41,6 @@ export const AccountPage = () => {
       };
     }
     setShowCropper(true);
-    setCurrentImage(undefined);
-  };
-
-  const handleUploadImage = async () => {
-    const croppedImage = await getCroppedImg(currentImage, croppedAreaPixels);
-    await uploadAvatar(getUsername(), croppedImage);
-    setShowCropper(false);
   };
 
   useEffect(() => {
@@ -80,29 +64,15 @@ export const AccountPage = () => {
 
   return (
     <div className={"pageContent center"}>
-      <Dialog
+      <CropperDialog
         visible={showCropper}
-        style={{ width: "50vw", height: "30vw" }}
-        onHide={() => setShowCropper(false)}
-      >
-        <div className="crop-container">
-          {showCropper && (
-            <Cropper
-              image={currentImage as string}
-              aspect={1}
-              objectFit="vertical-cover"
-              onCropChange={setCrop}
-              crop={crop}
-              zoom={zoom}
-              onCropComplete={onCropComplete}
-              onZoomChange={setZoom}
-            />
-          )}
-        </div>
-        <div className="crop-controls">
-          <Button onClick={handleUploadImage}>Załaduj</Button>
-        </div>
-      </Dialog>
+        setShowCropper={setShowCropper}
+        image={currentImage}
+      />
+      <PasswordChangeDialog
+        visible={showPasswordChange}
+        setVisible={setShowPasswordChange}
+      />
       <div className={"accountContainer"}>
         <div className={"watermelonPeel"}>
           <h2>KONTO</h2>
@@ -126,7 +96,9 @@ export const AccountPage = () => {
             <h4>ID: {getUsername()}</h4>
           </div>
           <div className={"half-right"}>
-            <Button>ZMIEŃ HASŁO</Button>
+            <Button onClick={() => setShowPasswordChange(true)}>
+              ZMIEŃ HASŁO
+            </Button>
             <Button onClick={(e) => handleLogoutEvent(e)}>WYLOGUJ</Button>
           </div>
         </div>

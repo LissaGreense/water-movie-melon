@@ -30,7 +30,15 @@ export const MovieList = () => {
           key={data.title}
         >
           <div className="floatLeft movieCoverDiv">
-            <img src={cover} />
+            <img
+              src={data.cover_link}
+              alt="Okładka filmu"
+              onError={(event) => {
+                const target = event.target as HTMLImageElement;
+                target.src = cover;
+                target.onerror = null;
+              }}
+            />
           </div>
           <div className="align-content-start movieData">
             <p>
