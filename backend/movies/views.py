@@ -47,6 +47,8 @@ class AverageRatings(APIView):
 
         for movie in all_movies:
             average_rating = Rate.objects.filter(movie=movie).aggregate(Avg('rating'))['rating__avg']
+            if average_rating is None:
+                continue
             rating_response = {
                 'movie': serializers.serialize('python', [movie, ])[0]['fields'],
                 'average_rating': average_rating
@@ -339,7 +341,8 @@ class RandMovie(APIView):
 
 class MovieDate(APIView):
     def get(self, request, format=None):
-        upcoming_nights = MovieNight.objects.filter(selected_movie__isnull=True).order_by('night_date')
+        now = datetime.datetime.now()
+        upcoming_nights = MovieNight.objects.filter(selected_movie__isnull=True, night_date__gt=now).order_by('night_date')
 
         if len(upcoming_nights) == 0:
             return HttpResponse(json.dumps([], cls=DjangoJSONEncoder), content_type='application/json')
