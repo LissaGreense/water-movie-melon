@@ -42,7 +42,7 @@ export const MovieList = () => {
           </div>
           <div className="align-content-start movieData">
             <p>
-              <a href={data.link}>link</a>
+              <a href={"//" + data.link}>link</a>
             </p>
             <Avatar label="u" size="xlarge" shape="circle" />
             <span>{data.user}</span>
