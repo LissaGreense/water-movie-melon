@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import { InputNumber } from "primereact/inputnumber";
 import { getUsername } from "../utils/accessToken.ts";
 import { getMoviePosterUrl } from "../connections/external/omdb.ts";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Movie } from "../types/internal/movie.ts";
 
 export const NewMovieForm = () => {
@@ -15,7 +15,28 @@ export const NewMovieForm = () => {
   const [movieGenre, setMovieGenre] = useState<string>("");
   const [movieCoverLink, setMovieCoverLink] = useState<string>("");
   const [movieDuration, setMovieDuration] = useState<number>(0);
+  const [formIncomplete, setFormIncomplete] = useState<boolean>(true);
   const [posterUrls, setPosterUrls] = useState<string[]>([]);
+  const URL_REGEX: RegExp =
+    /^(https?:\/\/)?((([-a-z0-9]{1,63}\.)?a-z0-9?\.[a-z]{2,63})|((\d{1,3}\.){3}\d{1,3}))(:\d{1,5})?(([/?])((%[0-9a-f]{2})|[-\w+.?/@~#&=]))?$/i;
+
+  const emptyFieldsInForm = useCallback(() => {
+    return (
+      movieTitle == "" ||
+      movieLink == "" ||
+      movieGenre == "" ||
+      movieCoverLink == "" ||
+      movieDuration == 0
+    );
+  }, [movieCoverLink, movieDuration, movieGenre, movieLink, movieTitle]);
+
+  useEffect(() => {
+    if (emptyFieldsInForm()) {
+      setFormIncomplete(true);
+    } else {
+      setFormIncomplete(false);
+    }
+  }, [emptyFieldsInForm]);
 
   const handleMoviePoster = () => {
     const moviePosterUrls: string[] = [];
@@ -60,6 +81,7 @@ export const NewMovieForm = () => {
           <img
             className="melonStyleContainerPeel p-inputgroup flex-1"
             src={url}
+            alt={"Proponowana okładka"}
           ></img>
           <Button
             className="melonStyleContainerPeel"
@@ -72,6 +94,22 @@ export const NewMovieForm = () => {
       ));
     }
   };
+
+  const handleMovieLink = (url: string) => {
+    if (URL_REGEX.test(url)) {
+      const checkedUrl = checkForHttp(url);
+      setMovieLink(checkedUrl);
+    } else {
+      console.warn("URL invalid");
+    }
+  };
+
+  function checkForHttp(url: string) {
+    if (url.startsWith("http")) {
+      url = url.split("//")[1];
+    }
+    return url;
+  }
 
   return (
     <Accordion className={"addMovies"} activeIndex={1}>
@@ -137,7 +175,7 @@ export const NewMovieForm = () => {
               className="melonStyleContainerPeel"
               placeholder="eg. cda.pl/..."
               name={"link"}
-              onChange={(e) => setMovieLink(e.target.value)}
+              onChange={(e) => handleMovieLink(e.target.value)}
             />
           </div>
           <div className="melonStyleContainerPeel p-inputgroup flex-1">
@@ -145,7 +183,7 @@ export const NewMovieForm = () => {
           </div>
           <Button
             className="melonStyleContainerPeel"
-            label="Wczytaj okładkę"
+            label="Wczytaj okładki"
             icon="pi pi-check"
             onClick={handleMoviePoster}
             type={"button"}
@@ -155,8 +193,9 @@ export const NewMovieForm = () => {
             label="Dodaj Film"
             icon="pi pi-check"
             type={"submit"}
+            disabled={formIncomplete}
           />
-          <div>{showPosters()}</div>
+          <div className="melonStyleContainerPeel">{showPosters()}</div>
         </form>
       </AccordionTab>
     </Accordion>
