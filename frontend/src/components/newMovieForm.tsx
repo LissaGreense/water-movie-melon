@@ -17,6 +17,9 @@ export const NewMovieForm = () => {
   const [movieDuration, setMovieDuration] = useState<number>(0);
   const [formIncomplete, setFormIncomplete] = useState<boolean>(true);
   const [posterUrls, setPosterUrls] = useState<string[]>([]);
+  const URL_REGEX: string =
+    "^(https?:\\/\\/)?((([-a-z0-9]{1,63}\\.)*?[a-z0-9]([-a-z0-9]{0,253}[a-z0-9])?\\.[a-z]{2,63})|((\\d{1,3}\\.){3}\\d{1,3}))(:\\d{1,5})?((\\/|\\?)((%[0-9a-f]{2})|[-\\w\\+\\.\\?\\/@~#&=])*)?$";
+  const checkUrl: RegExp = new RegExp(URL_REGEX, "i");
 
   useEffect(() => {
     if (
@@ -90,18 +93,19 @@ export const NewMovieForm = () => {
   };
 
   const handleMovieLink = (url: string) => {
-    if (isUrlValid(url)) {
-      setMovieLink("//" + url);
+    if (checkUrl.test(url)) {
+      const checkedUrl = checkForHttp(url);
+      setMovieLink(checkedUrl);
     } else {
-      console.log("URL invalid");
+      console.warn("URL invalid");
     }
   };
 
-  function isUrlValid(url: string): boolean {
-    const regexQuery =
-      "^(https?:\\/\\/)?((([-a-z0-9]{1,63}\\.)*?[a-z0-9]([-a-z0-9]{0,253}[a-z0-9])?\\.[a-z]{2,63})|((\\d{1,3}\\.){3}\\d{1,3}))(:\\d{1,5})?((\\/|\\?)((%[0-9a-f]{2})|[-\\w\\+\\.\\?\\/@~#&=])*)?$";
-    const checkUrl = new RegExp(regexQuery, "i");
-    return checkUrl.test(url);
+  function checkForHttp(url: string) {
+    if (url.startsWith("http")) {
+      url = url.split("//")[1];
+    }
+    return url;
   }
 
   return (
