@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import { InputNumber } from "primereact/inputnumber";
 import { getUsername } from "../utils/accessToken.ts";
 import { getMoviePosterUrl } from "../connections/external/omdb.ts";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Movie } from "../types/internal/movie.ts";
 
 export const NewMovieForm = () => {
@@ -21,19 +21,23 @@ export const NewMovieForm = () => {
     "^(https?:\\/\\/)?((([-a-z0-9]{1,63}\\.)*?[a-z0-9]([-a-z0-9]{0,253}[a-z0-9])?\\.[a-z]{2,63})|((\\d{1,3}\\.){3}\\d{1,3}))(:\\d{1,5})?((\\/|\\?)((%[0-9a-f]{2})|[-\\w\\+\\.\\?\\/@~#&=])*)?$";
   const checkUrl: RegExp = new RegExp(URL_REGEX, "i");
 
-  useEffect(() => {
-    if (
+  const emptyFieldsInForm = useCallback(() => {
+    return (
       movieTitle == "" ||
       movieLink == "" ||
       movieGenre == "" ||
       movieCoverLink == "" ||
       movieDuration == 0
-    ) {
+    );
+  }, [movieCoverLink, movieDuration, movieGenre, movieLink, movieTitle]);
+
+  useEffect(() => {
+    if (emptyFieldsInForm()) {
       setFormIncomplete(true);
     } else {
       setFormIncomplete(false);
     }
-  }, [movieTitle, movieLink, movieGenre, movieCoverLink, movieDuration]);
+  }, [emptyFieldsInForm]);
 
   const handleMoviePoster = () => {
     const moviePosterUrls: string[] = [];
