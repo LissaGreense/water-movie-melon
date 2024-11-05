@@ -1,6 +1,6 @@
-import MovieMenu from "./movieMenu.tsx";
-import TopMovies from "./movieTopFilms.tsx";
-import { MovieNightCounter } from "./movieNightCounter.tsx";
+import MovieMenu from "../components/movieMenu.tsx";
+import TopMovies from "../components/movieTopFilms.tsx";
+import { MovieNightCounter } from "../components/movieNightCounter.tsx";
 import bucket from "../assets/bucketph.png";
 import { useEffect, useState } from "react";
 import { getMovieDate } from "../connections/internal/movieNight.ts";

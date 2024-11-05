@@ -15,24 +15,24 @@ export const NewMovieForm = () => {
   const [movieGenre, setMovieGenre] = useState<string>("");
   const [movieCoverLink, setMovieCoverLink] = useState<string>("");
   const [movieDuration, setMovieDuration] = useState<number>(0);
-  const [posterUrls, setPosterUrls] = useState<string[]>([]);
+  const [posterUrls, setPosterUrls] = useState<string[] | undefined>(undefined);
 
   const handleMoviePoster = () => {
-    const moviePosterUrls: string[] = [];
     getMoviePosterUrl(movieTitle).then((poster) => {
+      const moviePosterUrls: string[] = [];
       if (poster) {
         const posterData = poster["Search"];
-        if (posterData.length > 4) {
+        if (posterData && posterData.length > 4) {
           for (let i = 0; i < 5; i++) {
             moviePosterUrls.push(posterData[i]["Poster"]);
           }
-        } else {
+        } else if (posterData) {
           for (const poster of posterData) {
             moviePosterUrls.push(poster["Poster"]);
           }
         }
-        setPosterUrls(moviePosterUrls);
       }
+      setPosterUrls(moviePosterUrls);
     });
   };
 
@@ -54,13 +54,14 @@ export const NewMovieForm = () => {
   };
 
   const showPosters = () => {
-    if (posterUrls.length !== 0) {
-      return posterUrls.map((url) => (
+    if (posterUrls?.length > 0) {
+      return posterUrls?.map((url) => (
         <>
           <img
             className="melonStyleContainerPeel p-inputgroup flex-1"
             src={url}
-          ></img>
+            alt={"Movie Poster"}
+          />
           <Button
             className="melonStyleContainerPeel"
             onClick={() => setMovieCoverLink(url)}
@@ -70,6 +71,9 @@ export const NewMovieForm = () => {
           </Button>
         </>
       ));
+    }
+    if (posterUrls !== undefined && posterUrls.length === 0) {
+      return <p>Nie znaleziono okładek dla podanego przez Ciebie filmu :/</p>;
     }
   };
 
