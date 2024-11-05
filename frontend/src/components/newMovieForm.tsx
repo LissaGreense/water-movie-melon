@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import { InputNumber } from "primereact/inputnumber";
 import { getUsername } from "../utils/accessToken.ts";
 import { getMoviePosterUrl } from "../connections/external/omdb.ts";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { Movie } from "../types/internal/movie.ts";
 
 export const NewMovieForm = () => {
@@ -19,7 +19,13 @@ export const NewMovieForm = () => {
   const [posterUrls, setPosterUrls] = useState<string[]>([]);
 
   useEffect(() => {
-    if (movieTitle == "" || movieLink == "" || movieGenre == "" || movieCoverLink == "" || movieDuration == 0) {
+    if (
+      movieTitle == "" ||
+      movieLink == "" ||
+      movieGenre == "" ||
+      movieCoverLink == "" ||
+      movieDuration == 0
+    ) {
       setFormIncomplete(true);
     } else {
       setFormIncomplete(false);
@@ -85,15 +91,16 @@ export const NewMovieForm = () => {
 
   const handleMovieLink = (url: string) => {
     if (isUrlValid(url)) {
-      setMovieLink("//" + url)
+      setMovieLink("//" + url);
     } else {
       console.log("URL invalid");
     }
-  }
+  };
 
   function isUrlValid(url: string): boolean {
-    const regexQuery = "^(https?:\\/\\/)?((([-a-z0-9]{1,63}\\.)*?[a-z0-9]([-a-z0-9]{0,253}[a-z0-9])?\\.[a-z]{2,63})|((\\d{1,3}\\.){3}\\d{1,3}))(:\\d{1,5})?((\\/|\\?)((%[0-9a-f]{2})|[-\\w\\+\\.\\?\\/@~#&=])*)?$";
-    const checkUrl = new RegExp(regexQuery,"i");
+    const regexQuery =
+      "^(https?:\\/\\/)?((([-a-z0-9]{1,63}\\.)*?[a-z0-9]([-a-z0-9]{0,253}[a-z0-9])?\\.[a-z]{2,63})|((\\d{1,3}\\.){3}\\d{1,3}))(:\\d{1,5})?((\\/|\\?)((%[0-9a-f]{2})|[-\\w\\+\\.\\?\\/@~#&=])*)?$";
+    const checkUrl = new RegExp(regexQuery, "i");
     return checkUrl.test(url);
   }
 
