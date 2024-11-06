@@ -17,6 +17,7 @@ import {
 import { MovieCalendar } from "./components/movieCalendar.tsx";
 import { MoviePage } from "./pages/moviePage.tsx";
 import { RegisterPage } from "./pages/registerPage.tsx";
+import backgroundImage from "./assets/backgroundimage.png";
 
 const RequireAuth: FC<{ children: ReactElement }> = ({ children }) => {
   const userIsLogged = !!getAccessToken();
@@ -30,7 +31,14 @@ const App = () => {
   return (
     <>
       <Router>
-        <div className={"background-img"}>
+        <div className={"background-container"}>
+          <img
+            className={"background-img"}
+            src={backgroundImage}
+            alt="background"
+          />
+        </div>
+        <div className={"appContainer"}>
           <Routes>
             <Route path={HOMEPAGE} element={<HomePage />} />
             <Route path={LOGIN} element={<LoginPage />} />
