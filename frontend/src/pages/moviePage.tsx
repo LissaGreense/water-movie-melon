@@ -20,7 +20,6 @@ export const MoviePage = () => {
             <Dialog
               visible={movieFormVisible}
               onHide={() => {
-                if (!movieFormVisible) return;
                 setMovieFormVisible(false);
               }}
             >
