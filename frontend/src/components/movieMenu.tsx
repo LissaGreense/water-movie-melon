@@ -14,10 +14,23 @@ import {
   LOGIN,
   MOVIES,
 } from "../constants/paths.ts";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getAvatar } from "../connections/internal/user.ts";
 
 export default function MovieMenu() {
+  const backend_url = "http://localhost:8000";
+  const [avatar, setAvatar] = useState<string>("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    getAvatar(getUsername() as string).then((r) => {
+      if (r.avatar_url == "") {
+        alert("Error fetching avatar...");
+      }
+      setAvatar(backend_url + r.avatar_url);
+    });
+  }, []);
+
   const itemRenderer = (item: MenuItem) => (
     <div className="p-menuitem-content">
       <a
@@ -43,7 +56,7 @@ export default function MovieMenu() {
       template: () => {
         return (
           <button onClick={() => navigate(ACCOUNT)}>
-            <Avatar label="u" className="mr-2" shape="circle" />
+            <Avatar image={avatar} label="u" className="mr-2" shape="circle" />
             <div className="flex flex-column align">
               <span className="font-bold">{getUsername()}</span>
             </div>
