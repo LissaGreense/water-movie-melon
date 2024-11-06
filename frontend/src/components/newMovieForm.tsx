@@ -17,7 +17,7 @@ export const NewMovieForm = () => {
   const [movieDuration, setMovieDuration] = useState<number>(0);
   const [posterUrls, setPosterUrls] = useState<string[] | undefined>(undefined);
   const [formIncomplete, setFormIncomplete] = useState<boolean>(true);
-  const [postSuccesful, setPostSuccesful] = useState<boolean>(false);
+  const [postSuccessful, setPostSuccessful] = useState<boolean>(false);
   const URL_REGEX: RegExp = new RegExp(
     "^(https?:\\/\\/)?((([-a-z0-9]{1,63}\\.)*?[a-z0-9]([-a-z0-9]{0,253}[a-z0-9])?\\.[a-z]{2,63})|((\\d{1,3}\\.){3}\\d{1,3}))(:\\d{1,5})?(([/?])((%[0-9a-f]{2})|[-\\w+.?\\/@~#&=])*)?$",
     "i",
@@ -129,7 +129,7 @@ export const NewMovieForm = () => {
       duration: movieDuration,
     };
     postMovie(movie).then(() => {
-      setPostSuccesful(true);
+      setPostSuccessful(true);
     });
   };
 
@@ -210,7 +210,7 @@ export const NewMovieForm = () => {
         type={"submit"}
         disabled={formIncomplete}
       />
-      <Dialog visible={postSuccesful} onHide={() => setPostSuccesful(false)}>
+      <Dialog visible={postSuccessful} onHide={() => setPostSuccessful(false)}>
         <span className="melonStyleContainerPeel">Dodano film!</span>
       </Dialog>
       <div className="melonStyleContainerPeel">{showPosters()}</div>
