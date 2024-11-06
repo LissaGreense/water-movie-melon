@@ -12,11 +12,9 @@ import {
   HOMEPAGE,
   LOGIN,
   MOVIES,
-  NEW_MOVIE,
   REGISTER,
 } from "./constants/paths.ts";
 import { MovieCalendar } from "./components/movieCalendar.tsx";
-import { MovieList } from "./components/movieList.tsx";
 import { MoviePage } from "./pages/moviePage.tsx";
 import { RegisterPage } from "./pages/registerPage.tsx";
 
@@ -38,14 +36,6 @@ const App = () => {
             <Route path={LOGIN} element={<LoginPage />} />
             <Route path={REGISTER} element={<RegisterPage />} />
             <Route
-              path={NEW_MOVIE}
-              element={
-                <RequireAuth>
-                  <MoviePage />
-                </RequireAuth>
-              }
-            />
-            <Route
               path={ACCOUNT}
               element={
                 <RequireAuth>
@@ -65,7 +55,7 @@ const App = () => {
               path={MOVIES}
               element={
                 <RequireAuth>
-                  <MovieList />
+                  <MoviePage />
                 </RequireAuth>
               }
             />

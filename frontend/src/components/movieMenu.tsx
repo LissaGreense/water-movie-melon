@@ -13,7 +13,6 @@ import {
   HOMEPAGE,
   LOGIN,
   MOVIES,
-  NEW_MOVIE,
 } from "../constants/paths.ts";
 import React from "react";
 
@@ -76,13 +75,6 @@ export default function MovieMenu() {
           template: itemRenderer,
           command: () => {
             navigate(MOVIES);
-          },
-        },
-        {
-          label: "Dodaj Film",
-          template: itemRenderer,
-          command: () => {
-            navigate(NEW_MOVIE);
           },
         },
         {
