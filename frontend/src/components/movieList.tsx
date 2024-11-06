@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Movie } from "../types/internal/movie.ts";
 import { getMovies } from "../connections/internal/movie.ts";
 import { Accordion, AccordionTab } from "primereact/accordion";
@@ -8,7 +8,11 @@ import cover from "../assets/coverplaceholder.jpg";
 import dayjs from "dayjs";
 import { VirtualScroller } from "primereact/virtualscroller";
 
-export const MovieList = () => {
+interface MovieListProps {
+  movieFormVisible: boolean;
+}
+
+export const MovieList: FC<MovieListProps> = ({movieFormVisible}) => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   useEffect(() => {
@@ -19,7 +23,7 @@ export const MovieList = () => {
       .catch((error) => {
         console.error("Error fetching movies:", error);
       });
-  }, []);
+  }, [movieFormVisible]);
 
   const itemTemplate = (data: Movie) => {
     return (

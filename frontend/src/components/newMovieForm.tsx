@@ -1,6 +1,5 @@
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import { Accordion, AccordionTab } from "primereact/accordion";
 import { postMovie } from "../connections/internal/movie.ts";
 import dayjs from "dayjs";
 import { InputNumber } from "primereact/inputnumber";
@@ -8,6 +7,7 @@ import { getUsername } from "../utils/accessToken.ts";
 import { getMoviePosterUrl } from "../connections/external/omdb.ts";
 import React, { useCallback, useEffect, useState } from "react";
 import { Movie } from "../types/internal/movie.ts";
+import { Dialog } from "primereact/dialog";
 
 export const NewMovieForm = () => {
   const [movieTitle, setMovieTitle] = useState<string>("");
@@ -17,8 +17,8 @@ export const NewMovieForm = () => {
   const [movieDuration, setMovieDuration] = useState<number>(0);
   const [formIncomplete, setFormIncomplete] = useState<boolean>(true);
   const [posterUrls, setPosterUrls] = useState<string[]>([]);
-  const URL_REGEX: RegExp =
-    /^(https?:\/\/)?((([-a-z0-9]{1,63}\.)?a-z0-9?\.[a-z]{2,63})|((\d{1,3}\.){3}\d{1,3}))(:\d{1,5})?(([/?])((%[0-9a-f]{2})|[-\w+.?/@~#&=]))?$/i;
+  const [postSuccesful, setPostSuccesful] = useState<boolean>(false);
+  const URL_REGEX: RegExp = new RegExp("^(https?:\\/\\/)?((([-a-z0-9]{1,63}\\.)*?[a-z0-9]([-a-z0-9]{0,253}[a-z0-9])?\\.[a-z]{2,63})|((\\d{1,3}\\.){3}\\d{1,3}))(:\\d{1,5})?(([/?])((%[0-9a-f]{2})|[-\\w+.?\\/@~#&=])*)?$", "i")
 
   const emptyFieldsInForm = useCallback(() => {
     return (
@@ -112,11 +112,6 @@ export const NewMovieForm = () => {
   }
 
   return (
-    <Accordion className={"addMovies"} activeIndex={1}>
-      <AccordionTab
-        className="melonStyleContainerPeel textSansNoBorder"
-        header={"Dodaj Film"}
-      >
         <form
           onSubmit={(e: React.FormEvent) => {
             e.preventDefault();
@@ -129,7 +124,9 @@ export const NewMovieForm = () => {
               cover_link: movieCoverLink,
               duration: movieDuration,
             };
-            postMovie(movie);
+            postMovie(movie).then(() => {
+              setPostSuccesful(true);
+            });
           }}
           id="new_movie_form"
           name="new_movie_form"
@@ -195,9 +192,12 @@ export const NewMovieForm = () => {
             type={"submit"}
             disabled={formIncomplete}
           />
+          <Dialog visible={postSuccesful} onHide={() => setPostSuccesful(false)}>
+            <span className="melonStyleContainerPeel">
+              Dodano film!
+            </span>
+          </Dialog>
           <div className="melonStyleContainerPeel">{showPosters()}</div>
         </form>
-      </AccordionTab>
-    </Accordion>
   );
 };
