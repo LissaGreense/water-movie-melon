@@ -1,5 +1,5 @@
-import { MovieList } from "./movieList.tsx";
-import { NewMovieForm } from "./newMovieForm.tsx";
+import { MovieList } from "../components/movieList.tsx";
+import { NewMovieForm } from "../components/newMovieForm.tsx";
 
 export const MoviePage = () => {
   return (
