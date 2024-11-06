@@ -79,8 +79,8 @@ export const NewMovieForm = () => {
 
   const showPosters = () => {
     if (posterUrls && posterUrls.length > 0) {
-      return posterUrls.map((url) => (
-        <>
+      return posterUrls.map((url, index) => (
+        <div key={"cover-item" + index}>
           <img
             className="melonStyleContainerPeel p-inputgroup flex-1"
             src={url}
@@ -93,7 +93,7 @@ export const NewMovieForm = () => {
           >
             Wybierz okładkę
           </Button>
-        </>
+        </div>
       ));
     }
     if (posterUrls !== undefined && posterUrls.length === 0) {
@@ -110,77 +110,89 @@ export const NewMovieForm = () => {
     }
   };
 
-  function checkForHttp(url: string) {
+  const checkForHttp = (url: string) => {
     if (url.startsWith("http")) {
       url = url.split("//")[1];
     }
     return url;
-  }
+  };
+
+  const handleSubmitForm = (e: React.FormEvent) => {
+    e.preventDefault();
+    const movie: Movie = {
+      title: movieTitle,
+      link: movieLink,
+      user: getUsername() as string,
+      date_added: dayjs().format("YYYY-MM-DD HH:mm"),
+      genre: movieGenre,
+      cover_link: movieCoverLink,
+      duration: movieDuration,
+    };
+    postMovie(movie).then(() => {
+      setPostSuccesful(true);
+    });
+  };
+
+  const getInputFields = () => {
+    return (
+      <>
+        <div className="melonStyleContainerPeel p-inputgroup flex-1">
+          <span className="melonStyleContainerPeel p-inputgroup-addon">
+            Tytuł
+          </span>
+          <InputText
+            className="melonStyleContainerPeel"
+            placeholder="eg. Superzioło"
+            name={"title"}
+            onChange={(e) => setMovieTitle(e.target.value)}
+          />
+        </div>
+        <div className="melonStyleContainerPeel p-inputgroup flex-1">
+          <span className="melonStyleContainerPeel p-inputgroup-addon">
+            Gatunek
+          </span>
+          <InputText
+            className="melonStyleContainerPeel"
+            placeholder="eg. komedia"
+            name={"genre"}
+            onChange={(e) => setMovieGenre(e.target.value)}
+          />
+        </div>
+        <div className="melonStyleContainerPeel p-inputgroup flex-1">
+          <span className="melonStyleContainerPeel p-inputgroup-addon">
+            Czas trwania
+          </span>
+          <InputNumber
+            className="melonStyleContainerPeel"
+            placeholder="w minutach"
+            name={"duration"}
+            onChange={(e) => setMovieDuration(e.value as number)}
+          />
+        </div>
+        <div className="melonStyleContainerPeel p-inputgroup flex-1">
+          <span className="melonStyleContainerPeel p-inputgroup-addon">
+            Link do filmu
+          </span>
+          <InputText
+            className="melonStyleContainerPeel"
+            placeholder="eg. cda.pl/..."
+            name={"link"}
+            onChange={(e) => handleMovieLink(e.target.value)}
+          />
+        </div>
+      </>
+    );
+  };
 
   return (
     <form
       onSubmit={(e: React.FormEvent) => {
-        e.preventDefault();
-        const movie: Movie = {
-          title: movieTitle,
-          link: movieLink,
-          user: getUsername() as string,
-          date_added: dayjs().format("YYYY-MM-DD HH:mm"),
-          genre: movieGenre,
-          cover_link: movieCoverLink,
-          duration: movieDuration,
-        };
-        postMovie(movie).then(() => {
-          setPostSuccesful(true);
-        });
+        handleSubmitForm(e);
       }}
       id="new_movie_form"
       name="new_movie_form"
     >
-      <div className="melonStyleContainerPeel p-inputgroup flex-1">
-        <span className="melonStyleContainerPeel p-inputgroup-addon">
-          Tytuł
-        </span>
-        <InputText
-          className="melonStyleContainerPeel"
-          placeholder="eg. Superzioło"
-          name={"title"}
-          onChange={(e) => setMovieTitle(e.target.value)}
-        />
-      </div>
-      <div className="melonStyleContainerPeel p-inputgroup flex-1">
-        <span className="melonStyleContainerPeel p-inputgroup-addon">
-          Gatunek
-        </span>
-        <InputText
-          className="melonStyleContainerPeel"
-          placeholder="eg. komedia"
-          name={"genre"}
-          onChange={(e) => setMovieGenre(e.target.value)}
-        />
-      </div>
-      <div className="melonStyleContainerPeel p-inputgroup flex-1">
-        <span className="melonStyleContainerPeel p-inputgroup-addon">
-          Czas trwania
-        </span>
-        <InputNumber
-          className="melonStyleContainerPeel"
-          placeholder="w minutach"
-          name={"duration"}
-          onChange={(e) => setMovieDuration(e.value as number)}
-        />
-      </div>
-      <div className="melonStyleContainerPeel p-inputgroup flex-1">
-        <span className="melonStyleContainerPeel p-inputgroup-addon">
-          Link do filmu
-        </span>
-        <InputText
-          className="melonStyleContainerPeel"
-          placeholder="eg. cda.pl/..."
-          name={"link"}
-          onChange={(e) => handleMovieLink(e.target.value)}
-        />
-      </div>
+      {getInputFields()}
       <div className="melonStyleContainerPeel p-inputgroup flex-1">
         {showChosenPoster()}
       </div>
