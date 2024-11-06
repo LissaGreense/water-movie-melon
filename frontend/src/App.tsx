@@ -1,6 +1,6 @@
 import "./App.css";
 import "primereact/resources/themes/vela-green/theme.css";
-import { HomePage } from "./components/movieHomePage.tsx";
+import { HomePage } from "./pages/movieHomePage.tsx";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { LoginPage } from "./pages/loginPage.tsx";
 import { getAccessToken } from "./utils/accessToken.ts";
@@ -15,7 +15,7 @@ import {
   REGISTER,
 } from "./constants/paths.ts";
 import { MovieCalendar } from "./components/movieCalendar.tsx";
-import { MoviePage } from "./components/moviePage.tsx";
+import { MoviePage } from "./pages/moviePage.tsx";
 import { RegisterPage } from "./pages/registerPage.tsx";
 
 const RequireAuth: FC<{ children: ReactElement }> = ({ children }) => {

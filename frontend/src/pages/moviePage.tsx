@@ -1,8 +1,13 @@
+<<<<<<< HEAD:frontend/src/components/moviePage.tsx
 import { MovieList } from "./movieList.tsx";
 import { NewMovieForm } from "./newMovieForm.tsx";
 import { useState } from "react";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
+=======
+import { MovieList } from "../components/movieList.tsx";
+import { NewMovieForm } from "../components/newMovieForm.tsx";
+>>>>>>> origin/main:frontend/src/pages/moviePage.tsx
 
 export const MoviePage = () => {
   const [movieFormVisible, setMovieFormVisible] = useState<boolean>(false);
