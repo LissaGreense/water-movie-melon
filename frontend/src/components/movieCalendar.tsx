@@ -56,7 +56,7 @@ export const MovieCalendar = () => {
     }
   };
 
-  function showDialog() {
+  const showDialog = () => {
     if (visibleAdd) {
       return (
         <NewMovieNightForm
@@ -82,7 +82,7 @@ export const MovieCalendar = () => {
         />
       );
     }
-  }
+  };
 
   return (
     <>
