@@ -20,9 +20,9 @@ export async function getMovies(): Promise<Movie[]> {
 }
 
 export async function postMovie(movie: Movie): Promise<void> {
-    await axios.post(
-      backend_url + movies_endpoint,
-      movie,
-      getAuthHeadersConfig(),
-    );
+  await axios.post(
+    backend_url + movies_endpoint,
+    movie,
+    getAuthHeadersConfig(),
+  );
 }

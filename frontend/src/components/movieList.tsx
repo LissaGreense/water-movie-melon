@@ -12,7 +12,7 @@ interface MovieListProps {
   movieFormVisible: boolean;
 }
 
-export const MovieList: FC<MovieListProps> = ({movieFormVisible}) => {
+export const MovieList: FC<MovieListProps> = ({ movieFormVisible }) => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   useEffect(() => {
