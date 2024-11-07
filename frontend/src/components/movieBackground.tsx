@@ -1,6 +1,5 @@
 import backgroundImage from "../assets/backgroundimage.png";
 
-
 export default function MovieBackground() {
   return (
     <>
@@ -12,5 +11,5 @@ export default function MovieBackground() {
         />
       </div>
     </>
-  )
+  );
 }
