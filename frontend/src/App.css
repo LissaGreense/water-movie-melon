@@ -5,8 +5,37 @@
   text-align: center;
 }
 
+.background-container {
+  background-color: green;
+  overflow: hidden;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 .background-img {
-  background-image: url("assets/background.gif");
+  height: 100%;
+  width: auto;
+  animation-name: background;
+  animation-duration: 21s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+@keyframes background {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(-50%, 0);
+  }
+}
+
+.appContainer {
   height: 100%;
   width: 100%;
   position: absolute;
