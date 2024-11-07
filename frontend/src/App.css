@@ -6,6 +6,7 @@
 }
 
 .background-container {
+  background-color: green;
   overflow: hidden;
   position: absolute;
   height: 100%;

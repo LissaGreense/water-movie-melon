@@ -4,7 +4,7 @@ import { HomePage } from "./pages/movieHomePage.tsx";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { LoginPage } from "./pages/loginPage.tsx";
 import { getAccessToken } from "./utils/accessToken.ts";
-import { FC, ReactElement } from "react";
+import { FC, lazy, ReactElement, Suspense } from "react";
 import { AccountPage } from "./pages/accountPage.tsx";
 import {
   ACCOUNT,
@@ -17,7 +17,7 @@ import {
 import { MovieCalendar } from "./components/movieCalendar.tsx";
 import { MoviePage } from "./pages/moviePage.tsx";
 import { RegisterPage } from "./pages/registerPage.tsx";
-import backgroundImage from "./assets/backgroundimage.png";
+const MovieBackground = lazy(() => import("./components/movieBackground.tsx"));
 
 const RequireAuth: FC<{ children: ReactElement }> = ({ children }) => {
   const userIsLogged = !!getAccessToken();
@@ -31,13 +31,9 @@ const App = () => {
   return (
     <>
       <Router>
-        <div className={"background-container"}>
-          <img
-            className={"background-img"}
-            src={backgroundImage}
-            alt="background"
-          />
-        </div>
+        <Suspense>
+          <MovieBackground />
+        </Suspense>
         <div className={"appContainer"}>
           <Routes>
             <Route path={HOMEPAGE} element={<HomePage />} />
