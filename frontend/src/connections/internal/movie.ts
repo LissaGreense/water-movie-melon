@@ -2,7 +2,8 @@ import { Movie } from "../../types/internal/movie.ts";
 import axios from "axios";
 import { getAuthHeadersConfig } from "../../utils/accessToken.ts";
 
-const backend_url = "http://localhost:8000";
+const backend_url =
+  import.meta.env.VITE_APP_BACKEND_URL || "http://localhost:8000";
 const movies_endpoint = "/movies/";
 
 export async function getMovies(): Promise<Movie[]> {
