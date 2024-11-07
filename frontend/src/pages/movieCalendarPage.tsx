@@ -1,13 +1,13 @@
 import { Calendar, CalendarDateTemplateEvent } from "primereact/calendar";
 import { useEffect, useState } from "react";
-import { NewMovieNightForm } from "./newMovieNightForm.tsx";
+import { NewMovieNightForm } from "../components/newMovieNightForm.tsx";
 import { getMovieNights } from "../connections/internal/movieNight.ts";
 import dayjs from "dayjs";
-import { MovieNightAttend } from "./movieNightAttend.tsx";
-import { MovieRate } from "./movieRate.tsx";
+import { MovieNightAttend } from "../components/movieNightAttend.tsx";
+import { MovieRate } from "../components/movieRate.tsx";
 import { FormEvent } from "primereact/ts-helpers";
 
-export const MovieCalendar = () => {
+export const MovieCalendarPage = () => {
   const dateFormat = "YYYY-MM-DD";
   const [date, setDate] = useState<Date | null>(null);
   const [nightDates, setNightDates] = useState<string[]>([]);
@@ -23,7 +23,7 @@ export const MovieCalendar = () => {
       .catch((error) => {
         console.error("Error fetching movies:", error);
       });
-  }, []);
+  }, [visibleAdd, visibleJoin, visibleRate]);
 
   const dateTemplate = (calendarDate: CalendarDateTemplateEvent) => {
     const formattedDate = dayjs(
