@@ -51,7 +51,7 @@ export const MovieCalendar = () => {
       nightDates.includes(dayjs(e.value).format(dateFormat).split("T")[0])
     ) {
       setJoinVisible(true);
-    } else {
+    } else if (dayjs(Date()) < dayjs(e.value)) {
       setAddVisible(true);
     }
   };
