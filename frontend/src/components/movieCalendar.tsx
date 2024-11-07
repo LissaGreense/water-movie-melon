@@ -56,6 +56,34 @@ export const MovieCalendar = () => {
     }
   };
 
+  const showDialog = () => {
+    if (visibleAdd) {
+      return (
+        <NewMovieNightForm
+          movieDate={date}
+          isVisible={visibleAdd}
+          setVisible={setAddVisible}
+        />
+      );
+    } else if (visibleJoin) {
+      return (
+        <MovieNightAttend
+          movieDate={date}
+          isVisible={visibleJoin}
+          setVisible={setJoinVisible}
+        />
+      );
+    } else if (visibleRate) {
+      return (
+        <MovieRate
+          movieDate={date}
+          isVisible={visibleRate}
+          setVisible={setRateVisible}
+        />
+      );
+    }
+  };
+
   return (
     <>
       <div className={"logoBar"}></div>
@@ -67,29 +95,10 @@ export const MovieCalendar = () => {
           onChange={handleJoinOrAdd}
           dateFormat="yy-mm-dd"
           inline
+          selectionMode="single"
         />
         <div />
-        <div>
-          <NewMovieNightForm
-            movieDate={date}
-            isVisible={visibleAdd}
-            setVisible={setAddVisible}
-          />
-        </div>
-        <div>
-          <MovieNightAttend
-            movieDate={date}
-            isVisible={visibleJoin}
-            setVisible={setJoinVisible}
-          />
-        </div>
-        <div>
-          <MovieRate
-            movieDate={date}
-            isVisible={visibleRate}
-            setVisible={setRateVisible}
-          />
-        </div>
+        <div>{showDialog()}</div>
       </div>
     </>
   );
