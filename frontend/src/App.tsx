@@ -4,7 +4,7 @@ import { HomePage } from "./pages/movieHomePage.tsx";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { LoginPage } from "./pages/loginPage.tsx";
 import { getAccessToken } from "./utils/accessToken.ts";
-import { FC, lazy, ReactElement, Suspense } from "react";
+import { FC, lazy, ReactElement } from "react";
 import { AccountPage } from "./pages/accountPage.tsx";
 import {
   ACCOUNT,
@@ -31,9 +31,7 @@ const App = () => {
   return (
     <>
       <Router>
-        <Suspense>
-          <MovieBackground />
-        </Suspense>
+        <MovieBackground />
         <div className={"appContainer"}>
           <Routes>
             <Route path={HOMEPAGE} element={<HomePage />} />
