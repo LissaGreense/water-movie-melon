@@ -14,7 +14,7 @@ import {
   MOVIES,
   REGISTER,
 } from "./constants/paths.ts";
-import { MovieCalendar } from "./components/movieCalendar.tsx";
+import { MovieCalendarPage } from "./pages/movieCalendarPage.tsx";
 import { MoviePage } from "./pages/moviePage.tsx";
 import { RegisterPage } from "./pages/registerPage.tsx";
 const MovieBackground = lazy(() => import("./components/movieBackground.tsx"));
@@ -49,7 +49,7 @@ const App = () => {
               path={CALENDAR}
               element={
                 <RequireAuth>
-                  <MovieCalendar />
+                  <MovieCalendarPage />
                 </RequireAuth>
               }
             />
