@@ -2,9 +2,9 @@ import axios, { AxiosRequestConfig } from "axios";
 import { Attendees, MovieNight } from "../../types/internal/movieNight.ts";
 import dayjs from "dayjs";
 import { getAuthHeadersConfig } from "../../utils/accessToken.ts";
+import { DEFAULT_BACKEND_URL } from "../../constants/defaults.ts";
 
-const backend_url =
-  import.meta.env.VITE_APP_BACKEND_URL || "http://localhost:8000";
+const backend_url = import.meta.env.VITE_APP_BACKEND_URL || DEFAULT_BACKEND_URL;
 const movie_nights_endpoint = "/movies/newNight/";
 const movie_date_endpoint = "/movies/movieDate/";
 const attendees_endpoint = "/movies/attendees/";

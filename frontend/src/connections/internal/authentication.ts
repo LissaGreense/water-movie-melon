@@ -1,9 +1,9 @@
 import axios from "axios";
 import { Question, Token } from "../../types/internal/authentication.ts";
 import { ResultResponse } from "../../types/internal/common.ts";
+import { DEFAULT_BACKEND_URL } from "../../constants/defaults.ts";
 
-const backend_url =
-  import.meta.env.VITE_APP_BACKEND_URL || "http://localhost:8000";
+const backend_url = import.meta.env.VITE_APP_BACKEND_URL || DEFAULT_BACKEND_URL;
 const login_endpoint = "/movies/login/";
 const register_endpoint = "/movies/register/";
 const register_question_endpoint = "/movies/registerQuestion/";
