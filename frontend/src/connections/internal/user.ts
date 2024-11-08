@@ -6,8 +6,9 @@ import {
 import axios from "axios";
 import { getAuthHeadersConfig } from "../../utils/accessToken.ts";
 import { ResultResponse } from "../../types/internal/common.ts";
+import { DEFAULT_BACKEND_URL } from "../../constants/defaults.ts";
 
-const backend_url = "http://localhost:8000";
+const backend_url = import.meta.env.VITE_APP_BACKEND_URL || DEFAULT_BACKEND_URL;
 const avatar_endpoint = "/movies/userAvatar/";
 const statistics_endpoint = "/movies/userStatistics/";
 const password_change_endpoint = "/movies/userPassword/";
