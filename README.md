@@ -59,7 +59,7 @@ Before running the app, ensure that you have the following installed:
   applications. [Get Docker Compose](https://docs.docker.com/compose/install/)
 - **Node.js**: For the frontend to work locally. [Get Node.js](https://nodejs.org/en/download/package-manager)
 - **Python 3.x**: Required for the backend. [Get Python](https://www.python.org/downloads/)
--
+
 
 ### Docker-compose
 
@@ -80,7 +80,7 @@ cd watermoviemelon/frontend
 If you're using npm
 
 ```bash
-npm installx
+npm install
 
 ```
 
