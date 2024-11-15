@@ -174,7 +174,7 @@ python manage.py runserver
 
 ### Frontend (docker)
 
-To run frontend of the app using docker first navigate to the water-movie-melon\frontend directory in terminal.
+To run frontend of the app using docker first navigate to the water-movie-melon/frontend directory in terminal.
 Then build the image using:
 
 ```bash
@@ -188,7 +188,7 @@ docker run -p 4173:4173 {frontend_image_name}
 
 ### Backend (docker)
 
-To run backend of the app using docker first navigate to the water-movie-melon\backend directory in terminal.
+To run backend of the app using docker first navigate to the water-movie-melon/backend directory in terminal.
 Then build the image using:
 
 ```bash
