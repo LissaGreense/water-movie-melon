@@ -60,6 +60,23 @@ Before running the app, ensure that you have the following installed:
 - **Node.js**: For the frontend to work locally. [Get Node.js](https://nodejs.org/en/download/package-manager)
 - **Python 3.x**: Required for the backend. [Get Python](https://www.python.org/downloads/)
 
+### Environment variables
+
+To make sure your application can access required APIs and other configurations, set up environment variables by
+creating a `.env` file in each relevant directory.
+
+#### Frontend
+1. Create a .env file in the root directory 
+```bash
+cd frontend
+touch .env
+```
+2. Add required environment variables:
+
+```bash
+# OMDb API Key for fetching movie details
+VITE_OMDB_API_KEY="OMDB_KEY_HERE"
+```
 
 ### Docker-compose
 
@@ -155,17 +172,33 @@ TODO
 
 TODO
 
+## Unit tests
+
+### Backend
+
+The backend uses Django’s built-in testing framework along with pytest (if configured) for more flexibility. Here’s how
+to run the backend tests:
+
+1. Navigate to the backend directory:
+
+```bash
+cd watermoviemelon/backend
+```
+
+2. Activate the virtual environment (if using a manual setup):
+
+```bash
+source venv/bin/activate # On Windows use: venv\Scripts\activate
+```
+
+3. Run all test cases by executing:
+
+```bash
+python manage.py test
+```
+
 ## Authors
 
 - [LissaGreense](https://github.com/LissaGreense)
 - [adlbrtbsr](https://github.com/adlbrtbsr)
 - [kajedot](https://github.com/kajedot)
-
-## How to run
-
-1. pip install backend/requirements.txt
-2. cd frontend && npm install
-3. cd ..
-4. python backend/manage.py migrate
-5. python backend/manage.py runserver
-6. cd frontend && npm run dev
