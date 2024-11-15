@@ -12,9 +12,8 @@ showtime! Once the night ends, everyone can rate the film!
 ### Key Features:
 
 - **Event Creation**: Easily set up movie nights or join to the existing one.
-- **Movie List Management**: Add movCheck out how many movie nights you’ve hosted, how , and flex a little among your
-  friends.ies to a global list shared across all movie nights. Once a film is added, it remains
-  in the pool, keeping the options fresh and interesting for future events until it’s finally selected!
+- **Movie List Management**: Add movies to a global list shared across all movie nights. Once a film is added, it
+  remains in the pool, keeping the options fresh and interesting for future events until it’s finally selected!
 - **Random Movie Selector**: Let watermoviemelon randomly pick a movie from the curated list, adding a touch of
   excitement
   to each night.
@@ -66,11 +65,14 @@ To make sure your application can access required APIs and other configurations,
 creating a `.env` file in each relevant directory.
 
 #### Frontend
-1. Create a .env file in the root directory 
+
+1. Create a .env file in the root directory
+
 ```bash
 cd frontend
 touch .env
 ```
+
 2. Add required environment variables:
 
 ```bash
@@ -121,7 +123,7 @@ Or with yarn:
 yarn dev
 ```
 
-4. The app should now be running locally at http://localhost:3000. You can make changes to the source code, and the
+4. The app should now be running locally at http://localhost:5173. You can make changes to the source code, and the
    development server will automatically reload the page.
 5. To stop the server, use Ctrl+C in your terminal.
 
