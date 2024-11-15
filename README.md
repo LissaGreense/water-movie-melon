@@ -82,7 +82,15 @@ VITE_OMDB_API_KEY="OMDB_KEY_HERE"
 
 ### Docker-compose
 
-TODO
+To run the application using docker compose simply navigate to the water-movie-melon project directory in terminal.
+Then type:
+
+```bash
+docker compose up
+```
+
+App will start, you can connect locally to the frontend at http://localhost:4173, and to the backend at http://localhost:8000.
+
 
 ### Local Development
 
@@ -100,7 +108,6 @@ If you're using npm
 
 ```bash
 npm install
-
 ```
 
 Or if you prefer yarn:
@@ -140,7 +147,6 @@ cd watermoviemelon/backend
 ```bash
 python3 -m venv venv
 source venv/bin/activate  # On Windows use: venv\Scripts\activate
-
 ```
 
 3. Install backend dependencies:
@@ -168,11 +174,32 @@ python manage.py runserver
 
 ### Frontend (docker)
 
-TODO
+To run frontend of the app using docker first navigate to the water-movie-melon/frontend directory in terminal.
+Then build the image using:
+
+```bash
+docker build . -t {frontend_image_name}
+```
+And next run the docker:
+
+```bash
+docker run -p 4173:4173 {frontend_image_name}
+```
 
 ### Backend (docker)
 
-TODO
+To run backend of the app using docker first navigate to the water-movie-melon/backend directory in terminal.
+Then build the image using:
+
+```bash
+docker build . -t {backend_image_name}
+```
+And next run the docker:
+
+```bash
+docker run -p 8000:8000 {backend_image_name}
+```
+
 
 ## Unit tests
 

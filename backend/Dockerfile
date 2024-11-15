@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM python:3.10-bookworm
+FROM python:3.12-bookworm
 
 RUN useradd --create-home --shell /bin/bash wsgi
 
