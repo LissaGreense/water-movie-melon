@@ -39,8 +39,17 @@ export const AccountPage = () => {
       reader.onloadend = () => {
         setCurrentImage(reader.result);
       };
+      setShowCropper(true);
     }
-    setShowCropper(true);
+  };
+
+  const handleImageValidationError = (file: File) => {
+    if (file.size > 1000000) {
+      alert("Obrazek waży tyle co stara pepe! Wybierz coś lżejszego...");
+    } else {
+      console.error("Error validating image...");
+    }
+    setShowCropper(false);
   };
 
   useEffect(() => {
@@ -86,6 +95,7 @@ export const AccountPage = () => {
                 name="avatar"
                 accept="image/*"
                 maxFileSize={1000000}
+                onValidationFail={handleImageValidationError}
                 auto
                 chooseLabel="ZMIEŃ AVATAR"
                 onError={handleAvatarChangeError}
