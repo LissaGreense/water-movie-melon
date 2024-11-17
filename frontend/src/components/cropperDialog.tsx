@@ -35,6 +35,10 @@ export const CropperDialog: FC<CropperDialogProps> = ({
       visible={visible}
       style={{ width: "50vw", height: "30vw" }}
       onHide={() => setShowCropper(false)}
+      transitionOptions={{
+        timeout: 100,
+        classNames: "fade",
+      }}
     >
       <div className="crop-container">
         {visible && (
