@@ -48,8 +48,8 @@ export const LoginPage = () => {
   const getLoginPanel = () => {
     if (getAccessToken() === null) {
       return (
-        <div className={"loginContainer"}>
-          <div className={"waterMelonPeel"}>
+        <div className={"loginContainer melonStyleContainerFruit"}>
+          <div className={"topLoginBar melonStyleContainerPeel"}>
             <h2>UDOWODNIJ, ZE JESTEŚ ARBUZEM</h2>
           </div>
           <form>
@@ -82,8 +82,8 @@ export const LoginPage = () => {
       );
     } else {
       return (
-        <div className={"loginContainer"}>
-          <div className={"waterMelonPeel"}>
+        <div className={"loginContainer melonStyleContainerFruit"}>
+          <div className={"topLoginBar melonStyleContainerPeel"}>
             <h2>JUŻ UDOWODNIŁEŚ SWOJĄ WARTOŚĆ</h2>
           </div>
 

@@ -4,6 +4,7 @@ import { MovieNightCounter } from "../components/movieNightCounter.tsx";
 import bucket from "../assets/bucketph.png";
 import { useEffect, useState } from "react";
 import { getMovieDate } from "../connections/internal/movieNight.ts";
+import "./movieHomePage.css";
 
 export const HomePage = () => {
   const [currentDate, setCurrentDate] = useState<Date>();
@@ -32,9 +33,9 @@ export const HomePage = () => {
               <img className={"bucket"} alt={"bucket"} src={bucket} />
             </>
           )}
-          <div className={"userMenu"}>
-            <MovieMenu />
-          </div>
+        </div>
+        <div className={"userMenu"}>
+          <MovieMenu />
         </div>
       </div>
     </>

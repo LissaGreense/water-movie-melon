@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import { MovieNightAttend } from "../components/movieNightAttend.tsx";
 import { MovieRate } from "../components/movieRate.tsx";
 import { FormEvent } from "primereact/ts-helpers";
+import "./movieCalendarPage.css";
 
 export const MovieCalendarPage = () => {
   const dateFormat = "YYYY-MM-DD";
@@ -87,7 +88,7 @@ export const MovieCalendarPage = () => {
   return (
     <>
       <div className={"logoBar"}></div>
-      <div className={"pageContentCalendar"}>
+      <div className={"pageContentCalendar center"}>
         <div className={"melonStyleCalendar"} />
         <Calendar
           value={date}

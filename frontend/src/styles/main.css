@@ -1,0 +1,35 @@
+@import "./_reset.css";
+@import "./_variables.css";
+@import "./_typography.css";
+
+/* Base styles */
+body {
+  font-family: var(--font-primary);
+  background-color: var(--neutral-light);
+}
+
+/* Common classes */
+.pageContent {
+  height: 90%;
+  display: flex;
+}
+
+.center {
+  justify-content: center;
+  align-items: center;
+}
+
+.logoBar {
+  height: 10%;
+  background-image: url("../assets/LOGOMELONPLACEHOLDER.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.melonStyleContainerFruit {
+  background-color: var(--secondary-pink);
+}
+
+.melonStyleContainerPeel {
+  background-color: var(--primary-green);
+}

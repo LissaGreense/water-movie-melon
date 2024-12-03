@@ -5,6 +5,7 @@ import Cropper, { Area } from "react-easy-crop";
 import getCroppedImg from "../utils/image.ts";
 import { uploadAvatar } from "../connections/internal/user.ts";
 import { getUsername } from "../utils/accessToken.ts";
+import "./cropperDialog.css";
 
 interface CropperDialogProps {
   visible: boolean;

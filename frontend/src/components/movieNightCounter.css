@@ -1,6 +1,6 @@
 .counterContainer {
   color: black;
-  background-color: forestgreen;
+  background-color: var(--primary-green);
   width: 9%;
   height: fit-content;
   border-radius: 15px;

@@ -1,0 +1,141 @@
+/* typography.css */
+
+/* Base Font Styles */
+:root {
+  --font-primary: "Comic Sans MS", "Comic Sans", cursive;
+  --font-size-base: 14px;
+  --font-size-large: 1.5rem; /* For headings */
+  --font-size-medium: 1rem; /* For subheadings */
+  --font-size-small: 0.875rem; /* For captions and smaller text */
+
+  --line-height-base: 1.5;
+  --line-height-heading: 1.2;
+
+  --color-text-primary: #333; /* Main text color */
+  --color-text-secondary: #666; /* Subtle text color */
+  --color-heading: #222; /* Heading color */
+}
+
+/* General Typography */
+body {
+  font-family: var(--font-primary), system-ui;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-text-primary);
+  margin: 0;
+  padding: 0;
+}
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-primary), system-ui;
+  color: var(--color-heading);
+  line-height: var(--line-height-heading);
+  margin: 0.5em 0;
+}
+
+h1 {
+  font-size: calc(var(--font-size-large) * 2); /* Double the base large size */
+}
+
+h2 {
+  font-size: calc(var(--font-size-large) * 1.5);
+}
+
+h3 {
+  font-size: var(--font-size-large);
+}
+
+h4 {
+  font-size: var(--font-size-medium);
+}
+
+h5,
+h6 {
+  font-size: var(--font-size-small);
+  font-weight: normal;
+  color: var(--color-text-secondary);
+}
+
+/* Paragraphs */
+p {
+  margin: 0 0 1em;
+  font-size: var(--font-size-base);
+}
+
+/* Links */
+a {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+}
+
+a:hover {
+  text-decoration: none;
+  color: var(--color-text-secondary);
+}
+
+/* Lists */
+ul,
+ol {
+  margin: 1em 0;
+  padding-left: 1.5em;
+  font-size: var(--font-size-base);
+}
+
+li {
+  margin-bottom: 0.5em;
+}
+
+/* Small Text */
+.small {
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+}
+
+/* Custom Classes */
+.text-center {
+  text-align: center;
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+.text-italic {
+  font-style: italic;
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.text-muted {
+  color: var(--color-text-secondary);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  :root {
+    --font-size-base: 14px;
+  }
+
+  h1 {
+    font-size: calc(var(--font-size-large) * 1.5);
+  }
+
+  h2 {
+    font-size: var(--font-size-large);
+  }
+
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-size: var(--font-size-medium);
+  }
+}

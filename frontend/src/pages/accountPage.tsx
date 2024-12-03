@@ -83,7 +83,7 @@ export const AccountPage = () => {
         setVisible={setShowPasswordChange}
       />
       <div className={"accountContainer"}>
-        <div className={"watermelonPeel"}>
+        <div className={"topAccountContainerBar melonStyleContainerPeel"}>
           <h2>KONTO</h2>
         </div>
         <div className={"userSummary"}>

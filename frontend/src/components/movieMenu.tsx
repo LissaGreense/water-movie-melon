@@ -16,6 +16,7 @@ import {
 } from "../constants/paths.ts";
 import React, { useEffect, useState } from "react";
 import { getAvatar } from "../connections/internal/user.ts";
+import "./movieMenu.css";
 
 export default function MovieMenu() {
   const backend_url = "http://localhost:8000";
@@ -56,7 +57,13 @@ export default function MovieMenu() {
       template: () => {
         return (
           <button onClick={() => navigate(ACCOUNT)}>
-            <Avatar image={avatar} label="u" className="mr-2" shape="circle" />
+            <Avatar
+              image={avatar}
+              label="u"
+              className="mr-2"
+              shape="circle"
+              size="large"
+            />
             <div className="flex flex-column align">
               <span className="font-bold">{getUsername()}</span>
             </div>
@@ -117,12 +124,5 @@ export default function MovieMenu() {
       ],
     },
   ];
-  return (
-    <div className="card flex flex-column md:flex-row align-content-end">
-      <Menu
-        model={getAccessToken() ? itemsLogged : itemsNotLogged}
-        className="flex flex-column md:flex-row align-content-end"
-      />
-    </div>
-  );
+  return <Menu model={getAccessToken() ? itemsLogged : itemsNotLogged} />;
 }

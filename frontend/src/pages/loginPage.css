@@ -1,17 +1,10 @@
 .loginContainer {
   width: 30%;
   height: 35%;
-  background-color: red;
 }
 
-.waterMelonPeel {
+.topLoginBar {
   width: 100%;
   height: 35%;
-  background-color: green;
   overflow: hidden;
-}
-
-.center {
-  justify-content: center;
-  align-items: center;
 }

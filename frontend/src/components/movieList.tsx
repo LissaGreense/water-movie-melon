@@ -7,6 +7,7 @@ import { Chip } from "primereact/chip";
 import cover from "../assets/coverplaceholder.jpg";
 import dayjs from "dayjs";
 import { VirtualScroller } from "primereact/virtualscroller";
+import "./movieList.css";
 
 interface MovieListProps {
   movieFormVisible: boolean;
