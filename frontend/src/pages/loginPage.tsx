@@ -9,7 +9,7 @@ import {
   getAccessToken,
   saveAccessToken,
 } from "../utils/accessToken.ts";
-import { LOGIN } from "../constants/paths.ts";
+import { HOMEPAGE, LOGIN } from "../constants/paths.ts";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ export const LoginPage = () => {
           alert("Ojoj, chyba nie jesteś arbuzem...");
         } else {
           saveAccessToken(r.token, input.username);
-          navigate(LOGIN);
+          navigate(HOMEPAGE);
         }
       });
     } else {
