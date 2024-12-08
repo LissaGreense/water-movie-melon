@@ -1,4 +1,5 @@
 import backgroundImage from "../assets/backgroundimage.png";
+import "./movieBackground.css";
 
 export default function MovieBackground() {
   return (

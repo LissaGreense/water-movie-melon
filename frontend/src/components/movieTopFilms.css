@@ -1,0 +1,21 @@
+.topMovieCover {
+  width: 30%;
+  height: 100%;
+}
+.topMovieCoverDiv {
+  width: 30%;
+  height: auto;
+}
+.topMovieCoverData {
+  width: 70%;
+  float: right;
+}
+.topMovieDiv {
+  height: auto;
+  width: 100%;
+  float: left;
+  align-items: center;
+  display: flex;
+  padding: 5%;
+  border-bottom: 7px solid var(--primary-green);
+}

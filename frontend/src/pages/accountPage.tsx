@@ -83,13 +83,13 @@ export const AccountPage = () => {
         setVisible={setShowPasswordChange}
       />
       <div className={"accountContainer"}>
-        <div className={"watermelonPeel"}>
+        <div className={"topAccountContainerBar melonStyleContainerPeel"}>
           <h2>KONTO</h2>
         </div>
         <div className={"userSummary"}>
           <div className={"half-left"}>
             <div className={"avatar-space"}>
-              <Image src={avatar} height={"150px"} />
+              <Image src={avatar} height={"150rem"} />
               <FileUpload
                 mode="basic"
                 name="avatar"
@@ -112,23 +112,57 @@ export const AccountPage = () => {
             <Button onClick={(e) => handleLogoutEvent(e)}>WYLOGUJ</Button>
           </div>
         </div>
-        <div className={"statistics"}>
-          <h3>DODANE FILMY: {userStatistics?.added_movies}</h3>
-          <h3>FILMY Z OCENĄ 7: {userStatistics?.seven_rated_movies}</h3>
-          <h3>OBEJRZANE FILMY: {userStatistics?.watched_movies}</h3>
-          <h3>HOSTOWANE WIECZORY: {userStatistics?.hosted_movie_nights}</h3>
-          <h3>
-            NAJWYŻEJ OCENIANY FILM:{" "}
-            {userStatistics?.highest_rated_movie
-              ? userStatistics.highest_rated_movie
-              : "Brak danych"}
-          </h3>
-          <h3>
-            NAJNIŻEJ OCENIANY FILM:{" "}
-            {userStatistics?.lowest_rated_movie
-              ? userStatistics.lowest_rated_movie
-              : "Brak danych"}
-          </h3>
+        <div className={"statistics grid align-items-center"}>
+          <div className="col-4">
+            <h4>DODANE FILMY:</h4>
+          </div>
+          <div className="col-2">
+            <h4 className="rectangle-border">
+              {" "}
+              {userStatistics?.added_movies}
+            </h4>
+          </div>
+          <div className="col-4">
+            <h4>FILMY Z OCENĄ 7:</h4>
+          </div>
+          <div className="col-2">
+            <h4 className="rectangle-border">
+              {userStatistics?.seven_rated_movies}
+            </h4>
+          </div>
+          <div className="col-4">
+            <h4>OBEJRZANE FILMY: </h4>
+          </div>
+          <div className="col-2">
+            <h4 className="rectangle-border">
+              {" "}
+              {userStatistics?.watched_movies}
+            </h4>
+          </div>
+          <div className="col-4">
+            <h4>HOSTOWANE WIECZORY:</h4>
+          </div>
+          <div className="col-2">
+            <h4 className="rectangle-border">
+              {userStatistics?.hosted_movie_nights}
+            </h4>
+          </div>
+          <h4 className="col-12">NAJWYŻEJ OCENIANY FILM</h4>
+          <div className="col-6 col-offset-3">
+            <h4 className="rectangle-border">
+              {userStatistics?.highest_rated_movie
+                ? userStatistics.highest_rated_movie
+                : "Brak danych"}
+            </h4>
+          </div>
+          <h4 className="col-12">NAJNIŻEJ OCENIANY FILM</h4>
+          <div className="col-6 col-offset-3">
+            <h4 className="rectangle-border">
+              {userStatistics?.lowest_rated_movie
+                ? userStatistics.lowest_rated_movie
+                : "Brak danych"}
+            </h4>
+          </div>
         </div>
       </div>
     </div>

@@ -64,14 +64,8 @@ export const NewMovieForm = () => {
     if (movieCoverLink !== "") {
       return (
         <>
-          <span className="melonStyleContainerPeel p-inputgroup-addon">
-            Wybrana okładka
-          </span>
-          <img
-            className="melonStyleContainerPeel"
-            src={movieCoverLink}
-            alt="Wybrana okładka filmu"
-          />
+          <span className="p-inputgroup-addon">Wybrana okładka</span>
+          <img src={movieCoverLink} alt="Wybrana okładka filmu" />
         </>
       );
     }
@@ -80,14 +74,14 @@ export const NewMovieForm = () => {
   const showPosters = () => {
     if (posterUrls && posterUrls.length > 0) {
       return posterUrls.map((url, index) => (
-        <div key={"cover-item" + index}>
+        <div className="m-2" key={"cover-item" + index}>
           <img
-            className="melonStyleContainerPeel p-inputgroup flex-1"
+            className="p-inputgroup flex-1"
             src={url}
             alt={"Proponowana okładka"}
           />
           <Button
-            className="melonStyleContainerPeel"
+            className="m-1"
             onClick={() => setMovieCoverLink(url)}
             type={"button"}
           >
@@ -136,45 +130,33 @@ export const NewMovieForm = () => {
   const getInputFields = () => {
     return (
       <>
-        <div className="melonStyleContainerPeel p-inputgroup flex-1">
-          <span className="melonStyleContainerPeel p-inputgroup-addon">
-            Tytuł
-          </span>
+        <div className="p-inputgroup flex-1 m-2">
+          <span className="p-inputgroup-addon">Tytuł</span>
           <InputText
-            className="melonStyleContainerPeel"
             placeholder="eg. Superzioło"
             name={"title"}
             onChange={(e) => setMovieTitle(e.target.value)}
           />
         </div>
-        <div className="melonStyleContainerPeel p-inputgroup flex-1">
-          <span className="melonStyleContainerPeel p-inputgroup-addon">
-            Gatunek
-          </span>
+        <div className="p-inputgroup flex-1 m-2">
+          <span className="p-inputgroup-addon">Gatunek</span>
           <InputText
-            className="melonStyleContainerPeel"
             placeholder="eg. komedia"
             name={"genre"}
             onChange={(e) => setMovieGenre(e.target.value)}
           />
         </div>
-        <div className="melonStyleContainerPeel p-inputgroup flex-1">
-          <span className="melonStyleContainerPeel p-inputgroup-addon">
-            Czas trwania
-          </span>
+        <div className="p-inputgroup flex-1 m-2">
+          <span className="p-inputgroup-addon">Czas trwania</span>
           <InputNumber
-            className="melonStyleContainerPeel"
             placeholder="w minutach"
             name={"duration"}
             onChange={(e) => setMovieDuration(e.value as number)}
           />
         </div>
-        <div className="melonStyleContainerPeel p-inputgroup flex-1">
-          <span className="melonStyleContainerPeel p-inputgroup-addon">
-            Link do filmu
-          </span>
+        <div className="p-inputgroup flex-1 m-2">
+          <span className="p-inputgroup-addon">Link do filmu</span>
           <InputText
-            className="melonStyleContainerPeel"
             placeholder="eg. cda.pl/..."
             name={"link"}
             onChange={(e) => handleMovieLink(e.target.value)}
@@ -197,14 +179,14 @@ export const NewMovieForm = () => {
         {showChosenPoster()}
       </div>
       <Button
-        className="melonStyleContainerPeel"
+        className="m-1"
         label="Wczytaj okładki"
         icon="pi pi-check"
         onClick={handleMoviePoster}
         type={"button"}
       ></Button>
       <Button
-        className="melonStyleContainerPeel"
+        className="m-1"
         label="Dodaj Film"
         icon="pi pi-check"
         type={"submit"}
@@ -213,7 +195,7 @@ export const NewMovieForm = () => {
       <Dialog visible={postSuccessful} onHide={() => setPostSuccessful(false)}>
         <span className="melonStyleContainerPeel">Dodano film!</span>
       </Dialog>
-      <div className="melonStyleContainerPeel">{showPosters()}</div>
+      <div className="m-2">{showPosters()}</div>
     </form>
   );
 };

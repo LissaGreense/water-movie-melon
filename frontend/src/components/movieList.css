@@ -1,0 +1,13 @@
+.floatLeft {
+  float: left;
+  align-items: start;
+}
+.movieCoverDiv {
+  width: 20%;
+}
+.movieCoverDiv img {
+  height: 9em;
+}
+.movieData {
+  width: 80%;
+}

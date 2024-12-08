@@ -1,6 +1,7 @@
 import "./App.css";
+import "primeflex/primeflex.css";
 import "primereact/resources/themes/vela-green/theme.css";
-import { HomePage } from "./pages/movieHomePage.tsx";
+import { HomePage } from "./pages/homePage.tsx";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { LoginPage } from "./pages/loginPage.tsx";
 import { getAccessToken } from "./utils/accessToken.ts";
@@ -14,7 +15,7 @@ import {
   MOVIES,
   REGISTER,
 } from "./constants/paths.ts";
-import { MovieCalendarPage } from "./pages/movieCalendarPage.tsx";
+import { CalendarPage } from "./pages/calendarPage.tsx";
 import { MoviePage } from "./pages/moviePage.tsx";
 import { RegisterPage } from "./pages/registerPage.tsx";
 const MovieBackground = lazy(() => import("./components/movieBackground.tsx"));
@@ -49,7 +50,7 @@ const App = () => {
               path={CALENDAR}
               element={
                 <RequireAuth>
-                  <MovieCalendarPage />
+                  <CalendarPage />
                 </RequireAuth>
               }
             />
