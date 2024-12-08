@@ -1,4 +1,4 @@
-.topMovies {
+.topMoviesSection {
   height: 100%;
   float: left;
   align-items: center;
@@ -17,7 +17,7 @@
   animation-iteration-count: infinite;
   position: absolute;
   margin: auto;
-  top: 0;
+  top: 5rem;
   left: 0;
   right: 0;
   bottom: 0;

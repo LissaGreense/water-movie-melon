@@ -1,7 +1,11 @@
 :root {
-  --primary-green: #88c057;
-  --secondary-pink: #e5143d;
+  --primary-green: #86cc6b;
+  --secondary-pink: #ed2d3c;
+  --seed-brown: #2b220d;
+  --dark-seed-brown: #332211;
+  --dark-green: #39632a;
   --neutral-light: #f9f9f9;
+  --light-green: #d5ffc7;
   --font-size-medium: 16px;
   --font-size-large: 24px;
   --button-border-radius: 5px;

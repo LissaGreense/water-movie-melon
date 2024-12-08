@@ -2,10 +2,123 @@
 @import "./_variables.css";
 @import "./_typography.css";
 
-/* Base styles */
-body {
-  font-family: var(--font-primary);
-  background-color: var(--neutral-light);
+/* Prime React styles */
+
+.p-button {
+  background: var(--primary-green);
+  color: var(--color-text-primary);
+}
+
+.p-sidebar {
+  background: var(--secondary-pink);
+  border: 1px solid var(--primary-green);
+}
+
+.p-accordion .p-accordion-header .p-accordion-header-link {
+  background: var(--primary-green);
+  border: 1px solid var(--dark-green);
+}
+
+.p-accordion .p-accordion-content {
+  background: var(--secondary-pink);
+  border: none;
+}
+
+.p-chip {
+  background-color: var(--primary-green);
+}
+
+.p-datepicker {
+  background: var(--secondary-pink);
+  border: 1px solid var(--primary-green);
+}
+
+.p-datepicker .p-datepicker-header {
+  background: var(--primary-green);
+  border-bottom: none;
+}
+
+.p-inputgroup-addon {
+  background: var(--primary-green);
+  border-top: 1px solid var(--primary-green);
+  border-left: 1px solid var(--primary-green);
+  border-bottom: 1px solid var(--primary-green);
+}
+
+.p-inputtext {
+  background: var(--secondary-pink);
+  border: 1px solid var(--primary-green);
+}
+.p-dialog {
+  border: 1px solid var(--dark-green);
+}
+
+.p-dialog .p-dialog-header {
+  background: var(--primary-green);
+}
+.p-dialog .p-dialog-content {
+  padding: 2rem;
+  background: var(--secondary-pink);
+}
+
+.p-menu {
+  height: 70vh;
+  width: 12vw;
+  background: var(--secondary-pink);
+  border: 1px solid var(--primary-green);
+}
+@media (max-width: 600px) {
+  .p-menu {
+    height: 100%;
+    width: 20vw;
+  }
+}
+@media (min-width: 601px) and (max-width: 1024px) {
+  .p-menu {
+    height: 65vh;
+    width: 20vw;
+  }
+}
+@media (min-width: 1025px) {
+  .p-menu {
+    height: 70vh;
+    width: 12vw;
+  }
+}
+
+.p-menu .p-submenu-header {
+  background: var(--secondary-pink);
+}
+
+.p-menu .p-menu-separator {
+  border-top: 1px solid var(--primary-green);
+}
+
+.p-menuitem-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.seed {
+  background-color: var(--seed-brown);
+  border-radius: 85% 55% 55% 85%;
+  min-width: 6vw;
+  width: auto;
+  height: 4vh;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  line-height: 4vh;
+  transition: all 0.3s ease;
+  padding: 0 0.5rem;
+  display: inline-block;
+}
+
+.seed:hover {
+  background-color: var(--dark-seed-brown);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
 }
 
 /* Common classes */

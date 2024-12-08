@@ -6,9 +6,9 @@ import dayjs from "dayjs";
 import { MovieNightAttend } from "../components/movieNightAttend.tsx";
 import { MovieRate } from "../components/movieRate.tsx";
 import { FormEvent } from "primereact/ts-helpers";
-import "./movieCalendarPage.css";
+import "./calendarPage.css";
 
-export const MovieCalendarPage = () => {
+export const CalendarPage = () => {
   const dateFormat = "YYYY-MM-DD";
   const [date, setDate] = useState<Date | null>(null);
   const [nightDates, setNightDates] = useState<string[]>([]);
@@ -87,9 +87,7 @@ export const MovieCalendarPage = () => {
 
   return (
     <>
-      <div className={"logoBar"}></div>
       <div className={"pageContentCalendar center"}>
-        <div className={"melonStyleCalendar"} />
         <Calendar
           value={date}
           dateTemplate={dateTemplate}
@@ -98,7 +96,6 @@ export const MovieCalendarPage = () => {
           inline
           selectionMode="single"
         />
-        <div />
         <div>{showDialog()}</div>
       </div>
     </>

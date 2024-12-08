@@ -29,11 +29,7 @@ export const MovieList: FC<MovieListProps> = ({ movieFormVisible }) => {
   const itemTemplate = (data: Movie) => {
     return (
       <Accordion className="align-content-start" activeIndex={1}>
-        <AccordionTab
-          className="melonStyleContainerFruit"
-          header={data.title}
-          key={data.title}
-        >
+        <AccordionTab header={data.title} key={data.title}>
           <div className="floatLeft movieCoverDiv">
             <img
               src={data.cover_link}
@@ -53,7 +49,7 @@ export const MovieList: FC<MovieListProps> = ({ movieFormVisible }) => {
             <span>{data.user}</span>
             <span>{dayjs(data.date_added).format("YYYY-MM-DD")}</span>
             <div>
-              <Chip label={data.genre} />
+              <Chip className="seed center" label={data.genre} />
             </div>
           </div>
         </AccordionTab>

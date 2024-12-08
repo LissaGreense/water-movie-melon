@@ -4,16 +4,16 @@
 :root {
   --font-primary: "Comic Sans MS", "Comic Sans", cursive;
   --font-size-base: 14px;
-  --font-size-large: 1.5rem; /* For headings */
-  --font-size-medium: 1rem; /* For subheadings */
-  --font-size-small: 0.875rem; /* For captions and smaller text */
+  --font-size-large: 1.5rem;
+  --font-size-medium: 1rem;
+  --font-size-small: 0.875rem;
 
   --line-height-base: 1.5;
   --line-height-heading: 1.2;
 
-  --color-text-primary: #333; /* Main text color */
-  --color-text-secondary: #666; /* Subtle text color */
-  --color-heading: #222; /* Heading color */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #666;
+  --color-heading: var(--light-green);
 }
 
 /* General Typography */
@@ -22,8 +22,6 @@ body {
   font-size: var(--font-size-base);
   line-height: var(--line-height-base);
   color: var(--color-text-primary);
-  margin: 0;
-  padding: 0;
 }
 
 /* Headings */
@@ -40,7 +38,7 @@ h6 {
 }
 
 h1 {
-  font-size: calc(var(--font-size-large) * 2); /* Double the base large size */
+  font-size: calc(var(--font-size-large) * 2);
 }
 
 h2 {

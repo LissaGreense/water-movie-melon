@@ -57,6 +57,7 @@ export const LoginPage = () => {
               <InputText
                 name={"username"}
                 type="text"
+                className="m-2"
                 placeholder="Username"
                 onChange={handleInput}
               />
@@ -66,6 +67,7 @@ export const LoginPage = () => {
               <InputText
                 name={"password"}
                 type="password"
+                className="m-2"
                 placeholder="Password"
                 onChange={handleInput}
                 autoComplete="on"
@@ -73,6 +75,7 @@ export const LoginPage = () => {
             </div>
             <div>
               <Button
+                className="m-2"
                 label="Uroczyście przysięgam"
                 onClick={handleSubmitEvent}
               />
@@ -87,7 +90,7 @@ export const LoginPage = () => {
             <h2>JUŻ UDOWODNIŁEŚ SWOJĄ WARTOŚĆ</h2>
           </div>
 
-          <div>
+          <div className="m-2">
             <Button label="Wystarczy Arbużenia" onClick={handleLogoutEvent} />
           </div>
         </div>

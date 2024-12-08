@@ -12,8 +12,10 @@
 }
 .topMovieDiv {
   height: auto;
+  width: 100%;
   float: left;
   align-items: center;
   display: flex;
-  border-bottom: 7px solid #213547;
+  padding: 5%;
+  border-bottom: 7px solid var(--primary-green);
 }

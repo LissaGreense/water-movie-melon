@@ -4,7 +4,7 @@ import { MovieNightCounter } from "../components/movieNightCounter.tsx";
 import bucket from "../assets/bucketph.png";
 import { useEffect, useState } from "react";
 import { getMovieDate } from "../connections/internal/movieNight.ts";
-import "./movieHomePage.css";
+import "./homePage.css";
 
 export const HomePage = () => {
   const [currentDate, setCurrentDate] = useState<Date>();
@@ -23,7 +23,7 @@ export const HomePage = () => {
     <>
       <div className={"logoBar"}></div>
       <div className={"pageContent"}>
-        <div className={"topMovies"}>
+        <div className={"topMoviesSection"}>
           <TopMovies />
         </div>
         <div className={"bucketSpace"}>

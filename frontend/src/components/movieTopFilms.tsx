@@ -40,7 +40,7 @@ export default function TopMovies() {
         <div className="topMovieCoverData">
           <div>
             <div>
-              <div className="textSans">{data.movie.title}</div>
+              <div>{data.movie.title}</div>
             </div>
             <div className="flex flex-column gap-2">
               <Rating
@@ -51,7 +51,7 @@ export default function TopMovies() {
               ></Rating>
               <span className="flex align-items-center gap-2">
                 <i className="pi pi-tag product-category-icon"></i>
-                <span className="textSansNoBorder">{data.movie.genre}</span>
+                <span>{data.movie.genre}</span>
               </span>
             </div>
           </div>
@@ -64,7 +64,7 @@ export default function TopMovies() {
     <div className="flex justify-content-center">
       <Sidebar visible={visible} onHide={() => setVisible(false)}>
         <h2>Top Movies</h2>
-        <div className="card">
+        <div>
           <VirtualScroller
             items={ratings}
             itemTemplate={itemTemplate}

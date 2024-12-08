@@ -8,31 +8,3 @@
   background-repeat: no-repeat;
   background-size: cover;
 }
-
-.textSans {
-  color: black;
-  background-color: var(--primary-green);
-  width: 9%;
-  height: fit-content;
-  border-radius: 10px;
-  min-width: fit-content;
-  margin: auto;
-  top: 12%;
-  left: 0;
-  right: 0;
-  bottom: auto;
-  font-family: "Comic Sans MS", "Comic Sans", cursive;
-}
-.textSansNoBorder {
-  color: #000000;
-  width: 9%;
-  height: fit-content;
-  border-radius: 10px;
-  min-width: fit-content;
-  margin: auto;
-  top: 12%;
-  left: 0;
-  right: 0;
-  bottom: auto;
-  font-family: "Comic Sans MS", "Comic Sans", cursive;
-}
