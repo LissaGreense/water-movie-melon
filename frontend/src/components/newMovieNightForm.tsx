@@ -34,7 +34,7 @@ export const NewMovieNightForm: FC<MovieDateProps> = ({
           );
         }}
       >
-        <div className="p-inputgroup flex-1">
+        <div className="p-inputgroup flex-1 m-2">
           <span className="p-inputgroup-addon">Data Wieczoru</span>
           <Calendar value={movieDate} dateFormat={"dd-mm-yy"} disabled />
           <Calendar
@@ -44,11 +44,16 @@ export const NewMovieNightForm: FC<MovieDateProps> = ({
             hourFormat="24"
           />
         </div>
-        <div className="p-inputgroup flex-1">
+        <div className="p-inputgroup flex-1 m-2">
           <span className="p-inputgroup-addon">Lokacja</span>
           <InputText placeholder="eg. chata starej pepe" name={"location"} />
         </div>
-        <Button label="Dodaj Wieczór" icon="pi pi-check" type={"submit"} />
+        <Button
+          className="m-2"
+          label="Dodaj Wieczór"
+          icon="pi pi-check"
+          type={"submit"}
+        />
       </form>
     </Dialog>
   );
