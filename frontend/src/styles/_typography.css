@@ -2,7 +2,7 @@
 
 /* Base Font Styles */
 :root {
-  --font-primary: "Comic Sans MS", "Comic Sans", cursive;
+  --font-primary: "Comic Sans MS", "Comic Sans", "Comic Neue", cursive;
   --font-size-base: 14px;
   --font-size-large: 1.5rem;
   --font-size-medium: 1rem;
@@ -18,10 +18,21 @@
 
 /* General Typography */
 body {
-  font-family: var(--font-primary), system-ui;
   font-size: var(--font-size-base);
   line-height: var(--line-height-base);
   color: var(--color-text-primary);
+}
+
+body,
+.p-component {
+  font-family: var(--font-primary), system-ui;
+}
+
+.p-button,
+.p-inputtext,
+.p-dropdown,
+.p-datatable {
+  font-family: var(--font-primary), system-ui;
 }
 
 /* Headings */
