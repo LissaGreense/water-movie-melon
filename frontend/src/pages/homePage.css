@@ -1,0 +1,18 @@
+.topMoviesSection {
+  height: 100%;
+  float: left;
+  align-items: center;
+  display: flex;
+}
+
+.bucketSpace {
+  height: 100%;
+  width: 100%;
+}
+
+.userMenu {
+  height: 100%;
+  align-items: center;
+  display: flex;
+  float: right;
+}

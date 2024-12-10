@@ -4,6 +4,8 @@ import { MovieNightCounter } from "../components/movieNightCounter.tsx";
 import { useEffect, useState } from "react";
 import { getMovieDate } from "../connections/internal/movieNight.ts";
 import { BucketWithCovers } from "../components/bucketWithCovers.tsx";
+import "./homePage.css";
+
 
 export const HomePage = () => {
   const [nextMovieDate, setNextMovieDate] = useState<Date>();
@@ -22,7 +24,7 @@ export const HomePage = () => {
     <>
       <div className={"logoBar"}></div>
       <div className={"pageContent"}>
-        <div className={"topMovies"}>
+        <div className={"topMoviesSection"}>
           <TopMovies />
         </div>
         <div id={'bucketSpace'} className={"bucketSpace"}>
@@ -32,9 +34,9 @@ export const HomePage = () => {
               <BucketWithCovers />
             </>
           )}
-          <div className={"userMenu"}>
-            <MovieMenu />
-          </div>
+        </div>
+        <div className={"userMenu"}>
+          <MovieMenu />
         </div>
       </div>
     </>

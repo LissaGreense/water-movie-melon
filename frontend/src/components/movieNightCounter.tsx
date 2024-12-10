@@ -5,7 +5,6 @@ import {
   getRandomMovie,
 } from "../connections/internal/movieNight.ts";
 import { Movie } from "../types/internal/movie.ts";
-import "./bucketWithCovers.css"
 
 interface MovieNightCounterProps {
   nextNightDate: Date;

@@ -34,7 +34,7 @@ export default function MovieMenu() {
   const itemRenderer = (item: MenuItem) => (
     <div className="p-menuitem-content">
       <a
-        className="flex align-items-center p-menuitem-link"
+        className="align-items-center p-menuitem-link seed"
         onClick={(e: React.MouseEvent) => {
           e.preventDefault();
 
@@ -46,8 +46,7 @@ export default function MovieMenu() {
           }
         }}
       >
-        <span className={item.icon} />
-        <span className="textSans">{item.label}</span>
+        <span>{item.label}</span>
       </a>
     </div>
   );
@@ -55,12 +54,18 @@ export default function MovieMenu() {
     {
       template: () => {
         return (
-          <button onClick={() => navigate(ACCOUNT)}>
-            <Avatar image={avatar} label="u" className="mr-2" shape="circle" />
-            <div className="flex flex-column align">
-              <span className="font-bold">{getUsername()}</span>
+          <div onClick={() => navigate(ACCOUNT)} className="center">
+            <div>
+              <Avatar
+                image={avatar}
+                className="cursor-pointer"
+                label="u"
+                shape="circle"
+                size="large"
+              />
             </div>
-          </button>
+            <span className="font-bold cursor-pointer">{getUsername()}</span>
+          </div>
         );
       },
     },
@@ -117,12 +122,5 @@ export default function MovieMenu() {
       ],
     },
   ];
-  return (
-    <div className="card flex flex-column md:flex-row align-content-end">
-      <Menu
-        model={getAccessToken() ? itemsLogged : itemsNotLogged}
-        className="flex flex-column md:flex-row align-content-end"
-      />
-    </div>
-  );
+  return <Menu model={getAccessToken() ? itemsLogged : itemsNotLogged} />;
 }
