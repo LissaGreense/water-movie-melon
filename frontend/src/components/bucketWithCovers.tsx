@@ -27,7 +27,7 @@ export function BucketWithCovers() {
     return () => {
       clearRenderer();
     };
-  }, []);
+  });
 
   function coversRender(covers: string[]) {
     if (!canvas.current) return;
