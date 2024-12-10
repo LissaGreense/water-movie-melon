@@ -53,7 +53,9 @@ export const CalendarPage = () => {
       nightDates.includes(dayjs(e.value).format(dateFormat).split("T")[0])
     ) {
       setJoinVisible(true);
-    } else if (dayjs(currentDate.setDate(currentDate.getDate() - 1)) < dayjs(e.value)) {
+    } else if (
+      dayjs(currentDate.setDate(currentDate.getDate() - 1)) < dayjs(e.value)
+    ) {
       setAddVisible(true);
     }
   };

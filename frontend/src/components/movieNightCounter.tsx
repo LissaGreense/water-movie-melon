@@ -89,7 +89,11 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({
           <h2>Oglądamy {todayMovie?.title}!</h2>
         </div>
         <div className={"movieChosenCover"}>
-          <img className={isCountDownFinished ? "movieChosenCoverAnimation" : ""} src={todayMovie?.cover_link} alt={"Dzisiejszy film"}/>
+          <img
+            className={isCountDownFinished ? "movieChosenCoverAnimation" : ""}
+            src={todayMovie?.cover_link}
+            alt={"Dzisiejszy film"}
+          />
         </div>
       </>
     );

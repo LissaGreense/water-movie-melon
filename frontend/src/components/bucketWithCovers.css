@@ -1,50 +1,50 @@
 .renderContainer {
-    height: 500px;
-    width: 450px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, 23%);
-    position: absolute;
-    inset: 0;
-    margin: auto;
-    z-index: 1;
+  height: 500px;
+  width: 450px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 23%);
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  z-index: 1;
 }
 
 .bucket {
-    width: auto;
-    position: absolute;
-    margin: auto;
-    z-index: 2;
-    overflow: hidden;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0.55);
+  width: auto;
+  position: absolute;
+  margin: auto;
+  z-index: 2;
+  overflow: hidden;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.55);
 }
 
 .bucketAnimation {
-    position: absolute;
-    width: auto;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    animation-name: bucket;
-    animation-duration: 20s;
-    animation-iteration-count: infinite;
+  position: absolute;
+  width: auto;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  animation-name: bucket;
+  animation-duration: 20s;
+  animation-iteration-count: infinite;
 }
 @keyframes bucket {
-    0% {
-        transform: translate(0, 0);
-    }
-    25% {
-        transform: translate(0, 50px);
-    }
-    50% {
-        transform: translate(0, 0);
-    }
-    75% {
-        transform: translate(0px, -50px);
-    }
-    100% {
-        transform: translate(0, 0);
-    }
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(0, 50px);
+  }
+  50% {
+    transform: translate(0, 0);
+  }
+  75% {
+    transform: translate(0px, -50px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
 }
