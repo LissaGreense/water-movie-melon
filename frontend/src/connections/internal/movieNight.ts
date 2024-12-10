@@ -3,6 +3,7 @@ import { Attendees, MovieNight } from "../../types/internal/movieNight.ts";
 import dayjs from "dayjs";
 import { getAuthHeadersConfig } from "../../utils/accessToken.ts";
 import { DEFAULT_BACKEND_URL } from "../../constants/defaults.ts";
+import { Movie } from "../../types/internal/movie.ts";
 
 const backend_url = import.meta.env.VITE_APP_BACKEND_URL || DEFAULT_BACKEND_URL;
 const movie_nights_endpoint = "/movies/newNight/";
@@ -102,7 +103,7 @@ export async function getAttendees(): Promise<Attendees[]> {
   }
 }
 
-export async function getRandomMovie(): Promise<string> {
+export async function getRandomMovie(): Promise<Movie | null> {
   try {
     const response = await axios.get(
       backend_url + rand_movie_endpoint,
@@ -111,7 +112,7 @@ export async function getRandomMovie(): Promise<string> {
     return response.data;
   } catch (error) {
     console.error(error);
-    return "";
+    return null;
   }
 }
 

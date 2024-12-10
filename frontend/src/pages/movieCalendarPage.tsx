@@ -14,6 +14,7 @@ export const MovieCalendarPage = () => {
   const [visibleAdd, setAddVisible] = useState<boolean>(false);
   const [visibleJoin, setJoinVisible] = useState<boolean>(false);
   const [visibleRate, setRateVisible] = useState<boolean>(false);
+  const currentDate = new Date();
 
   useEffect(() => {
     getMovieNights()
@@ -51,7 +52,7 @@ export const MovieCalendarPage = () => {
       nightDates.includes(dayjs(e.value).format(dateFormat).split("T")[0])
     ) {
       setJoinVisible(true);
-    } else if (dayjs(Date()) < dayjs(e.value)) {
+    } else if (dayjs(currentDate.setDate(currentDate.getDate() - 1)) < dayjs(e.value)) {
       setAddVisible(true);
     }
   };
