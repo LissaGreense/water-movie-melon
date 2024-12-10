@@ -16,8 +16,6 @@ import {
 } from "../constants/paths.ts";
 import React, { useEffect, useState } from "react";
 import { getAvatar } from "../connections/internal/user.ts";
-import "./movieMenu.css";
-import { Button } from "primereact/button";
 
 export default function MovieMenu() {
   const backend_url = "http://localhost:8000";
