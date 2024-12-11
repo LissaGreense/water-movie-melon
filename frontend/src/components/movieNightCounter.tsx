@@ -4,6 +4,7 @@ import {
   checkForNights,
   getRandomMovie,
 } from "../connections/internal/movieNight.ts";
+import { Movie } from "../types/internal/movie.ts";
 
 interface MovieNightCounterProps {
   nextNightDate: Date;
@@ -13,7 +14,7 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({
   nextNightDate,
 }) => {
   const [nextNightTime, setNextNightTime] = useState<number>();
-  const [todaysMovie, setTodaysMovie] = useState<string>("");
+  const [todayMovie, setTodayMovie] = useState<Movie>();
   const [countDown, setCountDown] = useState<number>(7);
   const [areThereNights, setAreThereNights] = useState<boolean>(false);
   const millisecondsInYear = 1000 * 60 * 60 * 24 * 365;
@@ -39,7 +40,9 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({
   useEffect(() => {
     try {
       getRandomMovie().then((m) => {
-        setTodaysMovie(m);
+        if (m) {
+          setTodayMovie(m);
+        }
       });
     } catch (error) {
       console.error(error);
@@ -81,9 +84,18 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({
     );
   } else if ((countDown as number) <= 0) {
     return (
-      <div className={"counterContainer"}>
-        <h2>Oglądamy {todaysMovie}!</h2>
-      </div>
+      <>
+        <div className={"counterContainer"}>
+          <h2>Oglądamy {todayMovie?.title}!</h2>
+        </div>
+        <div className={"movieChosenCover"}>
+          <img
+            className={isCountDownFinished ? "movieChosenCoverAnimation" : ""}
+            src={todayMovie?.cover_link}
+            alt={"Dzisiejszy film"}
+          />
+        </div>
+      </>
     );
   } else {
     return (

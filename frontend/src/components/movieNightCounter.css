@@ -17,3 +17,33 @@
 .counterContainer h2 {
   margin: 0.5rem;
 }
+
+.movieChosenCover {
+  position: absolute;
+  width: 600px;
+  height: 900px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+  z-index: 3;
+}
+
+.movieChosenCoverAnimation {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.01);
+  animation: chosenCoverAnimation 7s ease-out forwards;
+}
+
+@keyframes chosenCoverAnimation {
+  0% {
+    transform: translate(-50%, -50%) scale(0.01);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}

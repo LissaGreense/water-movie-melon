@@ -1,18 +1,18 @@
 import MovieMenu from "../components/movieMenu.tsx";
 import TopMovies from "../components/movieTopFilms.tsx";
 import { MovieNightCounter } from "../components/movieNightCounter.tsx";
-import bucket from "../assets/bucketph.png";
 import { useEffect, useState } from "react";
 import { getMovieDate } from "../connections/internal/movieNight.ts";
+import { BucketWithCovers } from "../components/bucketWithCovers.tsx";
 import "./homePage.css";
 
 export const HomePage = () => {
-  const [currentDate, setCurrentDate] = useState<Date>();
+  const [nextMovieDate, setNextMovieDate] = useState<Date>();
 
   useEffect(() => {
     try {
       getMovieDate().then((d) => {
-        setCurrentDate(d);
+        setNextMovieDate(d);
       });
     } catch (error) {
       console.error(error);
@@ -26,11 +26,11 @@ export const HomePage = () => {
         <div className={"topMoviesSection"}>
           <TopMovies />
         </div>
-        <div className={"bucketSpace"}>
-          {currentDate && (
+        <div id={"bucketSpace"} className={"bucketSpace"}>
+          {nextMovieDate && (
             <>
-              <MovieNightCounter nextNightDate={currentDate} />
-              <img className={"bucket"} alt={"bucket"} src={bucket} />
+              <MovieNightCounter nextNightDate={nextMovieDate} />
+              <BucketWithCovers />
             </>
           )}
         </div>

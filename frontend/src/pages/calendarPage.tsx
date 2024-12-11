@@ -42,6 +42,7 @@ export const CalendarPage = () => {
   };
 
   const handleJoinOrAdd = (e: FormEvent) => {
+    const currentDate = new Date();
     setDate(e.value);
     if (
       nightDates.includes(dayjs(e.value).format(dateFormat).split("T")[0]) &&
@@ -52,7 +53,9 @@ export const CalendarPage = () => {
       nightDates.includes(dayjs(e.value).format(dateFormat).split("T")[0])
     ) {
       setJoinVisible(true);
-    } else if (dayjs(Date()) < dayjs(e.value)) {
+    } else if (
+      dayjs(currentDate.setDate(currentDate.getDate() - 1)) < dayjs(e.value)
+    ) {
       setAddVisible(true);
     }
   };

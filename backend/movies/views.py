@@ -1,6 +1,5 @@
 import datetime
 from random import choice
-
 from django.core.serializers.json import DjangoJSONEncoder
 from django_ratelimit.decorators import ratelimit
 from django.core.files.base import ContentFile
@@ -24,8 +23,27 @@ class MoviesObject(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        all_movies = serializers.serialize('python', Movie.objects.all())
-        movies_field = [d['fields'] for d in all_movies]
+        movies = Movie.objects.all()
+        watched = request.GET.get('watched', None)
+        random = request.GET.get('random', None)
+        limit = request.GET.get('limit', None)
+
+        if watched and watched.lower() == 'false':
+            movies = movies.filter(watched_movie__isnull=True)
+        elif watched and watched.lower() == 'true':
+            movies = movies.filter(watched_movie__isnull=False)
+        if len(movies) == 0:
+            return HttpResponse(json.dumps([], cls=DjangoJSONEncoder), content_type='application/json')
+
+        if random:
+            movies = movies.order_by('?')
+
+        if limit:
+            limit = int(limit)
+            movies = movies[:limit]
+
+        serialized_movies = serializers.serialize('python', movies)
+        movies_field = [d['fields'] for d in serialized_movies]
 
         return HttpResponse(json.dumps(movies_field, cls=DjangoJSONEncoder), content_type='application/json')
 
@@ -335,7 +353,17 @@ class RandMovie(APIView):
         next_night.selected_movie = selected_movie
         next_night.save()
 
-        return HttpResponse(json.dumps(selected_movie.title, cls=DjangoJSONEncoder),  content_type='application/json')
+        selected_movie_response = {
+            'title': selected_movie.title,
+            'link': selected_movie.link,
+            'user': selected_movie.user,
+            'date_added': selected_movie.date_added,
+            'genre': selected_movie.genre,
+            'cover_link': selected_movie.cover_link,
+            'duration': selected_movie.duration,
+        }
+
+        return HttpResponse(json.dumps(selected_movie_response, cls=DjangoJSONEncoder),  content_type='application/json')
 
 
 class MovieDate(APIView):
