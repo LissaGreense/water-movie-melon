@@ -1,6 +1,5 @@
 import datetime
-from random import choice, shuffle
-
+from random import choice
 from django.core.serializers.json import DjangoJSONEncoder
 from django_ratelimit.decorators import ratelimit
 from django.core.files.base import ContentFile
@@ -28,7 +27,7 @@ class MoviesObject(APIView):
         watched = request.GET.get('watched', None)
         random = request.GET.get('random', None)
         limit = request.GET.get('limit', None)
-        
+
         if watched and watched.lower() == 'false':
             movies = movies.filter(watched_movie__isnull=True)
         elif watched and watched.lower() == 'true':
