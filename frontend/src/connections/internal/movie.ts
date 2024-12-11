@@ -6,13 +6,16 @@ import { DEFAULT_BACKEND_URL } from "../../constants/defaults.ts";
 const backend_url = import.meta.env.VITE_APP_BACKEND_URL || DEFAULT_BACKEND_URL;
 const movies_endpoint = "/movies/";
 
-export async function getMovies(randomUnwatched: boolean): Promise<Movie[]> {
+interface movieParams {
+  random?: boolean;
+  watched?: boolean;
+  limit?: number;
+}
+
+export async function getMovies(params: movieParams): Promise<Movie[]> {
   const config: AxiosRequestConfig = getAuthHeadersConfig();
-  if (randomUnwatched) {
-    config["params"] = {
-      randomUnwatched: randomUnwatched,
-    };
-  }
+  config["params"] = params;
+
   try {
     const response = await axios.get<Movie[]>(
       backend_url + movies_endpoint,

@@ -17,7 +17,7 @@ export const MovieList: FC<MovieListProps> = ({ movieFormVisible }) => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   useEffect(() => {
-    getMovies(false)
+    getMovies({})
       .then((moviesData) => {
         setMovies(moviesData);
       })

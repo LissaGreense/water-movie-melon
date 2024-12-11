@@ -24,27 +24,27 @@ class MoviesObject(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        random_unwatched = request.GET.get('randomUnwatched', None)
+        movies = Movie.objects.all()
+        watched = request.GET.get('watched', None)
+        random = request.GET.get('random', None)
+        limit = request.GET.get('limit', None)
+        
+        if watched and watched.lower() == 'false':
+            movies = movies.filter(watched_movie__isnull=True)
+        elif watched and watched.lower() == 'true':
+            movies = movies.filter(watched_movie__isnull=False)
+        if len(movies) == 0:
+            return HttpResponse(json.dumps([], cls=DjangoJSONEncoder), content_type='application/json')
 
-        if random_unwatched:
-            movies_unwatched = []
-            movies_not_watched = Movie.objects.filter(watched_movie=None).order_by('?')
+        if random:
+            movies = movies.order_by('?')
 
-            if len(movies_not_watched) == 0:
-                return HttpResponse(json.dumps([], cls=DjangoJSONEncoder), content_type='application/json')
-            
-            movies_count = 0
-            for movie in movies_not_watched:
-                movies_count += 1
-                if movies_count <= 20:
-                    movies_unwatched.append(movie)
-                    
-            serialized_movies_unwatched = serializers.serialize('python', movies_unwatched)
-            movies_field = [d['fields'] for d in serialized_movies_unwatched]
+        if limit:
+            limit = int(limit)
+            movies = movies[:limit]
 
-        else:
-            all_movies = serializers.serialize('python', Movie.objects.all())
-            movies_field = [d['fields'] for d in all_movies]
+        serialized_movies = serializers.serialize('python', movies)
+        movies_field = [d['fields'] for d in serialized_movies]
 
         return HttpResponse(json.dumps(movies_field, cls=DjangoJSONEncoder), content_type='application/json')
 

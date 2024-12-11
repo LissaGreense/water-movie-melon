@@ -12,7 +12,7 @@ export function BucketWithCovers() {
 
   useEffect(() => {
     const covers: string[] = [];
-    getMovies(true)
+    getMovies({ random: true, watched: false, limit: 20 })
       .then((movies) => {
         if (movies) {
           for (const movie of movies) {
@@ -90,7 +90,6 @@ export function BucketWithCovers() {
     ]);
 
     for (const cover of covers) {
-      console.log(cover);
       Composite.add(
         engine.current.world,
         Bodies.rectangle(Math.random() * 200, Math.random() * 200, 30, 45, {
