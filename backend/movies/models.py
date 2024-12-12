@@ -14,7 +14,7 @@ class Movie(models.Model):
 
 class User(AbstractUser):
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
-    tickets = models.IntegerField(default=1)
+    tickets = models.PositiveIntegerField(default=1)
 
     def __str__(self):
         return self.username

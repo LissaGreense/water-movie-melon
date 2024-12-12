@@ -49,9 +49,8 @@ class MoviesObject(APIView):
 
     def post(self, request, format=None):
         movie_from_body = json.loads(request.body)
-
-        print(movie_from_body)
         user = User.objects.get(username=movie_from_body['user'])
+
         if user.tickets > 0:
             user.tickets -= 1
         else:
