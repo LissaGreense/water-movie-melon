@@ -7,7 +7,6 @@ import "./moviePage.css";
 import { getStatistics } from "../connections/internal/user.ts";
 import { getUsername } from "../utils/accessToken.ts";
 
-
 export const MoviePage = () => {
   const [movieFormVisible, setMovieFormVisible] = useState<boolean>(false);
   const [userHasTickets, setUserHasTickets] = useState<boolean>(false);
@@ -33,7 +32,11 @@ export const MoviePage = () => {
         <div className="moviesContainer">
           <div className="melonStyleContainerPeel">
             <Button
-              label={userHasTickets ? "Dodaj Film" : "Nie masz wystarczająco biletów aby dodać film. Załóż nowy wieczór filmowy, bądź dołącz do istniejącego"}
+              label={
+                userHasTickets
+                  ? "Dodaj Film"
+                  : "Nie masz wystarczająco biletów aby dodać film. Załóż nowy wieczór filmowy, bądź dołącz do istniejącego"
+              }
               disabled={!userHasTickets}
               onClick={() => setMovieFormVisible(true)}
             />
