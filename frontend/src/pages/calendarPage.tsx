@@ -46,7 +46,7 @@ export const CalendarPage = () => {
     setDate(e.value);
     if (
       nightDates.includes(dayjs(e.value).format(dateFormat).split("T")[0]) &&
-      dayjs(Date()) > dayjs(e.value)
+      dayjs(currentDate.setDate(currentDate.getDate() - 1)) > dayjs(e.value)
     ) {
       setRateVisible(true);
     } else if (
