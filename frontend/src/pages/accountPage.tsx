@@ -82,7 +82,7 @@ export const AccountPage = () => {
         visible={showPasswordChange}
         setVisible={setShowPasswordChange}
       />
-      <div className={"accountContainer"}>
+      <div className={"accountContainer centerAbsolute"}>
         <div className={"topAccountContainerBar melonStyleContainerPeel"}>
           <h2>KONTO</h2>
         </div>
