@@ -90,7 +90,7 @@ export const CalendarPage = () => {
 
   return (
     <>
-      <div className={"pageContentCalendar"}>
+      <div className={"pageContentCalendar centerAbsolute"}>
         <Calendar
           value={date}
           dateTemplate={dateTemplate}

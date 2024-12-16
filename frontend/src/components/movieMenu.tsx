@@ -33,7 +33,7 @@ export default function MovieMenu() {
   }, []);
 
   const itemRenderer = (item: MenuItem) => (
-    <div className="p-menuitem-content menuItemLogoBar">
+    <div className="p-menuitem-content">
       <a
         className="align-items-center p-menuitem-link seed"
         onClick={(e: React.MouseEvent) => {
