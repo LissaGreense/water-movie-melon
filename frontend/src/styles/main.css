@@ -64,34 +64,20 @@
 .p-menu {
   height: 70vh;
   width: 12vw;
-  background: var(--secondary-pink);
-  border: 1px solid var(--primary-green);
+  background: transparent;
+  border: transparent;
 }
-@media (max-width: 600px) {
-  .p-menu {
-    height: 100%;
-    width: 20vw;
-  }
-}
-@media (min-width: 601px) and (max-width: 1024px) {
+@media (max-width: 1024px) {
   .p-menu {
     height: 65vh;
-    width: 20vw;
+    width: 15vw;
   }
 }
 @media (min-width: 1025px) {
   .p-menu {
     height: 70vh;
-    width: 12vw;
+    width: 10vw;
   }
-}
-
-.p-menu .p-submenu-header {
-  background: var(--secondary-pink);
-}
-
-.p-menu .p-menu-separator {
-  border-top: 1px solid var(--primary-green);
 }
 
 .p-menuitem-link {
@@ -103,21 +89,24 @@
 }
 
 .seed {
-  background-color: var(--seed-brown);
   border-radius: 85% 55% 55% 85%;
   min-width: 6vw;
   width: auto;
   height: 4vh;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   text-align: center;
   line-height: 4vh;
   transition: all 0.3s ease;
   padding: 0 0.5rem;
   display: inline-block;
+  background-image: url("../assets/seed.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  margin-top: 5%;
+  margin-bottom: 5%;
 }
 
 .seed:hover {
-  background-color: var(--dark-seed-brown);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
 }
 
@@ -132,11 +121,25 @@
   align-items: center;
 }
 
+.centerAbsolute {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .logoBar {
   height: 10%;
-  background-image: url("../assets/LOGOMELONPLACEHOLDER.gif");
   background-repeat: no-repeat;
   background-position: center;
+}
+
+.logo {
+  top: 4%;
+  left: 50%;
+  width: 30%;
+  transform: translate(-50%, -50%);
+  position: absolute;
 }
 
 .melonStyleContainerFruit {

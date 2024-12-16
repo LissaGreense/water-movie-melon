@@ -90,7 +90,7 @@ export const CalendarPage = () => {
 
   return (
     <>
-      <div className={"pageContentCalendar center"}>
+      <div className={"pageContentCalendar centerAbsolute"}>
         <Calendar
           value={date}
           dateTemplate={dateTemplate}
@@ -98,6 +98,7 @@ export const CalendarPage = () => {
           dateFormat="yy-mm-dd"
           inline
           selectionMode="single"
+          style={{ width: "100%", height: "fit-content" }}
         />
         <div>{showDialog()}</div>
       </div>

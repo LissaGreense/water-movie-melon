@@ -86,7 +86,7 @@ export const RegisterPage = () => {
   };
 
   return (
-    <div className={"pageContent center"}>
+    <div className={"centerAbsolute"}>
       <form>
         <div>
           <p>Nazwa użytkownika:</p>

@@ -1,4 +1,3 @@
-import { Menu } from "primereact/menu";
 import { MenuItem, MenuItemCommandEvent } from "primereact/menuitem";
 import { Avatar } from "primereact/avatar";
 import {
@@ -16,6 +15,8 @@ import {
 } from "../constants/paths.ts";
 import React, { useEffect, useState } from "react";
 import { getAvatar } from "../connections/internal/user.ts";
+import "./movieMenu.css";
+import { Menu } from "primereact/menu";
 
 export default function MovieMenu() {
   const backend_url = "http://localhost:8000";
@@ -70,57 +71,48 @@ export default function MovieMenu() {
       },
     },
     {
-      separator: true,
-    },
-    {
-      label: "Konto",
-      items: [
-        {
-          label: "Wyloguj",
-          template: itemRenderer,
-          command: () => {
-            clearAccessToken();
-            navigate(HOMEPAGE);
-          },
-        },
-      ],
+      label: "Kokpit",
+      template: itemRenderer,
+      command: () => {
+        navigate(HOMEPAGE);
+      },
     },
     {
       label: "Filmy",
-      items: [
-        {
-          label: "Filmy",
-          template: itemRenderer,
-          command: () => {
-            navigate(MOVIES);
-          },
-        },
-        {
-          label: "Kalendarz",
-          template: itemRenderer,
-          command: () => {
-            navigate(CALENDAR);
-          },
-        },
-      ],
+      template: itemRenderer,
+      command: () => {
+        navigate(MOVIES);
+      },
     },
     {
-      separator: true,
+      label: "Kalendarz",
+      template: itemRenderer,
+      command: () => {
+        navigate(CALENDAR);
+      },
+    },
+    {
+      label: "Wyloguj",
+      template: itemRenderer,
+      command: () => {
+        clearAccessToken();
+        navigate(HOMEPAGE);
+      },
     },
   ];
   const itemsNotLogged: MenuItem[] = [
     {
-      label: "",
-      items: [
-        {
-          label: "Zaloguj",
-          template: itemRenderer,
-          command: () => {
-            navigate(LOGIN);
-          },
-        },
-      ],
+      label: "Zaloguj",
+      template: itemRenderer,
+      command: () => {
+        navigate(LOGIN);
+      },
     },
   ];
-  return <Menu model={getAccessToken() ? itemsLogged : itemsNotLogged} />;
+  return (
+    <Menu
+      className={"vertical-menu"}
+      model={getAccessToken() ? itemsLogged : itemsNotLogged}
+    />
+  );
 }

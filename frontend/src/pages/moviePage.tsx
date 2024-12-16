@@ -27,31 +27,28 @@ export const MoviePage = () => {
 
   return (
     <>
-      <div className={"logoBar"}></div>
-      <div className="pageContent">
-        <div className="moviesContainer">
-          <div className="melonStyleContainerPeel">
-            <Button
-              label={
-                userHasTickets
-                  ? "Dodaj Film"
-                  : "Nie masz wystarczająco biletów aby dodać film. Załóż nowy wieczór filmowy, bądź dołącz do istniejącego"
-              }
-              disabled={!userHasTickets}
-              onClick={() => setMovieFormVisible(true)}
-            />
-            <Dialog
-              visible={movieFormVisible}
-              onHide={() => {
-                setMovieFormVisible(false);
-              }}
-            >
-              <NewMovieForm></NewMovieForm>
-            </Dialog>
-          </div>
-          <div className="melonStyleContainerFruit">
-            <MovieList movieFormVisible={movieFormVisible}></MovieList>
-          </div>
+      <div className="moviesContainer">
+        <div className="melonStyleContainerPeel">
+          <Button
+            label={
+              userHasTickets
+                ? "Dodaj Film"
+                : "Nie masz wystarczająco biletów aby dodać film. Załóż nowy wieczór filmowy, bądź dołącz do istniejącego"
+            }
+            disabled={!userHasTickets}
+            onClick={() => setMovieFormVisible(true)}
+          />
+          <Dialog
+            visible={movieFormVisible}
+            onHide={() => {
+              setMovieFormVisible(false);
+            }}
+          >
+            <NewMovieForm></NewMovieForm>
+          </Dialog>
+        </div>
+        <div className="melonStyleContainerFruit">
+          <MovieList movieFormVisible={movieFormVisible}></MovieList>
         </div>
       </div>
     </>

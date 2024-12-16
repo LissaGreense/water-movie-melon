@@ -18,7 +18,9 @@ import {
 import { CalendarPage } from "./pages/calendarPage.tsx";
 import { MoviePage } from "./pages/moviePage.tsx";
 import { RegisterPage } from "./pages/registerPage.tsx";
+import MovieMenu from "./components/movieMenu.tsx";
 const MovieBackground = lazy(() => import("./components/movieBackground.tsx"));
+import logo from "./assets/LOGOMELONPLACEHOLDER.gif";
 
 const RequireAuth: FC<{ children: ReactElement }> = ({ children }) => {
   const userIsLogged = !!getAccessToken();
@@ -34,35 +36,41 @@ const App = () => {
       <Router>
         <MovieBackground />
         <div className={"appContainer"}>
-          <Routes>
-            <Route path={HOMEPAGE} element={<HomePage />} />
-            <Route path={LOGIN} element={<LoginPage />} />
-            <Route path={REGISTER} element={<RegisterPage />} />
-            <Route
-              path={ACCOUNT}
-              element={
-                <RequireAuth>
-                  <AccountPage />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path={CALENDAR}
-              element={
-                <RequireAuth>
-                  <CalendarPage />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path={MOVIES}
-              element={
-                <RequireAuth>
-                  <MoviePage />
-                </RequireAuth>
-              }
-            />
-          </Routes>
+          <div className={"logoBar"}>
+            <img className={"logo"} src={logo} alt={"logo"} />
+            <MovieMenu />
+          </div>
+          <div className={"pageContent"}>
+            <Routes>
+              <Route path={HOMEPAGE} element={<HomePage />} />
+              <Route path={LOGIN} element={<LoginPage />} />
+              <Route path={REGISTER} element={<RegisterPage />} />
+              <Route
+                path={ACCOUNT}
+                element={
+                  <RequireAuth>
+                    <AccountPage />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path={CALENDAR}
+                element={
+                  <RequireAuth>
+                    <CalendarPage />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path={MOVIES}
+                element={
+                  <RequireAuth>
+                    <MoviePage />
+                  </RequireAuth>
+                }
+              />
+            </Routes>
+          </div>
         </div>
       </Router>
     </>

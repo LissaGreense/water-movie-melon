@@ -9,10 +9,3 @@
   height: 100%;
   width: 100%;
 }
-
-.userMenu {
-  height: 100%;
-  align-items: center;
-  display: flex;
-  float: right;
-}
