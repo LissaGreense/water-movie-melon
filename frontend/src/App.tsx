@@ -20,7 +20,7 @@ import { MoviePage } from "./pages/moviePage.tsx";
 import { RegisterPage } from "./pages/registerPage.tsx";
 import MovieMenu from "./components/movieMenu.tsx";
 const MovieBackground = lazy(() => import("./components/movieBackground.tsx"));
-import logo from "./assets/LOGOMELONPLACEHOLDER.gif"
+import logo from "./assets/LOGOMELONPLACEHOLDER.gif";
 
 const RequireAuth: FC<{ children: ReactElement }> = ({ children }) => {
   const userIsLogged = !!getAccessToken();
@@ -37,8 +37,8 @@ const App = () => {
         <MovieBackground />
         <div className={"appContainer"}>
           <div className={"logoBar"}>
-            <img className={"logo"} src={logo} alt={"logo"}/>
-            <MovieMenu/>
+            <img className={"logo"} src={logo} alt={"logo"} />
+            <MovieMenu />
           </div>
           <div className={"pageContent"}>
             <Routes>
@@ -74,6 +74,6 @@ const App = () => {
         </div>
       </Router>
     </>
-);
+  );
 };
 export default App;

@@ -98,7 +98,7 @@ export const CalendarPage = () => {
           dateFormat="yy-mm-dd"
           inline
           selectionMode="single"
-          style={{width: "100%", height: "fit-content"}}
+          style={{ width: "100%", height: "fit-content" }}
         />
         <div>{showDialog()}</div>
       </div>

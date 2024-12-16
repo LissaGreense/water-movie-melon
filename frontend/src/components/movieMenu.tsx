@@ -15,7 +15,7 @@ import {
 } from "../constants/paths.ts";
 import React, { useEffect, useState } from "react";
 import { getAvatar } from "../connections/internal/user.ts";
-import "./movieMenu.css"
+import "./movieMenu.css";
 import { Menu } from "primereact/menu";
 
 export default function MovieMenu() {
@@ -75,21 +75,21 @@ export default function MovieMenu() {
       template: itemRenderer,
       command: () => {
         navigate(HOMEPAGE);
-        },
+      },
     },
     {
       label: "Filmy",
       template: itemRenderer,
       command: () => {
         navigate(MOVIES);
-        },
+      },
     },
     {
       label: "Kalendarz",
       template: itemRenderer,
       command: () => {
         navigate(CALENDAR);
-        },
+      },
     },
     {
       label: "Wyloguj",
@@ -106,8 +106,13 @@ export default function MovieMenu() {
       template: itemRenderer,
       command: () => {
         navigate(LOGIN);
-        },
+      },
     },
   ];
-  return <Menu className={"vertical-menu"} model={getAccessToken() ? itemsLogged : itemsNotLogged} />;
+  return (
+    <Menu
+      className={"vertical-menu"}
+      model={getAccessToken() ? itemsLogged : itemsNotLogged}
+    />
+  );
 }

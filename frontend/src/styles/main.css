@@ -67,7 +67,7 @@
   background: transparent;
   border: transparent;
 }
-@media  (max-width: 1024px) {
+@media (max-width: 1024px) {
   .p-menu {
     height: 65vh;
     width: 15vw;

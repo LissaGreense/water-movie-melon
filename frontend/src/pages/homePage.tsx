@@ -20,17 +20,17 @@ export const HomePage = () => {
 
   return (
     <>
-        <div className={"topMoviesSection"}>
-          <TopMovies />
-        </div>
-        <div id={"bucketSpace"} className={"bucketSpace"}>
-          {nextMovieDate && (
-            <>
-              <MovieNightCounter nextNightDate={nextMovieDate} />
-              <BucketWithCovers />
-            </>
-          )}
-        </div>
+      <div className={"topMoviesSection"}>
+        <TopMovies />
+      </div>
+      <div id={"bucketSpace"} className={"bucketSpace"}>
+        {nextMovieDate && (
+          <>
+            <MovieNightCounter nextNightDate={nextMovieDate} />
+            <BucketWithCovers />
+          </>
+        )}
+      </div>
     </>
   );
 };
