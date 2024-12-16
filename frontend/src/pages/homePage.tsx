@@ -1,4 +1,3 @@
-import MovieMenu from "../components/movieMenu.tsx";
 import TopMovies from "../components/movieTopFilms.tsx";
 import { MovieNightCounter } from "../components/movieNightCounter.tsx";
 import { useEffect, useState } from "react";
@@ -21,8 +20,6 @@ export const HomePage = () => {
 
   return (
     <>
-      <div className={"logoBar"}></div>
-      <div className={"pageContent"}>
         <div className={"topMoviesSection"}>
           <TopMovies />
         </div>
@@ -34,10 +31,6 @@ export const HomePage = () => {
             </>
           )}
         </div>
-        <div className={"userMenu"}>
-          <MovieMenu />
-        </div>
-      </div>
     </>
   );
 };

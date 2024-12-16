@@ -5,8 +5,12 @@
 }
 
 .accountContainer {
-  width: 50%;
-  height: auto;
+  width: 60%;
+  height: fit-content;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background-color: var(--secondary-pink);
 }
 

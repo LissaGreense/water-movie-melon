@@ -72,7 +72,7 @@ export const AccountPage = () => {
   }, []);
 
   return (
-    <div className={"pageContent center"}>
+    <>
       <CropperDialog
         visible={showCropper}
         setShowCropper={setShowCropper}
@@ -170,6 +170,6 @@ export const AccountPage = () => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
