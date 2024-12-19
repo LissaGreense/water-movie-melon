@@ -14,15 +14,12 @@ const statistics_endpoint = "/movies/userStatistics/";
 const password_change_endpoint = "/movies/userPassword/";
 
 export async function getAvatar(username: string): Promise<Avatar> {
-  try {
-    const response = await axios.get<Avatar>(
-      backend_url + avatar_endpoint + username + "/",
-      getAuthHeadersConfig(),
-    );
-    return response.data as Avatar;
-  } catch (error) {
-    return { avatar_url: "" };
-  }
+  const response = await axios.get<Avatar>(
+    backend_url + avatar_endpoint + username + "/",
+    getAuthHeadersConfig(),
+  );
+
+  return response.data as Avatar;
 }
 export async function getStatistics(
   username: string,
