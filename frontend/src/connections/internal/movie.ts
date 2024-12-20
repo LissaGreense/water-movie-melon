@@ -15,17 +15,12 @@ interface movieParams {
 export async function getMovies(params: movieParams): Promise<Movie[]> {
   const config: AxiosRequestConfig = getAuthHeadersConfig();
   config["params"] = params;
+  const response = await axios.get<Movie[]>(
+    backend_url + movies_endpoint,
+    config,
+  );
 
-  try {
-    const response = await axios.get<Movie[]>(
-      backend_url + movies_endpoint,
-      config,
-    );
-    return response.data as Movie[];
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
+  return response.data;
 }
 
 export async function postMovie(movie: Movie): Promise<void> {
