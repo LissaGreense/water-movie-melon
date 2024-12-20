@@ -17,7 +17,7 @@ export interface MovieItem extends Movie {
   avatarUrl: string;
 }
 
-export const MovieList: FC<MovieListProps> = ({movies}) => {
+export const MovieList: FC<MovieListProps> = ({ movies }) => {
   const itemTemplate = (data: MovieItem) => {
     return (
       <Accordion className="align-content-start" activeIndex={1}>
@@ -37,7 +37,11 @@ export const MovieList: FC<MovieListProps> = ({movies}) => {
             <p>
               <a href={"//" + data.link}>link</a>
             </p>
-            <Avatar image={DEFAULT_BACKEND_URL + data.avatarUrl} size="xlarge" shape="circle" />
+            <Avatar
+              image={DEFAULT_BACKEND_URL + data.avatarUrl}
+              size="xlarge"
+              shape="circle"
+            />
             <span>{data.user}</span>
             <span>{dayjs(data.date_added).format("YYYY-MM-DD")}</span>
             <div>
@@ -48,7 +52,6 @@ export const MovieList: FC<MovieListProps> = ({movies}) => {
       </Accordion>
     );
   };
-
 
   return (
     <div className="card">

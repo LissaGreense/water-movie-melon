@@ -16,7 +16,6 @@ export const MoviePage = () => {
   const [movieItems, setMovieItems] = useState<MovieItem[]>([]);
 
   useEffect(() => {
-    console.log("tickety")
     getStatistics(getUsername() as string).then(async (r) => {
       if (r === null) {
         alert("Error fetching user data...");
@@ -27,53 +26,55 @@ export const MoviePage = () => {
 
     return () => {
       setUserHasTickets(false);
-    }
+    };
   }, [movieFormVisible]);
 
   useEffect(() => {
-    console.log("filmy")
     getMovies({})
       .then((movies) => {
         setMovies(movies);
-
-      }).catch((error) => {
-      console.error("Error fetching movies:", error);
-    });
-
-    return () => {
-      setMovies([]);
-    }
-  }, [movieFormVisible]);
-
-  useEffect(() => {
-      console.log("avatary")
-    // TODO: better cache implementation is needed
-      const avatarMem: Map<string, string> = new Map<string, string>();
-
-      movies.forEach((movie: Movie) => {
-        if (!avatarMem.has(movie.user)) {
-          getAvatar(movie.user).then((avatar) => {
-            avatarMem.set(movie.user, avatar.avatar_url);
-            // here this magic
-            setMovieItems(movieItems => [
-              ...movieItems,
-              { ...movie, avatarUrl: avatar.avatar_url }
-            ])
-          }).catch((error) => {
-            console.error("Error fetching avatar:", error);
-          });
-        } else {
-          // and here also magic
-          setMovieItems(movieItems => [
-            ...movieItems,
-            { ...movie, avatarUrl: avatarMem.get(movie.user) as string }
-          ])
-        }
+      })
+      .catch((error) => {
+        console.error("Error fetching movies:", error);
       });
 
     return () => {
-      setMovieItems([]);
+      setMovies([]);
+    };
+  }, [movieFormVisible]);
+
+  useEffect(() => {
+    // TODO: better cache implementation is needed
+    const avatarMem: Map<string, string> = new Map<string, string>();
+    let ignore = false;
+
+    for (const movie of movies) {
+      if (avatarMem.has(movie.user)) {
+        setMovieItems((movieItems) => [
+          ...movieItems,
+          { ...movie, avatarUrl: avatarMem.get(movie.user) as string },
+        ]);
+      } else {
+        getAvatar(movie.user)
+          .then((avatar) => {
+            if (!ignore) {
+              avatarMem.set(movie.user, avatar.avatar_url);
+              setMovieItems((movieItems) => [
+                ...movieItems,
+                { ...movie, avatarUrl: avatar.avatar_url },
+              ]);
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching avatar:", error);
+          });
+      }
     }
+
+    return () => {
+      setMovieItems([]);
+      ignore = true;
+    };
   }, [movies]);
 
   return (
