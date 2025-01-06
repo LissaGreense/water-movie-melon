@@ -35,8 +35,6 @@ CORS_ALLOWED_ORIGINS = [
     "https://localhost:4173",
 ]
 
-
-
 CORS_ALLOW_HEADERS = [
     'content-type',
     'authorization',
