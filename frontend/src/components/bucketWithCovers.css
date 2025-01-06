@@ -1,16 +1,16 @@
 .renderContainer {
-  height: 40vh;
-  width: 30vw;
+  width: 58vh;
+  height: 10vh;
   inset: 0;
   z-index: 1;
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -20%);
+  transform: translate(-50%, -70%);
 }
 
 .bucket {
-  width: 75vh;
+  height: 75vh;
   position: absolute;
   margin: auto;
   z-index: 2;
