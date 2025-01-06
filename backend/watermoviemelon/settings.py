@@ -60,6 +60,7 @@ CORS_ALLOW_HEADERS = [
     'access-control-request-headers',
     'user',
     'X-CSRFToken'
+    'Cache-Control',
 ]
 
 # Application definition

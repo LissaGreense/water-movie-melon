@@ -16,11 +16,11 @@ export async function getMovies(params: movieParams): Promise<Movie[]> {
   const config: AxiosRequestConfig = {
     params: params,
   };
-
   const response = await axios.get<Movie[]>(
     backend_url + movies_endpoint,
     config,
   );
+
   return response.data as Movie[];
 }
 

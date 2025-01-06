@@ -97,7 +97,7 @@ export const AccountPage = () => {
   }, []);
 
   return (
-    <div className={"pageContent center"}>
+    <>
       <CropperDialog
         visible={showCropper}
         setShowCropper={setShowCropper}
@@ -107,7 +107,7 @@ export const AccountPage = () => {
         visible={showPasswordChange}
         setVisible={setShowPasswordChange}
       />
-      <div className={"accountContainer"}>
+      <div className={"accountContainer centerAbsolute"}>
         <div className={"topAccountContainerBar melonStyleContainerPeel"}>
           <h2>KONTO</h2>
         </div>
@@ -128,7 +128,12 @@ export const AccountPage = () => {
                 onSelect={handleCropImage}
               />
             </div>
-            <h4>ID: {getUsername()}</h4>
+            <div className={"col-4"}>
+              <h4>ID: {getUsername()}</h4>
+            </div>
+            <div className={"col-4"}>
+              <h4>Bilety: {userStatistics?.movie_tickets}</h4>
+            </div>
           </div>
           <div className={"half-right"}>
             <Button onClick={() => setShowPasswordChange(true)}>
@@ -190,6 +195,6 @@ export const AccountPage = () => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };

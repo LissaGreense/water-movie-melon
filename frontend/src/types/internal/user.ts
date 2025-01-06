@@ -9,6 +9,7 @@ export interface Statistics {
   hosted_movie_nights: number;
   highest_rated_movie: string | null;
   lowest_rated_movie: string | null;
+  movie_tickets: number;
 }
 
 export interface PasswordUpdate {

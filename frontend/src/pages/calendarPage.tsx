@@ -54,7 +54,7 @@ export const CalendarPage = () => {
     setDate(e.value);
     if (
       nightDates.includes(dayjs(e.value).format(dateFormat).split("T")[0]) &&
-      dayjs(Date()) > dayjs(e.value)
+      dayjs(currentDate.setDate(currentDate.getDate() - 1)) > dayjs(e.value)
     ) {
       setRateVisible(true);
     } else if (
@@ -98,7 +98,7 @@ export const CalendarPage = () => {
 
   return (
     <>
-      <div className={"pageContentCalendar center"}>
+      <div className={"pageContentCalendar centerAbsolute"}>
         <Calendar
           value={date}
           dateTemplate={dateTemplate}
@@ -106,6 +106,7 @@ export const CalendarPage = () => {
           dateFormat="yy-mm-dd"
           inline
           selectionMode="single"
+          style={{ width: "100%", height: "fit-content" }}
         />
         <div>{showDialog()}</div>
       </div>

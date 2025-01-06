@@ -51,7 +51,9 @@ export const LoginPage = () => {
   const getLoginPanel = () => {
     if (getUsername() == undefined) {
       return (
-        <div className={"loginContainer melonStyleContainerFruit"}>
+        <div
+          className={"loginContainer centerAbsolute melonStyleContainerFruit"}
+        >
           <div className={"topLoginBar melonStyleContainerPeel"}>
             <h2>UDOWODNIJ, ZE JESTEŚ ARBUZEM</h2>
           </div>
@@ -103,7 +105,7 @@ export const LoginPage = () => {
 
   return (
     <>
-      <div className={"pageContent center"}>{getLoginPanel()}</div>
+      <div>{getLoginPanel()}</div>
     </>
   );
 };

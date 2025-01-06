@@ -53,11 +53,19 @@ class MoviesObject(APIView):
 
     def post(self, request, format=None):
         movie_from_body = request.data
+        user = User.objects.get(username=movie_from_body['user'])
+
+        if user.tickets > 0:
+            user.tickets -= 1
+        else:
+            return HttpResponse(json.dumps({'error': 'not enough tickets'}), content_type='application/json', status=402)
+
         try:
             new_movie = Movie(**movie_from_body)
         except TypeError:
             return HttpResponse(json.dumps({'error': 'out of field'}), content_type='application/json', status=400)
 
+        user.save()
         new_movie.save()
 
         return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
@@ -151,17 +159,27 @@ class Night(APIView):
 
     def post(self, request, format=None):
         night_from_body = request.data
+        user = User.objects.get(username=night_from_body['host'])
+
         try:
             night_date = parse_datetime(night_from_body.get('night_date'))
             if MovieNight.objects.filter(night_date__date=night_date.date()).exists():
                 return HttpResponse(json.dumps({'error': 'A MovieNight already exists for this date.'}), status=400)
 
             new_movie_night = MovieNight(**night_from_body)
-
         except TypeError:
             return HttpResponse(json.dumps({'error': 'out of field'}), content_type='application/json', status=400)
 
         new_movie_night.save()
+
+        try:
+            new_attendee = Attendees(night=new_movie_night, user=user, accept_date=datetime.datetime.now())
+            new_attendee.save()
+        except TypeError:
+            return HttpResponse(json.dumps({'error': 'out of field'}), content_type='application/json', status=400)
+
+        user.tickets += 2
+        user.save()
 
         return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
 
@@ -201,9 +219,11 @@ class AttendeesView(APIView):
         try:
             new_attendee = Attendees(night=night, user=user, accept_date=accept_date)
             new_attendee.save()
-
         except TypeError:
             return HttpResponse(json.dumps({'error': 'out of field'}), content_type='application/json', status=400)
+
+        user.tickets += 1
+        user.save()
 
         return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
 
@@ -296,6 +316,7 @@ class UserStatistics(APIView):
                 'hosted_movie_nights': hosted_nights,
                 'highest_rated_movie': movies_with_avg_ratings.first().title if len(movies_with_avg_ratings) > 0 else None,
                 'lowest_rated_movie': movies_with_avg_ratings.last().title if len(movies_with_avg_ratings) > 0 else None,
+                'movie_tickets': user.tickets
             }
             return HttpResponse(json.dumps(statistics))
 
