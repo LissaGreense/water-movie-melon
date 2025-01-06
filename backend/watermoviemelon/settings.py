@@ -48,7 +48,8 @@ CORS_ALLOW_HEADERS = [
     'accept-encoding',
     'access-control-request-method',
     'access-control-request-headers',
-    'user'
+    'user',
+    'Cache-Control',
 ]
 
 # Application definition

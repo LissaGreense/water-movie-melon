@@ -1,6 +1,5 @@
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { Movie } from "../types/internal/movie.ts";
-import { getMovies } from "../connections/internal/movie.ts";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import { Avatar } from "primereact/avatar";
 import { Chip } from "primereact/chip";
@@ -8,25 +7,18 @@ import cover from "../assets/coverplaceholder.jpg";
 import dayjs from "dayjs";
 import { VirtualScroller } from "primereact/virtualscroller";
 import "./movieList.css";
+import { DEFAULT_BACKEND_URL } from "../constants/defaults.ts";
 
 interface MovieListProps {
-  movieFormVisible: boolean;
+  movies: MovieItem[];
 }
 
-export const MovieList: FC<MovieListProps> = ({ movieFormVisible }) => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+export interface MovieItem extends Movie {
+  avatarUrl: string;
+}
 
-  useEffect(() => {
-    getMovies({})
-      .then((moviesData) => {
-        setMovies(moviesData);
-      })
-      .catch((error) => {
-        console.error("Error fetching movies:", error);
-      });
-  }, [movieFormVisible]);
-
-  const itemTemplate = (data: Movie) => {
+export const MovieList: FC<MovieListProps> = ({ movies }) => {
+  const itemTemplate = (data: MovieItem) => {
     return (
       <Accordion className="align-content-start" activeIndex={1}>
         <AccordionTab header={data.title} key={data.title}>
@@ -45,7 +37,11 @@ export const MovieList: FC<MovieListProps> = ({ movieFormVisible }) => {
             <p>
               <a href={"//" + data.link}>link</a>
             </p>
-            <Avatar label="u" size="xlarge" shape="circle" />
+            <Avatar
+              image={DEFAULT_BACKEND_URL + data.avatarUrl}
+              size="xlarge"
+              shape="circle"
+            />
             <span>{data.user}</span>
             <span>{dayjs(data.date_added).format("YYYY-MM-DD")}</span>
             <div>
@@ -61,11 +57,10 @@ export const MovieList: FC<MovieListProps> = ({ movieFormVisible }) => {
     <div className="card">
       <VirtualScroller
         items={movies}
+        itemSize={movies.length + 1}
         itemTemplate={itemTemplate}
-        itemSize={7}
-        inline
         scrollHeight="500px"
-      ></VirtualScroller>
+      />
     </div>
   );
 };
