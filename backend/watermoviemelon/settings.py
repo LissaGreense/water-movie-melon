@@ -35,6 +35,8 @@ CORS_ALLOWED_ORIGINS = [
     "https://localhost:4173",
 ]
 
+
+
 CORS_ALLOW_HEADERS = [
     'content-type',
     'authorization',
@@ -48,7 +50,8 @@ CORS_ALLOW_HEADERS = [
     'accept-encoding',
     'access-control-request-method',
     'access-control-request-headers',
-    'user'
+    'user',
+    'Cache-Control',
 ]
 
 # Application definition

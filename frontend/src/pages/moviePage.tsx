@@ -44,36 +44,22 @@ export const MoviePage = () => {
   }, [movieFormVisible]);
 
   useEffect(() => {
-    // TODO: better cache implementation is needed
-    const avatarMem: Map<string, string> = new Map<string, string>();
-    let ignore = false;
+    let ignoreAvatarRequest = false; // race condition prevention
 
     for (const movie of movies) {
-      if (avatarMem.has(movie.user)) {
-        setMovieItems((movieItems) => [
-          ...movieItems,
-          { ...movie, avatarUrl: avatarMem.get(movie.user) as string },
-        ]);
-      } else {
-        getAvatar(movie.user)
-          .then((avatar) => {
-            if (!ignore) {
-              avatarMem.set(movie.user, avatar.avatar_url);
-              setMovieItems((movieItems) => [
-                ...movieItems,
-                { ...movie, avatarUrl: avatar.avatar_url },
-              ]);
-            }
-          })
-          .catch((error) => {
-            console.error("Error fetching avatar:", error);
-          });
-      }
+      getAvatar(movie.user).then((avatar) => {
+        if(!ignoreAvatarRequest) {
+          setMovieItems((movieItems) => [
+            ...movieItems,
+            { ...movie, avatarUrl: avatar.avatar_url },
+          ])
+        }
+      })
     }
 
     return () => {
       setMovieItems([]);
-      ignore = true;
+      ignoreAvatarRequest = true; // ignore request during cleanup
     };
   }, [movies]);
 
