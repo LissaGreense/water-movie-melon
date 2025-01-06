@@ -48,13 +48,13 @@ export const MoviePage = () => {
 
     for (const movie of movies) {
       getAvatar(movie.user).then((avatar) => {
-        if(!ignoreAvatarRequest) {
+        if (!ignoreAvatarRequest) {
           setMovieItems((movieItems) => [
             ...movieItems,
             { ...movie, avatarUrl: avatar.avatar_url },
-          ])
+          ]);
         }
-      })
+      });
     }
 
     return () => {
