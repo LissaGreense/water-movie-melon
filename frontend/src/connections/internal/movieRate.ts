@@ -17,33 +17,22 @@ export async function postRating(
     user: user,
     rating: rating,
   };
-  try {
-    await axios.post(
-      backend_url + rates_endpoint,
-      data,
-      getAuthHeadersConfig(),
-    );
-  } catch (error) {
-    console.error(error);
-  }
+
+  await axios.post(
+    backend_url + rates_endpoint,
+    data,
+    getAuthHeadersConfig(true),
+  );
 }
 
 export async function getRating(): Promise<MovieRate[]> {
-  try {
-    const response = await axios.get(backend_url + rates_endpoint);
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
+  const response = await axios.get(backend_url + rates_endpoint);
+
+  return response.data;
 }
 
 export async function getAverageRatings(): Promise<MovieRateAverage[]> {
-  try {
-    const response = await axios.get(backend_url + average_rates_endpoint);
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
+  const response = await axios.get(backend_url + average_rates_endpoint);
+
+  return response.data;
 }

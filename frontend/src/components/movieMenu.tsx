@@ -1,11 +1,7 @@
 import { Menu } from "primereact/menu";
 import { MenuItem, MenuItemCommandEvent } from "primereact/menuitem";
 import { Avatar } from "primereact/avatar";
-import {
-  clearAccessToken,
-  getAccessToken,
-  getUsername,
-} from "../utils/accessToken.ts";
+import { clearUser, getUsername } from "../utils/accessToken.ts";
 import { useNavigate } from "react-router-dom";
 import {
   ACCOUNT,
@@ -16,6 +12,7 @@ import {
 } from "../constants/paths.ts";
 import React, { useEffect, useState } from "react";
 import { getAvatar } from "../connections/internal/user.ts";
+import { logout } from "../connections/internal/authentication.ts";
 
 export default function MovieMenu() {
   const backend_url = "http://localhost:8000";
@@ -23,12 +20,20 @@ export default function MovieMenu() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getAvatar(getUsername() as string).then((r) => {
-      if (r.avatar_url == "") {
-        alert("Error fetching avatar...");
-      }
-      setAvatar(backend_url + r.avatar_url);
-    });
+    getAvatar(getUsername() as string)
+      .then((r) => {
+        if (r.avatar_url == "") {
+          alert("Error fetching avatar...");
+        }
+        setAvatar(backend_url + r.avatar_url);
+      })
+      .catch((error) => {
+        if (error.response.status === 403) {
+          clearUser();
+        } else {
+          alert("Error fetching avatar...");
+        }
+      });
   }, []);
 
   const itemRenderer = (item: MenuItem) => (
@@ -79,8 +84,14 @@ export default function MovieMenu() {
           label: "Wyloguj",
           template: itemRenderer,
           command: () => {
-            clearAccessToken();
-            navigate(HOMEPAGE);
+            logout()
+              .catch((err) => {
+                console.error(err);
+              })
+              .finally(() => {
+                clearUser();
+                navigate(HOMEPAGE);
+              });
           },
         },
       ],
@@ -122,5 +133,5 @@ export default function MovieMenu() {
       ],
     },
   ];
-  return <Menu model={getAccessToken() ? itemsLogged : itemsNotLogged} />;
+  return <Menu model={getUsername() ? itemsLogged : itemsNotLogged} />;
 }

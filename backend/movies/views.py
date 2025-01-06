@@ -1,26 +1,30 @@
 import datetime
 from random import choice
+
 from django.core.serializers.json import DjangoJSONEncoder
 from django_ratelimit.decorators import ratelimit
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.utils.dateparse import parse_datetime
-from django.contrib.auth import authenticate
-from rest_framework.authtoken.models import Token
-from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import login, authenticate, logout
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
 from django.utils import timezone
 from django.http import HttpResponse
 from django.core import serializers
 from django.db.models import Avg
 from django.db import IntegrityError
+from rest_framework import permissions
 from dateutil import parser
 import json
+
 
 from .models import Movie, Rate, MovieNight, Attendees, User, RegisterQuestion
 
 class MoviesObject(APIView):
-    permission_classes = [IsAuthenticated]
+    authentication_classes = (SessionAuthentication,)
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request, format=None):
         movies = Movie.objects.all()
@@ -48,7 +52,7 @@ class MoviesObject(APIView):
         return HttpResponse(json.dumps(movies_field, cls=DjangoJSONEncoder), content_type='application/json')
 
     def post(self, request, format=None):
-        movie_from_body = json.loads(request.body)
+        movie_from_body = request.data
         try:
             new_movie = Movie(**movie_from_body)
         except TypeError:
@@ -76,7 +80,8 @@ class AverageRatings(APIView):
 
 
 class RateAPI(APIView):
-    permission_classes = [IsAuthenticated]
+    authentication_classes = (SessionAuthentication,)
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request, format=None):
         all_ratings = serializers.serialize('python', Rate.objects.all())
@@ -99,7 +104,7 @@ class RateAPI(APIView):
         return HttpResponse(json.dumps(ratings_response, cls=DjangoJSONEncoder), content_type='application/json')
 
     def post(self, request, format=None):
-        rate_from_body = json.loads(request.body)
+        rate_from_body = request.data
         movie = Movie.objects.get(title=rate_from_body['movie'])
         user = User.objects.get(username=rate_from_body['user'])
         rating = rate_from_body['rating']
@@ -115,6 +120,7 @@ class RateAPI(APIView):
 
 
 class Night(APIView):
+    authentication_classes = (SessionAuthentication,)
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
@@ -144,7 +150,7 @@ class Night(APIView):
         return HttpResponse(json.dumps(night_field, cls=DjangoJSONEncoder), content_type='application/json')
 
     def post(self, request, format=None):
-        night_from_body = json.loads(request.body)
+        night_from_body = request.data
         try:
             night_date = parse_datetime(night_from_body.get('night_date'))
             if MovieNight.objects.filter(night_date__date=night_date.date()).exists():
@@ -160,6 +166,7 @@ class Night(APIView):
         return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
 
 class AttendeesView(APIView):
+    authentication_classes = (SessionAuthentication,)
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -184,7 +191,7 @@ class AttendeesView(APIView):
         return HttpResponse(json.dumps(attendees_response, cls=DjangoJSONEncoder), content_type='application/json')
 
     def post(self, request, format=None):
-        attendee_from_body = json.loads(request.body)
+        attendee_from_body = request.data
         night_date = parser.parse(attendee_from_body['night']['night_date'])
 
         night = MovieNight.objects.get(night_date__date=night_date)
@@ -202,22 +209,31 @@ class AttendeesView(APIView):
 
 
 class Login(APIView):
-    def post(self, request, format=None):
-        user_data = json.loads(request.body)
-        username = user_data["username"]
-        password = user_data["password"]
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        if not username or not password:
+            return HttpResponse({'error': 'Username and password are required.'}, status=400)
 
         user = authenticate(request, username=username, password=password)
-
         if user is not None:
-            token, created = Token.objects.get_or_create(user=user)
+            login(request, user)
+            return HttpResponse({'message': 'Login successful'}, status=200)
+        else:
+            return HttpResponse(json.dumps({'error': 'Invalid credentials'}), content_type='application/json', status=401)
 
-            return HttpResponse(json.dumps({'token': token.key}), content_type='application/json')
+class Logout(APIView):
+    authentication_classes = [SessionAuthentication]
 
-        return HttpResponse(json.dumps({'error': 'Invalid credentials'}), content_type='application/json', status=401)
-
+    def post(self, request):
+        logout(request)
+        return HttpResponse({'message': 'Logout successful'}, status=200)
 
 class Avatar(APIView):
+    authentication_classes = (SessionAuthentication,)
     permission_classes = [IsAuthenticated]
 
     def get(self, request, username, format=None):
@@ -251,6 +267,7 @@ class Avatar(APIView):
         return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
 
 class UserStatistics(APIView):
+    authentication_classes = (SessionAuthentication,)
     permission_classes = [IsAuthenticated]
 
     def get(self, request, username, format=None):
@@ -289,7 +306,7 @@ class UserStatistics(APIView):
 @ratelimit(key='ip', rate='3/d')
 def user_register(request):
     if request.method == 'POST':
-        user_data = json.loads(request.body)
+        user_data = request.data
         question = RegisterQuestion.objects.get(day=datetime.datetime.today().weekday())
 
         if user_data['answer'].strip().lower() == question.answer.strip().lower():
@@ -306,12 +323,13 @@ def user_register(request):
         return HttpResponse(json.dumps({'error': 'Only POST method is allowed'}), status=405)
 
 class UserPassword(APIView):
+    authentication_classes = (SessionAuthentication,)
     permission_classes = [IsAuthenticated]
 
     def post(self, request, username):
         try:
             user = User.objects.get(username=username)
-            password_data = json.loads(request.body)
+            password_data = request.data
 
             if not user.check_password(password_data['old_password']):
                 return HttpResponse(json.dumps({'error': 'Wrong password provided'}), status=400)

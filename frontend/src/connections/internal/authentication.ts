@@ -1,10 +1,12 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { Question, Token } from "../../types/internal/authentication.ts";
 import { ResultResponse } from "../../types/internal/common.ts";
 import { DEFAULT_BACKEND_URL } from "../../constants/defaults.ts";
+import { getAuthHeadersConfig, getCSRToken } from "../../utils/accessToken.ts";
 
 const backend_url = import.meta.env.VITE_APP_BACKEND_URL || DEFAULT_BACKEND_URL;
 const login_endpoint = "/movies/login/";
+const logout_endpoint = "/movies/logout/";
 const register_endpoint = "/movies/register/";
 const register_question_endpoint = "/movies/registerQuestion/";
 
@@ -16,16 +18,30 @@ export async function login(
     username: username,
     password: password,
   };
+  const config = {
+    withCredentials: true,
+    "X-CSRFToken": getCSRToken(),
+  };
 
-  try {
-    const response = await axios.post<Token>(
-      backend_url + login_endpoint,
-      data,
-    );
-    return response.data as Token;
-  } catch (error) {
-    return { token: "" };
-  }
+  const response = await axios.post<Token>(
+    backend_url + login_endpoint,
+    data,
+    config,
+  );
+
+  return response.data as Token;
+}
+
+export async function logout(): Promise<any> {
+  const config: AxiosRequestConfig = getAuthHeadersConfig(true);
+
+  const response = await axios.post(
+    backend_url + logout_endpoint,
+    null,
+    config,
+  );
+
+  return response.data;
 }
 
 export async function register(

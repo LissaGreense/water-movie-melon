@@ -2,13 +2,9 @@ import { InputText } from "primereact/inputtext";
 import "./loginPage.css";
 import { Button } from "primereact/button";
 import React, { ChangeEvent, MouseEventHandler, useState } from "react";
-import { login } from "../connections/internal/authentication.ts";
+import { login, logout } from "../connections/internal/authentication.ts";
 import { useNavigate } from "react-router-dom";
-import {
-  clearAccessToken,
-  getAccessToken,
-  saveAccessToken,
-} from "../utils/accessToken.ts";
+import { clearUser, getUsername, setUsername } from "../utils/accessToken.ts";
 import { HOMEPAGE, LOGIN } from "../constants/paths.ts";
 
 export const LoginPage = () => {
@@ -21,22 +17,29 @@ export const LoginPage = () => {
   const handleSubmitEvent: MouseEventHandler<HTMLElement> = (e) => {
     e.preventDefault();
     if (input.username !== "" && input.password !== "") {
-      login(input.username, input.password).then((r) => {
-        if (r.token === "") {
-          alert("Ojoj, chyba nie jesteś arbuzem...");
-        } else {
-          saveAccessToken(r.token, input.username);
+      login(input.username, input.password)
+        .then((r) => {
+          console.log("eo");
+          setUsername(input.username);
           navigate(HOMEPAGE);
-        }
-      });
+        })
+        .catch(() => {
+          alert("Ojoj, chyba nie jesteś arbuzem...");
+        });
     } else {
       alert("Username and password should be filled!");
     }
   };
   const handleLogoutEvent = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    clearAccessToken();
-    navigate(LOGIN);
+    logout()
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        clearUser();
+        navigate(LOGIN);
+      });
   };
   const handleInput = (e: ChangeEvent) => {
     const { name, value } = e.currentTarget as HTMLInputElement;
@@ -46,7 +49,7 @@ export const LoginPage = () => {
     }));
   };
   const getLoginPanel = () => {
-    if (getAccessToken() === null) {
+    if (getUsername() == undefined) {
       return (
         <div className={"loginContainer melonStyleContainerFruit"}>
           <div className={"topLoginBar melonStyleContainerPeel"}>

@@ -13,38 +13,28 @@ const rand_movie_endpoint = "/movies/selectedMovie/";
 const night_check_endpoint = "/movies/upcomingNights/";
 
 export async function getMovieNights(): Promise<MovieNight[]> {
-  try {
-    const response = await axios.get<MovieNight[]>(
-      backend_url + movie_nights_endpoint,
-      getAuthHeadersConfig(),
-    );
+  const response = await axios.get<MovieNight[]>(
+    backend_url + movie_nights_endpoint,
+    getAuthHeadersConfig(false),
+  );
 
-    return response.data as MovieNight[];
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
+  return response.data as MovieNight[];
 }
 
 export async function getMovieNight(
   nightDate: Date | null,
 ): Promise<MovieNight[]> {
-  const config: AxiosRequestConfig = getAuthHeadersConfig();
+  const config: AxiosRequestConfig = getAuthHeadersConfig(false);
   if (nightDate !== null) {
     config["params"] = {
       date: nightDate.toLocaleDateString(),
     };
   }
-  try {
-    const response = await axios.get<MovieNight[]>(
-      backend_url + movie_nights_endpoint,
-      config,
-    );
-    return response.data as MovieNight[];
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
+  const response = await axios.get<MovieNight[]>(
+    backend_url + movie_nights_endpoint,
+    config,
+  );
+  return response.data as MovieNight[];
 }
 
 export async function postMovieNight(
@@ -57,15 +47,12 @@ export async function postMovieNight(
     night_date: night_date,
     location: location,
   };
-  try {
-    await axios.post(
-      backend_url + movie_nights_endpoint,
-      data,
-      getAuthHeadersConfig(),
-    );
-  } catch (error) {
-    console.error(error);
-  }
+
+  await axios.post(
+    backend_url + movie_nights_endpoint,
+    data,
+    getAuthHeadersConfig(true),
+  );
 }
 
 export async function joinMovieNight(
@@ -78,62 +65,43 @@ export async function joinMovieNight(
     user: user,
     accept_date: accept_date,
   };
-  console.log(night);
-  try {
-    await axios.post(
-      backend_url + attendees_endpoint,
-      data,
-      getAuthHeadersConfig(),
-    );
-  } catch (error) {
-    console.error(error);
-  }
+
+  await axios.post(
+    backend_url + attendees_endpoint,
+    data,
+    getAuthHeadersConfig(true),
+  );
 }
 
 export async function getAttendees(): Promise<Attendees[]> {
-  try {
-    const response = await axios.get<Attendees[]>(
-      backend_url + attendees_endpoint,
-      getAuthHeadersConfig(),
-    );
-    return response.data as Attendees[];
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
+  const response = await axios.get<Attendees[]>(
+    backend_url + attendees_endpoint,
+    getAuthHeadersConfig(false),
+  );
+  return response.data as Attendees[];
 }
 
 export async function getRandomMovie(): Promise<Movie | null> {
-  try {
-    const response = await axios.get(
-      backend_url + rand_movie_endpoint,
-      getAuthHeadersConfig(),
-    );
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
+  const response = await axios.get(
+    backend_url + rand_movie_endpoint,
+    getAuthHeadersConfig(false),
+  );
+  return response.data;
 }
 
 export async function getMovieDate(): Promise<Date> {
-  try {
-    const response = await axios.get(
-      backend_url + movie_date_endpoint,
-      getAuthHeadersConfig(),
-    );
-    return dayjs(response.data).toDate();
-  } catch (error) {
-    console.error(error);
-    return new Date();
-  }
+  const response = await axios.get(
+    backend_url + movie_date_endpoint,
+    getAuthHeadersConfig(false),
+  );
+  return dayjs(response.data).toDate();
 }
 
 export async function checkForNights(): Promise<boolean> {
   try {
     const response = await axios.get(
       backend_url + night_check_endpoint,
-      getAuthHeadersConfig(),
+      getAuthHeadersConfig(false),
     );
     return response.data as boolean;
   } catch (error) {

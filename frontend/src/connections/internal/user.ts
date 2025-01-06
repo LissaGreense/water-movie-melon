@@ -14,46 +14,36 @@ const statistics_endpoint = "/movies/userStatistics/";
 const password_change_endpoint = "/movies/userPassword/";
 
 export async function getAvatar(username: string): Promise<Avatar> {
-  try {
-    const response = await axios.get<Avatar>(
-      backend_url + avatar_endpoint + username + "/",
-      getAuthHeadersConfig(),
-    );
-    return response.data as Avatar;
-  } catch (error) {
-    return { avatar_url: "" };
-  }
+  const response = await axios.get<Avatar>(
+    backend_url + avatar_endpoint + username + "/",
+    getAuthHeadersConfig(false),
+  );
+
+  return response.data as Avatar;
 }
 export async function getStatistics(
   username: string,
 ): Promise<Statistics | null> {
-  try {
-    const response = await axios.get<Statistics>(
-      backend_url + statistics_endpoint + username + "/",
-      getAuthHeadersConfig(),
-    );
-    return response.data as Statistics;
-  } catch (error) {
-    return null;
-  }
+  const response = await axios.get<Statistics>(
+    backend_url + statistics_endpoint + username + "/",
+    getAuthHeadersConfig(false),
+  );
+
+  return response.data as Statistics;
 }
 
 export async function uploadAvatar(
   username: string | null,
   image: Blob | unknown,
 ) {
-  try {
-    const formData = new FormData();
-    formData.append("avatar", image as Blob);
-    const response = await axios.post<Avatar>(
-      backend_url + avatar_endpoint + username + "/",
-      formData,
-      getAuthHeadersConfig(),
-    );
-    return response.data;
-  } catch (error) {
-    return { error: error };
-  }
+  const formData = new FormData();
+  formData.append("avatar", image as Blob);
+  const response = await axios.post<Avatar>(
+    backend_url + avatar_endpoint + username + "/",
+    formData,
+    getAuthHeadersConfig(true),
+  );
+  return response.data;
 }
 
 export async function postNewPassword(
@@ -68,7 +58,7 @@ export async function postNewPassword(
   const response = await axios.post<ResultResponse>(
     backend_url + password_change_endpoint + username + "/",
     data,
-    getAuthHeadersConfig(),
+    getAuthHeadersConfig(true),
   );
 
   return response.data as ResultResponse;

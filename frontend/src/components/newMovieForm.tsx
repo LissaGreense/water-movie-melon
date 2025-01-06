@@ -8,6 +8,8 @@ import { getMoviePosterUrl } from "../connections/external/omdb.ts";
 import React, { useCallback, useEffect, useState } from "react";
 import { Movie } from "../types/internal/movie.ts";
 import { Dialog } from "primereact/dialog";
+import { LOGIN } from "../constants/paths.ts";
+import { useNavigate } from "react-router-dom";
 
 export const NewMovieForm = () => {
   const [movieTitle, setMovieTitle] = useState<string>("");
@@ -22,6 +24,7 @@ export const NewMovieForm = () => {
     "^(https?:\\/\\/)?((([-a-z0-9]{1,63}\\.)*?[a-z0-9]([-a-z0-9]{0,253}[a-z0-9])?\\.[a-z]{2,63})|((\\d{1,3}\\.){3}\\d{1,3}))(:\\d{1,5})?(([/?])((%[0-9a-f]{2})|[-\\w+.?\\/@~#&=])*)?$",
     "i",
   );
+  const navigate = useNavigate();
 
   const emptyFieldsInForm = useCallback(() => {
     return (
@@ -122,9 +125,16 @@ export const NewMovieForm = () => {
       cover_link: movieCoverLink,
       duration: movieDuration,
     };
-    postMovie(movie).then(() => {
-      setPostSuccessful(true);
-    });
+    postMovie(movie)
+      .then(() => {
+        setPostSuccessful(true);
+      })
+      .catch((error) => {
+        if (error.response.data.status === 401) {
+          navigate(LOGIN);
+        }
+        console.error("Error uploading movies:", error);
+      });
   };
 
   const getInputFields = () => {

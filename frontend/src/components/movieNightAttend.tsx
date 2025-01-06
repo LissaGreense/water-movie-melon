@@ -9,6 +9,8 @@ import { Button } from "primereact/button";
 import { getUsername } from "../utils/accessToken.ts";
 import dayjs from "dayjs";
 import { Attendees, MovieNight } from "../types/internal/movieNight.ts";
+import { LOGIN } from "../constants/paths.ts";
+import { useNavigate } from "react-router-dom";
 
 interface MovieDateProps {
   movieDate: Date | null;
@@ -23,17 +25,32 @@ export const MovieNightAttend: FC<MovieDateProps> = ({
   const [nightLocation, setNightLocation] = useState<string>("");
   const [movieNightData, setMovieNightData] = useState<MovieNight>();
   const [attendeesList, setAttendeesList] = useState<Attendees[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    getMovieNight(movieDate).then((data) => {
-      setMovieNightData(data[0]);
-    });
+    getMovieNight(movieDate)
+      .then((data) => {
+        setMovieNightData(data[0]);
+      })
+      .catch((error) => {
+        if (error.response.data.status === 401) {
+          navigate(LOGIN);
+        }
+        console.error("Error fetching nights:", error);
+      });
   }, [movieDate]);
 
   useEffect(() => {
-    getAttendees().then((attds) => {
-      setAttendeesList(attds);
-    });
+    getAttendees()
+      .then((attds) => {
+        setAttendeesList(attds);
+      })
+      .catch((error) => {
+        if (error.response.data.status === 401) {
+          navigate(LOGIN);
+        }
+        console.error("Error fetching attendees:", error);
+      });
   }, [movieDate]);
 
   useEffect(() => {
@@ -46,7 +63,10 @@ export const MovieNightAttend: FC<MovieDateProps> = ({
         }
       })
       .catch((error) => {
-        console.error("Error fetching movies:", error);
+        if (error.response.data.status === 401) {
+          navigate(LOGIN);
+        }
+        console.error("Error fetching movies night:", error);
       });
   }, [movieDate]);
 

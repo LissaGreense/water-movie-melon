@@ -1,7 +1,7 @@
 import "./accountPage.css";
 import { Button } from "primereact/button";
 import { Image } from "primereact/image";
-import { clearAccessToken, getUsername } from "../utils/accessToken.ts";
+import { clearUser, getUsername } from "../utils/accessToken.ts";
 import { useNavigate } from "react-router-dom";
 import { LOGIN } from "../constants/paths.ts";
 import { getAvatar, getStatistics } from "../connections/internal/user.ts";
@@ -10,6 +10,7 @@ import { FileUpload } from "primereact/fileupload";
 import { Statistics } from "../types/internal/user.ts";
 import { CropperDialog } from "../components/cropperDialog.tsx";
 import { PasswordChangeDialog } from "../components/passwordChangeDialog.tsx";
+import { logout } from "../connections/internal/authentication.ts";
 
 export const AccountPage = () => {
   const navigate = useNavigate();
@@ -24,8 +25,14 @@ export const AccountPage = () => {
 
   const handleLogoutEvent = (e: React.MouseEvent) => {
     e.preventDefault();
-    clearAccessToken();
-    navigate(LOGIN);
+    logout()
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        clearUser();
+        navigate(LOGIN);
+      });
   };
   const handleAvatarChangeError = () => {
     alert("Cos poszło nie tak kiedy dodawałeś swoją arbuzową fotę!");
@@ -53,22 +60,40 @@ export const AccountPage = () => {
   };
 
   useEffect(() => {
-    getAvatar(getUsername() as string).then((r) => {
-      if (r.avatar_url == "") {
-        alert("Error fetching avatar...");
-      }
-      setAvatar(backend_url + r.avatar_url);
-    });
+    getAvatar(getUsername() as string)
+      .then((r) => {
+        if (r.avatar_url == "") {
+          alert("Error fetching avatar...");
+        }
+        setAvatar(backend_url + r.avatar_url);
+      })
+      .catch((error) => {
+        if (error.response.status === 403) {
+          clearUser();
+          navigate(LOGIN);
+        } else {
+          alert("Error fetching statistics...");
+        }
+      });
   }, [showCropper]);
 
   useEffect(() => {
-    getStatistics(getUsername() as string).then(async (r) => {
-      if (r === null) {
-        alert("Error fetching statistics...");
-      } else {
-        setUserStatistics(await r);
-      }
-    });
+    getStatistics(getUsername() as string)
+      .then(async (r) => {
+        if (r === null) {
+          alert("Error fetching statistics...");
+        } else {
+          setUserStatistics(await r);
+        }
+      })
+      .catch((error) => {
+        if (error.response.status === 403) {
+          clearUser();
+          navigate(LOGIN);
+        } else {
+          alert("Error fetching statistics...");
+        }
+      });
   }, []);
 
   return (

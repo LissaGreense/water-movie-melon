@@ -5,6 +5,10 @@ import { Button } from "primereact/button";
 import { postRating } from "../connections/internal/movieRate.ts";
 import { getUsername } from "../utils/accessToken.ts";
 import { getMovieNight } from "../connections/internal/movieNight.ts";
+import { Simulate } from "react-dom/test-utils";
+import error = Simulate.error;
+import { LOGIN } from "../constants/paths.ts";
+import { useNavigate } from "react-router-dom";
 
 interface MovieDateProps {
   movieDate: Date | null;
@@ -19,15 +23,26 @@ export const MovieRate: FC<MovieDateProps> = ({
 }): JSX.Element => {
   const [rating, setRating] = useState<number | undefined>();
   const [movieTitle, setMovieTitle] = useState<string>("");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    getMovieNight(movieDate).then((night) => {
-      setMovieTitle(night[0].selected_movie.title);
-    });
+    getMovieNight(movieDate)
+      .then((night) => {
+        setMovieTitle(night[0].selected_movie.title);
+      })
+      .catch((error) => {
+        if (error.response.data.status === 401) {
+          navigate(LOGIN);
+        }
+      });
   }, [movieDate]);
 
   const handleRateMovie = () => {
-    postRating(movieTitle, getUsername(), rating);
+    postRating(movieTitle, getUsername(), rating).catch((error) => {
+      if (error.response.data.status === 401) {
+        navigate(LOGIN);
+      }
+    });
   };
 
   return (
