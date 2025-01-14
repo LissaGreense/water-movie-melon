@@ -19,7 +19,7 @@ import {
   GRAVITY_TIMESTAMP_SCALE,
   HEIGHT_TO_WIDTH_BUCKET_RATIO,
   INNER_BUCKET_RATIO,
-  renderOptions,
+  RENDER_OPTIONS,
   VERTICAL_CANVAS_HEIGHT_SCALE,
   VERTICAL_CANVAS_WIDTH_SCALE,
 } from "../constants/bucketWithCoversConstants.ts";
@@ -194,7 +194,7 @@ export function BucketWithCovers() {
         {
           isStatic: true,
           label: "top",
-          render: renderOptions,
+          render: RENDER_OPTIONS,
         },
       ),
       Bodies.rectangle(
@@ -205,7 +205,7 @@ export function BucketWithCovers() {
         {
           isStatic: true,
           label: "bottom",
-          render: renderOptions,
+          render: RENDER_OPTIONS,
         },
       ),
       Bodies.rectangle(
@@ -217,7 +217,7 @@ export function BucketWithCovers() {
           isStatic: true,
           label: "left",
           angle: 3,
-          render: renderOptions,
+          render: RENDER_OPTIONS,
         },
       ),
       Bodies.rectangle(
@@ -229,7 +229,7 @@ export function BucketWithCovers() {
           isStatic: true,
           label: "right",
           angle: -3,
-          render: renderOptions,
+          render: RENDER_OPTIONS,
         },
       ),
     ];

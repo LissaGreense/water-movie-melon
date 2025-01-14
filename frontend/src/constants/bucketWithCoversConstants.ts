@@ -1,4 +1,3 @@
-// BUCKET STATICS
 export const BUCKET_HEIGHT_VH = 0.75;
 export const BUCKET_SCALE = 0.55;
 export const INNER_BUCKET_RATIO = 0.6;
@@ -9,7 +8,7 @@ export const BOUNDARIES_OFFSET = 10;
 export const GRAVITY_TIMESTAMP_SCALE = 0.006;
 export const BOUNDARIES_SCALE = 0.03;
 
-export const renderOptions = {
+export const RENDER_OPTIONS = {
   strokeStyle: "transparent",
   fillStyle: "transparent",
 };
