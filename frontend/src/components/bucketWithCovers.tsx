@@ -1,7 +1,15 @@
 import bucket from "../assets/bucket.png";
 import { useEffect, useRef } from "react";
 import { getMovies } from "../connections/internal/movie.ts";
-import { Bodies, Body, Composite, Engine, Events, Render, Runner } from "matter-js";
+import {
+  Bodies,
+  Body,
+  Composite,
+  Engine,
+  Events,
+  Render,
+  Runner,
+} from "matter-js";
 import "./bucketWithCovers.css";
 
 export function BucketWithCovers() {
@@ -10,10 +18,9 @@ export function BucketWithCovers() {
   const render = useRef<Render>();
   const runner = useRef<Runner>(Runner.create());
 
-  const offset = 0;
   const renderOptions = {
-      strokeStyle: "transparent",
-      fillStyle: "transparent",
+    strokeStyle: "transparent",
+    fillStyle: "transparent",
   };
 
   // BUCKET STATICS
@@ -21,33 +28,57 @@ export function BucketWithCovers() {
   const BUCKET_SCALE = 0.55;
   const INNER_BUCKET_RATIO = 0.6;
   const HEIGHT_TO_WIDTH_BUCKET_RATIO = 0.78;
+  const VERTICAL_CANVAS_HEIGHT_SCALE = 0.88;
+  const VERTICAL_CANVAS_WIDTH_SCALE = 0.8;
+  const BOUNDARIES_OFFSET = 10;
+
+  const isDisplayHorizontal = () => {
+    return window.innerWidth > window.innerHeight;
+  };
 
   const getBoundariesHeight = () => {
-    return window.innerHeight * 0.03
-  }
+    return window.innerHeight * 0.03;
+  };
   const getBoundariesWidth = () => {
-    return window.innerWidth * 0.03
-  }
+    return window.innerWidth * 0.03;
+  };
 
   const getBucketHeight = () => {
     return window.innerHeight * BUCKET_HEIGHT_VH * BUCKET_SCALE;
-  }
+  };
 
   const getCanvasHeight = () => {
-    return getBucketHeight() * INNER_BUCKET_RATIO + getBoundariesHeight();
-  }
+    if (isDisplayHorizontal()) {
+      return getBucketHeight() * INNER_BUCKET_RATIO + getBoundariesHeight();
+    }
+    return (
+      (getBucketHeight() * INNER_BUCKET_RATIO + getBoundariesHeight()) *
+      VERTICAL_CANVAS_HEIGHT_SCALE
+    );
+  };
 
   const getCanvasWidth = () => {
-    return getBucketHeight() * HEIGHT_TO_WIDTH_BUCKET_RATIO;
-  }
+    if (isDisplayHorizontal()) {
+      return getBucketHeight() * HEIGHT_TO_WIDTH_BUCKET_RATIO;
+    }
+    return (
+      getBucketHeight() *
+      HEIGHT_TO_WIDTH_BUCKET_RATIO *
+      VERTICAL_CANVAS_WIDTH_SCALE
+    );
+  };
 
   const getCoverHeight = () => {
-    return 2 * (window.innerWidth + window.innerHeight) / 333;
-  }
+    return (3 * (window.innerWidth + window.innerHeight)) / 333;
+  };
 
   const getCoverWidth = () => {
-    return 3 * (window.innerWidth + window.innerHeight) / 333;
-  }
+    return (2 * (window.innerWidth + window.innerHeight)) / 333;
+  };
+
+  const getSpriteScale = () => {
+    return (window.innerWidth + window.innerHeight) / 55414;
+  };
 
   let previousCanvasWidth = getCanvasWidth();
   let previousCanvasHeight = getCanvasHeight();
@@ -70,6 +101,16 @@ export function BucketWithCovers() {
       clearRenderer();
     };
   });
+
+  function rotateGravityVector() {
+    engine.current.gravity.x = Math.cos(
+      engine.current.timing.timestamp * 0.006,
+    );
+
+    engine.current.gravity.y = Math.sin(
+      engine.current.timing.timestamp * 0.006,
+    );
+  }
 
   function animationRender(covers: string[]) {
     if (!canvas.current) return;
@@ -95,8 +136,8 @@ export function BucketWithCovers() {
       Composite.add(
         engine.current.world,
         Bodies.rectangle(
-          Math.random() * getCanvasWidth() - offset + getCoverWidth() / 2,
-          Math.random() * getCanvasHeight() - offset + getCoverHeight() / 2,
+          Math.random() * getCanvasWidth() + getCoverWidth() / 2,
+          Math.random() * getCanvasHeight() + getCoverHeight() / 2,
           getCoverWidth(),
           getCoverHeight(),
           {
@@ -104,12 +145,13 @@ export function BucketWithCovers() {
             restitution: 0.3,
             render: {
               sprite: {
-                xScale: 0.05,
-                yScale: 0.05,
+                xScale: getSpriteScale(),
+                yScale: getSpriteScale(),
                 texture: cover,
               },
             },
-        }),
+          },
+        ),
       );
     }
 
@@ -117,26 +159,19 @@ export function BucketWithCovers() {
     engine.current.gravity.scale = 0.03;
 
     Events.on(engine.current, "beforeUpdate", () => {
-      // TODO: extract to functions to describe blocks
-      engine.current.gravity.x = Math.cos(
-        engine.current.timing.timestamp * 0.006,
-      );
-
-      engine.current.gravity.y = Math.sin(
-        engine.current.timing.timestamp * 0.006,
-      );
+      rotateGravityVector();
     });
 
     Render.run(render.current);
     Runner.run(runner.current, engine.current);
   }
 
-  window.addEventListener('resize', () => {
+  window.addEventListener("resize", () => {
     resizeCanvas();
     setNewBoundaries();
     scaleCovers();
-    previousCanvasWidth = getCanvasWidth()
-    previousCanvasHeight = getCanvasHeight()
+    previousCanvasWidth = getCanvasWidth();
+    previousCanvasHeight = getCanvasHeight();
   });
 
   function resizeCanvas() {
@@ -155,57 +190,56 @@ export function BucketWithCovers() {
     return [
       Bodies.rectangle(
         getCanvasWidth() / 2,
-        offset / 2,
-        getCanvasWidth() + 2 * offset,
+        0,
+        getCanvasWidth(),
         getBoundariesHeight(),
         {
           isStatic: true,
           label: "top",
-          render: renderOptions
-        }
+          render: renderOptions,
+        },
       ),
       Bodies.rectangle(
         getCanvasWidth() / 2,
-        getCanvasHeight() - offset / 2,
-        getCanvasWidth() + 2 * offset,
+        getCanvasHeight(),
+        getCanvasWidth(),
         getBoundariesHeight(),
         {
           isStatic: true,
           label: "bottom",
-          render: renderOptions
-        }
+          render: renderOptions,
+        },
       ),
       Bodies.rectangle(
-        offset / 2,
+        BOUNDARIES_OFFSET,
         getCanvasHeight() / 2,
         getBoundariesWidth(),
-        getCanvasHeight() + 2 * offset,
+        getCanvasHeight(),
         {
           isStatic: true,
           label: "left",
           angle: 3,
-          render: renderOptions
-        }
+          render: renderOptions,
+        },
       ),
       Bodies.rectangle(
-        getCanvasWidth() - offset / 2,
+        getCanvasWidth() - BOUNDARIES_OFFSET,
         getCanvasHeight() / 2,
         getBoundariesWidth(),
-        getCanvasHeight() + 2 * offset,
+        getCanvasHeight(),
         {
           isStatic: true,
           label: "right",
           angle: -3,
-          render: renderOptions
-        }
-      )
+          render: renderOptions,
+        },
+      ),
     ];
   }
 
   function setNewBoundaries() {
-
     const boundaries = engine.current.world.bodies.filter((body) =>
-      ["top", "bottom", "left", "right"].includes(body.label)
+      ["top", "bottom", "left", "right"].includes(body.label),
     );
 
     Composite.remove(engine.current.world, boundaries);
