@@ -11,6 +11,18 @@ import {
   Runner,
 } from "matter-js";
 import "./bucketWithCovers.css";
+import {
+  BOUNDARIES_OFFSET,
+  BOUNDARIES_SCALE,
+  BUCKET_HEIGHT_VH,
+  BUCKET_SCALE,
+  GRAVITY_TIMESTAMP_SCALE,
+  HEIGHT_TO_WIDTH_BUCKET_RATIO,
+  INNER_BUCKET_RATIO,
+  renderOptions,
+  VERTICAL_CANVAS_HEIGHT_SCALE,
+  VERTICAL_CANVAS_WIDTH_SCALE,
+} from "../constants/bucketWithCoversConstants.ts";
 
 export function BucketWithCovers() {
   const canvas = useRef<HTMLDivElement>(null);
@@ -18,29 +30,15 @@ export function BucketWithCovers() {
   const render = useRef<Render>();
   const runner = useRef<Runner>(Runner.create());
 
-  const renderOptions = {
-    strokeStyle: "transparent",
-    fillStyle: "transparent",
-  };
-
-  // BUCKET STATICS
-  const BUCKET_HEIGHT_VH = 0.75;
-  const BUCKET_SCALE = 0.55;
-  const INNER_BUCKET_RATIO = 0.6;
-  const HEIGHT_TO_WIDTH_BUCKET_RATIO = 0.78;
-  const VERTICAL_CANVAS_HEIGHT_SCALE = 0.88;
-  const VERTICAL_CANVAS_WIDTH_SCALE = 0.8;
-  const BOUNDARIES_OFFSET = 10;
-
   const isDisplayHorizontal = () => {
     return window.innerWidth > window.innerHeight;
   };
 
   const getBoundariesHeight = () => {
-    return window.innerHeight * 0.03;
+    return window.innerHeight * BOUNDARIES_SCALE;
   };
   const getBoundariesWidth = () => {
-    return window.innerWidth * 0.03;
+    return window.innerWidth * BOUNDARIES_SCALE;
   };
 
   const getBucketHeight = () => {
@@ -104,11 +102,11 @@ export function BucketWithCovers() {
 
   function rotateGravityVector() {
     engine.current.gravity.x = Math.cos(
-      engine.current.timing.timestamp * 0.006,
+      engine.current.timing.timestamp * GRAVITY_TIMESTAMP_SCALE,
     );
 
     engine.current.gravity.y = Math.sin(
-      engine.current.timing.timestamp * 0.006,
+      engine.current.timing.timestamp * GRAVITY_TIMESTAMP_SCALE,
     );
   }
 
