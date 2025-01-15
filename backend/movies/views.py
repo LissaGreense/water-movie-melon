@@ -1,5 +1,7 @@
 import datetime
 from random import choice
+
+from django.contrib.postgres.search import SearchVector
 from django.core.serializers.json import DjangoJSONEncoder
 from django_ratelimit.decorators import ratelimit
 from django.core.files.base import ContentFile
@@ -27,6 +29,10 @@ class MoviesObject(APIView):
         watched = request.GET.get('watched', None)
         random = request.GET.get('random', None)
         limit = request.GET.get('limit', None)
+        search = request.GET.get('search', None)
+        order_by = request.GET.get('orderBy', None)
+        print(search)
+        print(request.GET)
 
         if watched and watched.lower() == 'false':
             movies = movies.filter(watched_movie__isnull=True)
@@ -41,6 +47,14 @@ class MoviesObject(APIView):
         if limit:
             limit = int(limit)
             movies = movies[:limit]
+
+        if search:
+            movies = movies.annotate(search=SearchVector('Movie_title', 'Movie_user', 'Movie_date_added', 'Movie_genre')).filter(search__icontains=search)
+            print(movies)
+
+        if order_by:
+            order_type = order_by.get('type')
+            order_ascending = order_by.get('ascending')
 
         serialized_movies = serializers.serialize('python', movies)
         movies_field = [d['fields'] for d in serialized_movies]

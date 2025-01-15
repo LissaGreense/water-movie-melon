@@ -7,13 +7,24 @@ import "./moviePage.css";
 import { getAvatar, getStatistics } from "../connections/internal/user.ts";
 import { getUsername } from "../utils/accessToken.ts";
 import { getMovies } from "../connections/internal/movie.ts";
-import { Movie } from "../types/internal/movie.ts";
+import { Movie, MovieSearchQuery } from "../types/internal/movie.ts";
+import { InputText } from "primereact/inputtext";
+import { Dropdown } from "primereact/dropdown";
+import { TriStateCheckbox } from "primereact/tristatecheckbox";
+import { Nullable } from "primereact/ts-helpers";
 
 export const MoviePage = () => {
   const [movieFormVisible, setMovieFormVisible] = useState<boolean>(false);
   const [userHasTickets, setUserHasTickets] = useState<boolean>(false);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [movieItems, setMovieItems] = useState<MovieItem[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [orderBy, setOrderBy] = useState<Map<string, string | boolean>>(new Map<string, string>());
+  const [orderByType, setOrderByType] = useState<string>('');
+  const [orderByAscending, setOrderByAscending] = useState<Nullable<boolean>>(null);
+  const [searchQuery, setSearchQuery] = useState<MovieSearchQuery>({});
+
+  const optionsOrderBy: string[] = ['Tytuł', 'Data dodania', 'Czas trwania']
 
   useEffect(() => {
     getStatistics(getUsername() as string).then(async (r) => {
@@ -30,7 +41,8 @@ export const MoviePage = () => {
   }, [movieFormVisible]);
 
   useEffect(() => {
-    getMovies({})
+    console.log(searchQuery)
+    getMovies(searchQuery)
       .then((movies) => {
         setMovies(movies);
       })
@@ -41,7 +53,7 @@ export const MoviePage = () => {
     return () => {
       setMovies([]);
     };
-  }, [movieFormVisible]);
+  }, [movieFormVisible, searchQuery]);
 
   useEffect(() => {
     let ignoreAvatarRequest = false; // race condition prevention
@@ -62,6 +74,40 @@ export const MoviePage = () => {
       ignoreAvatarRequest = true; // ignore request during cleanup
     };
   }, [movies]);
+
+  useEffect(() => {
+    const searchQuery = new Map<string, string | Map<string, string | boolean>>();
+
+    if (searchTerm) {
+      searchQuery.set('search', searchTerm);
+    }
+
+    if (orderBy.has('ascending') && orderBy.has('type')) {
+      searchQuery.set('orderBy', orderBy);
+    }
+
+    setSearchQuery(searchQuery as MovieSearchQuery);
+
+    return () => {
+      setSearchQuery({});
+    }
+  }, [searchTerm, orderBy]);
+
+  const handleOrderBy = () => {
+    const orderBy = new Map<string, string | boolean>();
+
+    if (orderByType) {
+      orderBy.set("type", orderByType);
+    }
+
+    if (orderByAscending === true) {
+      orderBy.set("ascending", true);
+    } else if (orderByAscending === false) {
+      orderBy.set("ascending", false);
+    }
+
+    setOrderBy(orderBy);
+  }
 
   return (
     <>
@@ -84,6 +130,14 @@ export const MoviePage = () => {
           >
             <NewMovieForm></NewMovieForm>
           </Dialog>
+        </div>
+        <div className="melonStyleContainerPeel">
+          <div className="p-inputgroup flex-1">
+            <InputText placeholder="Szukaj" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+            <Dropdown placeholder="Sortowanie" value={orderByType} onChange={(e) => {setOrderByType(e.target.value)}} options={optionsOrderBy} showClear />
+            <TriStateCheckbox value={orderByAscending} onChange={(e) => setOrderByAscending(e.target.value)} disabled={!orderByType} />
+            <Button label={'Sortuj'} onClick={handleOrderBy} />
+          </div>
         </div>
         <div className="melonStyleContainerFruit">
           <MovieList movies={movieItems}></MovieList>

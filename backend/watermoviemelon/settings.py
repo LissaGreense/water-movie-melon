@@ -50,6 +50,8 @@ CORS_ALLOW_HEADERS = [
     'access-control-request-headers',
     'user',
     'Cache-Control',
+    'Pragma',
+    'expires',
 ]
 
 # Application definition

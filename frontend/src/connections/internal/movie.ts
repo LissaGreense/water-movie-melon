@@ -10,6 +10,11 @@ interface movieParams {
   random?: boolean;
   watched?: boolean;
   limit?: number;
+  search?: string;
+  orderBy?: {
+    type?: string;
+    ascending?: boolean;
+  };
 }
 
 export async function getMovies(params: movieParams): Promise<Movie[]> {
