@@ -14,6 +14,7 @@ import React, { useEffect, useState } from "react";
 import { getAvatar } from "../connections/internal/user.ts";
 import "./movieMenu.css";
 import { Menu } from "primereact/menu";
+import { logout } from "../connections/internal/authentication.ts";
 
 export default function MovieMenu() {
   const backend_url = "http://localhost:8000";
@@ -104,8 +105,14 @@ export default function MovieMenu() {
       label: "Wyloguj",
       template: itemRenderer,
       command: () => {
-        clearUser();
-        navigate(HOMEPAGE);
+        logout()
+          .catch((err) => {
+            console.error(err);
+          })
+          .finally(() => {
+            clearUser();
+            navigate(HOMEPAGE);
+          });
       },
     },
   ];

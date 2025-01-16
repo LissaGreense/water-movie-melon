@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { Question, Token } from "../../types/internal/authentication.ts";
 import { ResultResponse } from "../../types/internal/common.ts";
 import { DEFAULT_BACKEND_URL } from "../../constants/defaults.ts";
@@ -32,16 +32,10 @@ export async function login(
   return response.data as Token;
 }
 
-export async function logout(): Promise<any> {
+export async function logout(): Promise<AxiosResponse> {
   const config: AxiosRequestConfig = getAuthHeadersConfig(true);
 
-  const response = await axios.post(
-    backend_url + logout_endpoint,
-    null,
-    config,
-  );
-
-  return response.data;
+  return await axios.post(backend_url + logout_endpoint, null, config);
 }
 
 export async function register(
