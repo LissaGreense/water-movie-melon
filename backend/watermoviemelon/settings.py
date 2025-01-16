@@ -179,8 +179,9 @@ SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 SESSION_COOKIE_HTTPONLY = True
 # TODO: uncomment this line when SSL enabled
 # SESSION_COOKIE_SECURE = True
-SESSION_COOKIE_AGE = 60
+SESSION_COOKIE_AGE = 900
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_SAVE_EVERY_REQUEST = True
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'avatars')

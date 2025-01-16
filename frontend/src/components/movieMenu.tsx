@@ -8,6 +8,7 @@ import {
   HOMEPAGE,
   LOGIN,
   MOVIES,
+  REGISTER,
 } from "../constants/paths.ts";
 import React, { useEffect, useState } from "react";
 import { getAvatar } from "../connections/internal/user.ts";
@@ -20,21 +21,25 @@ export default function MovieMenu() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getAvatar(getUsername() as string)
-      .then((r) => {
-        if (r.avatar_url == "") {
-          alert("Error fetching avatar...");
-        }
-        setAvatar(backend_url + r.avatar_url);
-      })
-      .catch((error) => {
-        if (error.response.status === 403) {
-          clearUser();
-        } else {
-          alert("Error fetching avatar...");
-        }
-      });
-  }, []);
+    if (getUsername()) {
+      getAvatar(getUsername() as string)
+        .then((r) => {
+          if (r.avatar_url == "") {
+            alert("Error fetching avatar...");
+          }
+          setAvatar(backend_url + r.avatar_url);
+        })
+        .catch((error) => {
+          if (error.response.status === 403) {
+            clearUser();
+          } else {
+            alert("Error fetching avatar...");
+          }
+        });
+    } else {
+      setAvatar("");
+    }
+  }, [getUsername()]);
 
   const itemRenderer = (item: MenuItem) => (
     <div className="p-menuitem-content">
@@ -110,6 +115,13 @@ export default function MovieMenu() {
       template: itemRenderer,
       command: () => {
         navigate(LOGIN);
+      },
+    },
+    {
+      label: "Zarejestruj",
+      template: itemRenderer,
+      command: () => {
+        navigate(REGISTER);
       },
     },
   ];
