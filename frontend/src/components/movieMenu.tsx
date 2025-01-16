@@ -22,8 +22,9 @@ export default function MovieMenu() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (getUsername()) {
-      getAvatar(getUsername() as string)
+    const username = getUsername();
+    if (username) {
+      getAvatar(username as string)
         .then((r) => {
           if (r.avatar_url == "") {
             alert("Error fetching avatar...");
@@ -33,14 +34,16 @@ export default function MovieMenu() {
         .catch((error) => {
           if (error.response.status === 403) {
             clearUser();
+            navigate(LOGIN);
           } else {
             alert("Error fetching avatar...");
           }
+          setAvatar("");
         });
     } else {
       setAvatar("");
     }
-  }, [getUsername()]);
+  }, [navigate]);
 
   const itemRenderer = (item: MenuItem) => (
     <div className="p-menuitem-content">

@@ -32,7 +32,7 @@ export const CalendarPage = () => {
         }
         console.error("Error fetching movies:", error);
       });
-  }, [visibleAdd, visibleJoin, visibleRate]);
+  }, [visibleAdd, visibleJoin, visibleRate, navigate]);
 
   const dateTemplate = (calendarDate: CalendarDateTemplateEvent) => {
     const formattedDate = dayjs(

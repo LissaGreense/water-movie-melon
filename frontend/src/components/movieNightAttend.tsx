@@ -6,7 +6,7 @@ import {
   joinMovieNight,
 } from "../connections/internal/movieNight.ts";
 import { Button } from "primereact/button";
-import { getUsername } from "../utils/accessToken.ts";
+import { clearUser, getUsername } from "../utils/accessToken.ts";
 import dayjs from "dayjs";
 import { Attendees, MovieNight } from "../types/internal/movieNight.ts";
 import { LOGIN } from "../constants/paths.ts";
@@ -34,11 +34,12 @@ export const MovieNightAttend: FC<MovieDateProps> = ({
       })
       .catch((error) => {
         if (error.response.data.status === 401) {
+          clearUser();
           navigate(LOGIN);
         }
         console.error("Error fetching nights:", error);
       });
-  }, [movieDate]);
+  }, [movieDate, navigate]);
 
   useEffect(() => {
     getAttendees()
@@ -47,11 +48,12 @@ export const MovieNightAttend: FC<MovieDateProps> = ({
       })
       .catch((error) => {
         if (error.response.data.status === 401) {
+          clearUser();
           navigate(LOGIN);
         }
         console.error("Error fetching attendees:", error);
       });
-  }, [movieDate]);
+  }, [movieDate, navigate]);
 
   useEffect(() => {
     getMovieNight(movieDate)
@@ -64,11 +66,12 @@ export const MovieNightAttend: FC<MovieDateProps> = ({
       })
       .catch((error) => {
         if (error.response.data.status === 401) {
+          clearUser();
           navigate(LOGIN);
         }
         console.error("Error fetching movies night:", error);
       });
-  }, [movieDate]);
+  }, [movieDate, navigate]);
 
   const handleJoinMovieNight = () => {
     joinMovieNight(

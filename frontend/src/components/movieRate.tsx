@@ -3,7 +3,7 @@ import { Dialog } from "primereact/dialog";
 import { Rating } from "primereact/rating";
 import { Button } from "primereact/button";
 import { postRating } from "../connections/internal/movieRate.ts";
-import { getUsername } from "../utils/accessToken.ts";
+import { clearUser, getUsername } from "../utils/accessToken.ts";
 import { getMovieNight } from "../connections/internal/movieNight.ts";
 import { LOGIN } from "../constants/paths.ts";
 import { useNavigate } from "react-router-dom";
@@ -30,10 +30,11 @@ export const MovieRate: FC<MovieDateProps> = ({
       })
       .catch((error) => {
         if (error.response.data.status === 401) {
+          clearUser();
           navigate(LOGIN);
         }
       });
-  }, [movieDate]);
+  }, [movieDate, navigate]);
 
   const handleRateMovie = () => {
     postRating(movieTitle, getUsername(), rating).catch((error) => {

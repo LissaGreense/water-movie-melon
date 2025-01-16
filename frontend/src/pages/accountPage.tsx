@@ -75,7 +75,7 @@ export const AccountPage = () => {
           alert("Error fetching statistics...");
         }
       });
-  }, [showCropper]);
+  }, [showCropper, navigate]);
 
   useEffect(() => {
     getStatistics(getUsername() as string)
@@ -94,7 +94,7 @@ export const AccountPage = () => {
           alert("Error fetching statistics...");
         }
       });
-  }, []);
+  }, [navigate]);
 
   return (
     <>
