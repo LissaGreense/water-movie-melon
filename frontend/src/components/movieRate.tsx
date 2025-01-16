@@ -5,8 +5,6 @@ import { Button } from "primereact/button";
 import { postRating } from "../connections/internal/movieRate.ts";
 import { getUsername } from "../utils/accessToken.ts";
 import { getMovieNight } from "../connections/internal/movieNight.ts";
-import { Simulate } from "react-dom/test-utils";
-import error = Simulate.error;
 import { LOGIN } from "../constants/paths.ts";
 import { useNavigate } from "react-router-dom";
 

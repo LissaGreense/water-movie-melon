@@ -18,8 +18,7 @@ export const LoginPage = () => {
     e.preventDefault();
     if (input.username !== "" && input.password !== "") {
       login(input.username, input.password)
-        .then((r) => {
-          console.log("eo");
+        .then(() => {
           setUsername(input.username);
           navigate(HOMEPAGE);
         })

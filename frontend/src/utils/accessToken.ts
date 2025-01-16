@@ -1,7 +1,5 @@
 import { AxiosRequestConfig } from "axios";
 import Cookies from "universal-cookie";
-import { useNavigate } from "react-router-dom";
-import { LOGIN } from "../constants/paths.ts";
 
 const USER_KEY = "username";
 const CSR_KEY = "csrftoken";
