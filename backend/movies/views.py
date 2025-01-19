@@ -1,7 +1,7 @@
 import datetime
 from random import choice
 
-from django.contrib.postgres.search import SearchVector
+from django.contrib.postgres.search import SearchVector, SearchQuery
 from django.core.serializers.json import DjangoJSONEncoder
 from django_ratelimit.decorators import ratelimit
 from django.core.files.base import ContentFile
@@ -19,6 +19,7 @@ from django.db import IntegrityError
 from dateutil import parser
 import json
 
+from watermoviemelon.query_search import get_query
 from .models import Movie, Rate, MovieNight, Attendees, User, RegisterQuestion
 
 class MoviesObject(APIView):
@@ -49,12 +50,25 @@ class MoviesObject(APIView):
             movies = movies[:limit]
 
         if search:
-            movies = movies.annotate(search=SearchVector('Movie_title', 'Movie_user', 'Movie_date_added', 'Movie_genre')).filter(search__icontains=search)
-            print(movies)
+            search_query = get_query(search, ['title', 'user', 'genre'])
+            movies = movies.filter(search_query)
+            # movies = movies.annotate(search=SearchVector('title')).filter(search=SearchQuery(search))
 
         if order_by:
             order_type = order_by.get('type')
+            order_field = None
+            if order_type == 'Tytuł':
+                order_field = 'title'
+            elif order_type == 'Data dodania':
+                order_field = 'date_added'
+            elif order_type == 'Czas trwania':
+                order_field = 'date_added'
             order_ascending = order_by.get('ascending')
+
+            if not order_ascending:
+                order_field = '-' + order_field
+
+            movies = movies.order_by(order_field)
 
         serialized_movies = serializers.serialize('python', movies)
         movies_field = [d['fields'] for d in serialized_movies]

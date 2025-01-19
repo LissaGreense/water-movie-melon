@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { MovieItem, MovieList } from "../components/movieList.tsx";
@@ -10,7 +10,7 @@ import { getMovies } from "../connections/internal/movie.ts";
 import { Movie, MovieSearchQuery } from "../types/internal/movie.ts";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
-import { TriStateCheckbox } from "primereact/tristatecheckbox";
+import { TriStateCheckbox, TriStateCheckboxChangeEvent } from "primereact/tristatecheckbox";
 import { Nullable } from "primereact/ts-helpers";
 
 export const MoviePage = () => {
@@ -19,9 +19,8 @@ export const MoviePage = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [movieItems, setMovieItems] = useState<MovieItem[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [orderBy, setOrderBy] = useState<Map<string, string | boolean>>(new Map<string, string>());
   const [orderByType, setOrderByType] = useState<string>('');
-  const [orderByAscending, setOrderByAscending] = useState<Nullable<boolean>>(null);
+  const [orderByAscending, setOrderByAscending] = useState<Nullable<boolean>>(undefined);
   const [searchQuery, setSearchQuery] = useState<MovieSearchQuery>({});
 
   const optionsOrderBy: string[] = ['Tytuł', 'Data dodania', 'Czas trwania']
@@ -75,38 +74,38 @@ export const MoviePage = () => {
     };
   }, [movies]);
 
-  useEffect(() => {
-    const searchQuery = new Map<string, string | Map<string, string | boolean>>();
-
-    if (searchTerm) {
-      searchQuery.set('search', searchTerm);
-    }
-
-    if (orderBy.has('ascending') && orderBy.has('type')) {
-      searchQuery.set('orderBy', orderBy);
-    }
-
-    setSearchQuery(searchQuery as MovieSearchQuery);
-
-    return () => {
-      setSearchQuery({});
-    }
-  }, [searchTerm, orderBy]);
 
   const handleOrderBy = () => {
-    const orderBy = new Map<string, string | boolean>();
+    const searchQuery: MovieSearchQuery = {
+      search: searchTerm,
+    };
 
-    if (orderByType) {
-      orderBy.set("type", orderByType);
-    }
-
-    if (orderByAscending === true) {
-      orderBy.set("ascending", true);
+    if (orderByAscending) {
+      searchQuery.orderBy = {
+        type: orderByType,
+        ascending: orderByAscending,
+      }
     } else if (orderByAscending === false) {
-      orderBy.set("ascending", false);
+      searchQuery.orderBy = {
+        type: orderByType,
+        ascending: orderByAscending,
+      }
     }
 
-    setOrderBy(orderBy);
+    setSearchQuery(searchQuery);
+  }
+
+  const handleSearchTermChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+
+    const searchQuery: MovieSearchQuery = {
+      search: e.target.value
+    }
+    setSearchQuery(searchQuery);
+  }
+
+  const handleTristateCheckbox = (e: TriStateCheckboxChangeEvent) => {
+    setOrderByAscending(e.target.value);
   }
 
   return (
@@ -133,10 +132,10 @@ export const MoviePage = () => {
         </div>
         <div className="melonStyleContainerPeel">
           <div className="p-inputgroup flex-1">
-            <InputText placeholder="Szukaj" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+            <InputText placeholder="Szukaj" value={searchTerm} onChange={handleSearchTermChange} />
             <Dropdown placeholder="Sortowanie" value={orderByType} onChange={(e) => {setOrderByType(e.target.value)}} options={optionsOrderBy} showClear />
-            <TriStateCheckbox value={orderByAscending} onChange={(e) => setOrderByAscending(e.target.value)} disabled={!orderByType} />
-            <Button label={'Sortuj'} onClick={handleOrderBy} />
+            <TriStateCheckbox value={orderByAscending} onChange={handleTristateCheckbox} />
+            <Button label={'Sortuj'} onClick={handleOrderBy} disabled={!orderByType} />
           </div>
         </div>
         <div className="melonStyleContainerFruit">
