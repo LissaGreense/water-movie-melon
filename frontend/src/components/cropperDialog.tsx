@@ -6,6 +6,8 @@ import getCroppedImg from "../utils/image.ts";
 import { uploadAvatar } from "../connections/internal/user.ts";
 import { getUsername } from "../utils/accessToken.ts";
 import "./cropperDialog.css";
+import { LOGIN } from "../constants/paths.ts";
+import { useNavigate } from "react-router-dom";
 
 interface CropperDialogProps {
   visible: boolean;
@@ -21,10 +23,15 @@ export const CropperDialog: FC<CropperDialogProps> = ({
   const [crop, setCrop] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [zoom, setZoom] = useState<number>(1);
+  const navigate = useNavigate();
 
   const handleUploadImage = async () => {
     const croppedImage = await getCroppedImg(image, croppedAreaPixels);
-    await uploadAvatar(getUsername(), croppedImage);
+    await uploadAvatar(getUsername(), croppedImage).catch((error) => {
+      if (error.response.data.status === 401) {
+        navigate(LOGIN);
+      }
+    });
     setShowCropper(false);
   };
   const onCropComplete = useCallback((_: Area, croppedAreaPixels: Area) => {

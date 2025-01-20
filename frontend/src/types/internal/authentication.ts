@@ -1,5 +1,5 @@
 export interface Token {
-  token: string;
+  expiry: string;
 }
 
 export interface Question {

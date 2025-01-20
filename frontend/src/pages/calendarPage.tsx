@@ -7,6 +7,9 @@ import { MovieNightAttend } from "../components/movieNightAttend.tsx";
 import { MovieRate } from "../components/movieRate.tsx";
 import { FormEvent } from "primereact/ts-helpers";
 import "./calendarPage.css";
+import { LOGIN } from "../constants/paths.ts";
+import { useNavigate } from "react-router-dom";
+import { clearUser } from "../utils/accessToken.ts";
 
 export const CalendarPage = () => {
   const dateFormat = "YYYY-MM-DD";
@@ -15,6 +18,7 @@ export const CalendarPage = () => {
   const [visibleAdd, setAddVisible] = useState<boolean>(false);
   const [visibleJoin, setJoinVisible] = useState<boolean>(false);
   const [visibleRate, setRateVisible] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getMovieNights()
@@ -22,9 +26,13 @@ export const CalendarPage = () => {
         setNightDates(nights.map((x) => x.night_date?.split("T")[0]));
       })
       .catch((error) => {
+        if (error.response.status === 403) {
+          clearUser();
+          navigate(LOGIN);
+        }
         console.error("Error fetching movies:", error);
       });
-  }, [visibleAdd, visibleJoin, visibleRate]);
+  }, [visibleAdd, visibleJoin, visibleRate, navigate]);
 
   const dateTemplate = (calendarDate: CalendarDateTemplateEvent) => {
     const formattedDate = dayjs(

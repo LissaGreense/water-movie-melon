@@ -5,6 +5,8 @@ import { Password } from "primereact/password";
 import { postNewPassword } from "../connections/internal/user.ts";
 import { getUsername } from "../utils/accessToken.ts";
 import { ResultResponse } from "../types/internal/common.ts";
+import { useNavigate } from "react-router-dom";
+import { LOGIN } from "../constants/paths.ts";
 
 interface PasswordChangeDialogProps {
   visible: boolean;
@@ -17,6 +19,8 @@ export const PasswordChangeDialog: FC<PasswordChangeDialogProps> = ({
 }) => {
   const [newPassword, setNewPassword] = useState<string>("");
   const [oldPassword, setOldPassword] = useState<string>("");
+  const navigate = useNavigate();
+
   const handlePasswordChange = async () => {
     await postNewPassword(getUsername(), oldPassword, newPassword)
       .then((r: ResultResponse) => {
@@ -25,10 +29,14 @@ export const PasswordChangeDialog: FC<PasswordChangeDialogProps> = ({
         }
       })
       .catch((error) => {
-        alert(
-          "Wystąpił błąd przy zmianie hasła: " +
-            error["response"]["data"]["error"],
-        );
+        if (error.response.data.status === 401) {
+          navigate(LOGIN);
+        } else {
+          alert(
+            "Wystąpił błąd przy zmianie hasła: " +
+              error["response"]["data"]["error"],
+          );
+        }
       });
   };
 
