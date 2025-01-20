@@ -13,5 +13,5 @@ export interface MovieSearchQuery {
   orderBy?: {
     type?: string;
     ascending?: boolean;
-  }
+  };
 }

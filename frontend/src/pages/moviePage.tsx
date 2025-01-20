@@ -11,8 +11,11 @@ import { Movie, MovieSearchQuery } from "../types/internal/movie.ts";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Nullable } from "primereact/ts-helpers";
-import { MultiStateCheckbox, MultiStateCheckboxChangeEvent } from "primereact/multistatecheckbox";
-import 'primeicons/primeicons.css';
+import {
+  MultiStateCheckbox,
+  MultiStateCheckboxChangeEvent,
+} from "primereact/multistatecheckbox";
+import "primeicons/primeicons.css";
 
 interface OrderAscendingItem {
   value: boolean;
@@ -24,15 +27,16 @@ export const MoviePage = () => {
   const [userHasTickets, setUserHasTickets] = useState<boolean>(false);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [movieItems, setMovieItems] = useState<MovieItem[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [orderByType, setOrderByType] = useState<string>('');
-  const [orderByAscending, setOrderByAscending] = useState<Nullable<boolean>>(undefined);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [orderByType, setOrderByType] = useState<string>("");
+  const [orderByAscending, setOrderByAscending] =
+    useState<Nullable<boolean>>(undefined);
   const [searchQuery, setSearchQuery] = useState<MovieSearchQuery>({});
 
-  const optionsOrderBy: string[] = ['Tytuł', 'Data dodania', 'Czas trwania']
+  const optionsOrderBy: string[] = ["Tytuł", "Data dodania", "Czas trwania"];
   const optionsOrderAscending: OrderAscendingItem[] = [
-    {value: true, icon: 'pi pi-sort-alpha-down'},
-    {value: false, icon: 'pi pi-sort-alpha-down-alt'},
+    { value: true, icon: "pi pi-sort-alpha-down" },
+    { value: false, icon: "pi pi-sort-alpha-down-alt" },
   ];
 
   useEffect(() => {
@@ -50,7 +54,7 @@ export const MoviePage = () => {
   }, [movieFormVisible]);
 
   useEffect(() => {
-    console.log(searchQuery)
+    console.log(searchQuery);
     getMovies(searchQuery)
       .then((movies) => {
         setMovies(movies);
@@ -84,7 +88,6 @@ export const MoviePage = () => {
     };
   }, [movies]);
 
-
   const handleOrderBy = () => {
     const searchQuery: MovieSearchQuery = {
       search: searchTerm,
@@ -94,39 +97,39 @@ export const MoviePage = () => {
       searchQuery.orderBy = {
         type: orderByType,
         ascending: orderByAscending,
-      }
+      };
     } else if (orderByAscending === false) {
       searchQuery.orderBy = {
         type: orderByType,
         ascending: orderByAscending,
-      }
+      };
     }
 
     setSearchQuery(searchQuery);
-  }
+  };
 
   const handleSearchTermChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
 
     const searchQuery: MovieSearchQuery = {
-      search: e.target.value
-    }
+      search: e.target.value,
+    };
     setSearchQuery(searchQuery);
-  }
+  };
 
   const handleMultiStateCheckbox = (e: MultiStateCheckboxChangeEvent) => {
     setOrderByAscending(e.target.value);
-  }
+  };
 
   const handleSortButton = () => {
     let disabled = true;
     if (orderByType && orderByAscending) {
       disabled = false;
     } else if (orderByType && orderByAscending === false) {
-      disabled = false
+      disabled = false;
     }
-    return disabled
-  }
+    return disabled;
+  };
 
   return (
     <>
@@ -152,10 +155,34 @@ export const MoviePage = () => {
         </div>
         <div className="melonStyleContainerPeel">
           <div className="p-inputgroup flex-1">
-            <InputText placeholder="Szukaj" value={searchTerm} onChange={handleSearchTermChange} />
-            <Dropdown className={"melonStyleContainerFruit"} placeholder="Sortowanie" value={orderByType} onChange={(e) => {setOrderByType(e.target.value)}} options={optionsOrderBy} showClear />
-            <MultiStateCheckbox className={"melonStyleContainerFruit"} value={orderByAscending} onChange={handleMultiStateCheckbox} options={optionsOrderAscending} optionValue={'value'}/>
-            <Button className={"melonStyleContainerFruit"} label={'Sortuj'} onClick={handleOrderBy} disabled={handleSortButton()} />
+            <InputText
+              placeholder="Szukaj"
+              value={searchTerm}
+              onChange={handleSearchTermChange}
+            />
+            <Dropdown
+              className={"melonStyleContainerFruit"}
+              placeholder="Sortowanie"
+              value={orderByType}
+              onChange={(e) => {
+                setOrderByType(e.target.value);
+              }}
+              options={optionsOrderBy}
+              showClear
+            />
+            <MultiStateCheckbox
+              className={"melonStyleContainerFruit"}
+              value={orderByAscending}
+              onChange={handleMultiStateCheckbox}
+              options={optionsOrderAscending}
+              optionValue={"value"}
+            />
+            <Button
+              className={"melonStyleContainerFruit"}
+              label={"Sortuj"}
+              onClick={handleOrderBy}
+              disabled={handleSortButton()}
+            />
           </div>
         </div>
         <div className="melonStyleContainerFruit">
