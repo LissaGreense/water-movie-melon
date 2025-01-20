@@ -4,7 +4,6 @@ import "primereact/resources/themes/vela-green/theme.css";
 import { HomePage } from "./pages/homePage.tsx";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { LoginPage } from "./pages/loginPage.tsx";
-import { getAccessToken } from "./utils/accessToken.ts";
 import { FC, lazy, ReactElement } from "react";
 import { AccountPage } from "./pages/accountPage.tsx";
 import {
@@ -18,12 +17,13 @@ import {
 import { CalendarPage } from "./pages/calendarPage.tsx";
 import { MoviePage } from "./pages/moviePage.tsx";
 import { RegisterPage } from "./pages/registerPage.tsx";
+import { getUsername } from "./utils/accessToken.ts";
 import MovieMenu from "./components/movieMenu.tsx";
 const MovieBackground = lazy(() => import("./components/movieBackground.tsx"));
 import logo from "./assets/LOGOMELONPLACEHOLDER.gif";
 
 const RequireAuth: FC<{ children: ReactElement }> = ({ children }) => {
-  const userIsLogged = !!getAccessToken();
+  const userIsLogged = !!getUsername();
 
   if (!userIsLogged) {
     return <LoginPage />;

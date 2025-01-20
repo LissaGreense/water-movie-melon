@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
+from rest_framework.settings import api_settings
 import os
 
 
@@ -35,9 +37,17 @@ CORS_ALLOWED_ORIGINS = [
     "https://localhost:4173",
 ]
 
+# TODO: uncomment this line when SSL enabled
+# CSRF_COOKIE_SECURE = True
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "http://localhost:4173",
+    "https://localhost:5173",
+    "https://localhost:4173",
+]
+
 CORS_ALLOW_HEADERS = [
     'content-type',
-    'authorization',
     'x-requested-with',
     'x-custom-header',
     'access-control-allow-origin',
@@ -49,9 +59,10 @@ CORS_ALLOW_HEADERS = [
     'access-control-request-method',
     'access-control-request-headers',
     'user',
-    'Cache-Control',
-    'Pragma',
-    'expires',
+    'X-CSRFToken',
+    'cache-control',
+    'pragma',
+    'expires'
 ]
 
 # Application definition
@@ -67,6 +78,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
+    'knox'
 ]
 
 MIDDLEWARE = [
@@ -163,9 +175,17 @@ AUTH_USER_MODEL = 'movies.User'
 
 REST_FRAMEWORK = {
   'DEFAULT_AUTHENTICATION_CLASSES': [
-    'rest_framework.authentication.TokenAuthentication',
+      'rest_framework.authentication.SessionAuthentication'
   ],
 }
+
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+SESSION_COOKIE_HTTPONLY = True
+# TODO: uncomment this line when SSL enabled
+# SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_AGE = 900
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_SAVE_EVERY_REQUEST = True
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'avatars')

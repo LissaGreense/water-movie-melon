@@ -1,10 +1,6 @@
 import { MenuItem, MenuItemCommandEvent } from "primereact/menuitem";
 import { Avatar } from "primereact/avatar";
-import {
-  clearAccessToken,
-  getAccessToken,
-  getUsername,
-} from "../utils/accessToken.ts";
+import { clearUser, getUsername } from "../utils/accessToken.ts";
 import { useNavigate } from "react-router-dom";
 import {
   ACCOUNT,
@@ -12,11 +8,13 @@ import {
   HOMEPAGE,
   LOGIN,
   MOVIES,
+  REGISTER,
 } from "../constants/paths.ts";
 import React, { useEffect, useState } from "react";
 import { getAvatar } from "../connections/internal/user.ts";
 import "./movieMenu.css";
 import { Menu } from "primereact/menu";
+import { logout } from "../connections/internal/authentication.ts";
 
 export default function MovieMenu() {
   const backend_url = "http://localhost:8000";
@@ -24,13 +22,28 @@ export default function MovieMenu() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getAvatar(getUsername() as string).then((r) => {
-      if (r.avatar_url == "") {
-        alert("Error fetching avatar...");
-      }
-      setAvatar(backend_url + r.avatar_url);
-    });
-  }, []);
+    const username = getUsername();
+    if (username) {
+      getAvatar(username as string)
+        .then((r) => {
+          if (r.avatar_url == "") {
+            alert("Error fetching avatar...");
+          }
+          setAvatar(backend_url + r.avatar_url);
+        })
+        .catch((error) => {
+          if (error.response.status === 403) {
+            clearUser();
+            navigate(LOGIN);
+          } else {
+            alert("Error fetching avatar...");
+          }
+          setAvatar("");
+        });
+    } else {
+      setAvatar("");
+    }
+  }, [navigate]);
 
   const itemRenderer = (item: MenuItem) => (
     <div className="p-menuitem-content">
@@ -95,8 +108,14 @@ export default function MovieMenu() {
       label: "Wyloguj",
       template: itemRenderer,
       command: () => {
-        clearAccessToken();
-        navigate(HOMEPAGE);
+        logout()
+          .catch((err) => {
+            console.error(err);
+          })
+          .finally(() => {
+            clearUser();
+            navigate(HOMEPAGE);
+          });
       },
     },
   ];
@@ -108,11 +127,18 @@ export default function MovieMenu() {
         navigate(LOGIN);
       },
     },
+    {
+      label: "Zarejestruj",
+      template: itemRenderer,
+      command: () => {
+        navigate(REGISTER);
+      },
+    },
   ];
   return (
     <Menu
       className={"vertical-menu"}
-      model={getAccessToken() ? itemsLogged : itemsNotLogged}
+      model={getUsername() ? itemsLogged : itemsNotLogged}
     />
   );
 }
