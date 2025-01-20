@@ -1,26 +1,26 @@
 import datetime
+import json
 from random import choice
 
-from django.core.serializers.json import DjangoJSONEncoder
-from django_ratelimit.decorators import ratelimit
+from dateutil import parser
+from django.contrib.auth import login, authenticate, logout
+from django.core import serializers
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
+from django.core.serializers.json import DjangoJSONEncoder
+from django.db import IntegrityError
+from django.db.models import Avg
+from django.http import HttpResponse
+from django.utils import timezone
 from django.utils.dateparse import parse_datetime
-from django.contrib.auth import login, authenticate, logout
+from django_ratelimit.decorators import ratelimit
+from rest_framework import permissions
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
-from django.utils import timezone
-from django.http import HttpResponse
-from django.core import serializers
-from django.db.models import Avg
-from django.db import IntegrityError
-from rest_framework import permissions
-from dateutil import parser
-import json
-
 
 from .models import Movie, Rate, MovieNight, Attendees, User, RegisterQuestion
+
 
 class MoviesObject(APIView):
     authentication_classes = (SessionAuthentication,)
@@ -58,7 +58,8 @@ class MoviesObject(APIView):
         if user.tickets > 0:
             user.tickets -= 1
         else:
-            return HttpResponse(json.dumps({'error': 'not enough tickets'}), content_type='application/json', status=402)
+            return HttpResponse(json.dumps({'error': 'not enough tickets'}), content_type='application/json',
+                                status=402)
 
         try:
             new_movie = Movie(**movie_from_body)
@@ -69,6 +70,7 @@ class MoviesObject(APIView):
         new_movie.save()
 
         return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
+
 
 class AverageRatings(APIView):
     def get(self, request, format=None):
@@ -84,7 +86,8 @@ class AverageRatings(APIView):
                 }
                 average_ratings_response.append(rating_response)
 
-        return HttpResponse(json.dumps(average_ratings_response, cls=DjangoJSONEncoder), content_type='application/json')
+        return HttpResponse(json.dumps(average_ratings_response, cls=DjangoJSONEncoder),
+                            content_type='application/json')
 
 
 class RateAPI(APIView):
@@ -183,6 +186,7 @@ class Night(APIView):
 
         return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
 
+
 class AttendeesView(APIView):
     authentication_classes = (SessionAuthentication,)
     permission_classes = [IsAuthenticated]
@@ -243,7 +247,9 @@ class Login(APIView):
             login(request, user)
             return HttpResponse({'message': 'Login successful'}, status=200)
         else:
-            return HttpResponse(json.dumps({'error': 'Invalid credentials'}), content_type='application/json', status=401)
+            return HttpResponse(json.dumps({'error': 'Invalid credentials'}), content_type='application/json',
+                                status=401)
+
 
 class Logout(APIView):
     authentication_classes = [SessionAuthentication]
@@ -251,6 +257,7 @@ class Logout(APIView):
     def post(self, request):
         logout(request)
         return HttpResponse({'message': 'Logout successful'}, status=200)
+
 
 class Avatar(APIView):
     authentication_classes = (SessionAuthentication,)
@@ -286,6 +293,7 @@ class Avatar(APIView):
 
         return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
 
+
 class UserStatistics(APIView):
     authentication_classes = (SessionAuthentication,)
     permission_classes = [IsAuthenticated]
@@ -314,8 +322,10 @@ class UserStatistics(APIView):
                 'seven_rated_movies': seven_rated_movies,
                 'watched_movies': Attendees.objects.filter(user=user.id).count() + hosted_nights,
                 'hosted_movie_nights': hosted_nights,
-                'highest_rated_movie': movies_with_avg_ratings.first().title if len(movies_with_avg_ratings) > 0 else None,
-                'lowest_rated_movie': movies_with_avg_ratings.last().title if len(movies_with_avg_ratings) > 0 else None,
+                'highest_rated_movie': movies_with_avg_ratings.first().title if len(
+                    movies_with_avg_ratings) > 0 else None,
+                'lowest_rated_movie': movies_with_avg_ratings.last().title if len(
+                    movies_with_avg_ratings) > 0 else None,
                 'movie_tickets': user.tickets
             }
             return HttpResponse(json.dumps(statistics))
@@ -343,6 +353,7 @@ def user_register(request):
     else:
         return HttpResponse(json.dumps({'error': 'Only POST method is allowed'}), status=405)
 
+
 class UserPassword(APIView):
     authentication_classes = (SessionAuthentication,)
     permission_classes = [IsAuthenticated]
@@ -364,8 +375,6 @@ class UserPassword(APIView):
             return HttpResponse(json.dumps({'error': 'User not found'}), status=404)
 
 
-
-
 class RegisterQuestions(APIView):
     def get(self, request, format=None):
         question = RegisterQuestion.objects.get(day=datetime.datetime.today().weekday())
@@ -377,7 +386,7 @@ class RandMovie(APIView):
     def get(self, request, format=None):
         upcoming_nights = MovieNight.objects.filter(selected_movie__isnull=True).order_by('night_date')
         if len(upcoming_nights) == 0:
-            return HttpResponse(json.dumps([], cls=DjangoJSONEncoder),  content_type='application/json')
+            return HttpResponse(json.dumps([], cls=DjangoJSONEncoder), content_type='application/json')
 
         next_night = upcoming_nights[0]
         if timezone.now() < next_night.night_date - datetime.timedelta(seconds=10):
@@ -386,7 +395,7 @@ class RandMovie(APIView):
         movies_not_watched = Movie.objects.filter(watched_movie=None)
 
         if len(movies_not_watched) == 0:
-            return HttpResponse(json.dumps([], cls=DjangoJSONEncoder),  content_type='application/json')
+            return HttpResponse(json.dumps([], cls=DjangoJSONEncoder), content_type='application/json')
 
         selected_movie = choice(movies_not_watched)
         next_night.selected_movie = selected_movie
@@ -402,13 +411,14 @@ class RandMovie(APIView):
             'duration': selected_movie.duration,
         }
 
-        return HttpResponse(json.dumps(selected_movie_response, cls=DjangoJSONEncoder),  content_type='application/json')
+        return HttpResponse(json.dumps(selected_movie_response, cls=DjangoJSONEncoder), content_type='application/json')
 
 
 class MovieDate(APIView):
     def get(self, request, format=None):
         now = datetime.datetime.now()
-        upcoming_nights = MovieNight.objects.filter(selected_movie__isnull=True, night_date__gt=now).order_by('night_date')
+        upcoming_nights = MovieNight.objects.filter(selected_movie__isnull=True, night_date__gt=now).order_by(
+            'night_date')
 
         if len(upcoming_nights) == 0:
             return HttpResponse(json.dumps([], cls=DjangoJSONEncoder), content_type='application/json')
