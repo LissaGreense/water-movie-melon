@@ -10,8 +10,14 @@ import { getMovies } from "../connections/internal/movie.ts";
 import { Movie, MovieSearchQuery } from "../types/internal/movie.ts";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
-import { TriStateCheckbox, TriStateCheckboxChangeEvent } from "primereact/tristatecheckbox";
 import { Nullable } from "primereact/ts-helpers";
+import { MultiStateCheckbox, MultiStateCheckboxChangeEvent } from "primereact/multistatecheckbox";
+import 'primeicons/primeicons.css';
+
+interface OrderAscendingItem {
+  value: boolean;
+  icon: string;
+}
 
 export const MoviePage = () => {
   const [movieFormVisible, setMovieFormVisible] = useState<boolean>(false);
@@ -24,6 +30,10 @@ export const MoviePage = () => {
   const [searchQuery, setSearchQuery] = useState<MovieSearchQuery>({});
 
   const optionsOrderBy: string[] = ['Tytuł', 'Data dodania', 'Czas trwania']
+  const optionsOrderAscending: OrderAscendingItem[] = [
+    {value: true, icon: 'pi pi-sort-alpha-down'},
+    {value: false, icon: 'pi pi-sort-alpha-down-alt'},
+  ];
 
   useEffect(() => {
     getStatistics(getUsername() as string).then(async (r) => {
@@ -104,8 +114,18 @@ export const MoviePage = () => {
     setSearchQuery(searchQuery);
   }
 
-  const handleTristateCheckbox = (e: TriStateCheckboxChangeEvent) => {
+  const handleMultiStateCheckbox = (e: MultiStateCheckboxChangeEvent) => {
     setOrderByAscending(e.target.value);
+  }
+
+  const handleSortButton = () => {
+    let disabled = true;
+    if (orderByType && orderByAscending) {
+      disabled = false;
+    } else if (orderByType && orderByAscending === false) {
+      disabled = false
+    }
+    return disabled
   }
 
   return (
@@ -133,9 +153,9 @@ export const MoviePage = () => {
         <div className="melonStyleContainerPeel">
           <div className="p-inputgroup flex-1">
             <InputText placeholder="Szukaj" value={searchTerm} onChange={handleSearchTermChange} />
-            <Dropdown placeholder="Sortowanie" value={orderByType} onChange={(e) => {setOrderByType(e.target.value)}} options={optionsOrderBy} showClear />
-            <TriStateCheckbox value={orderByAscending} onChange={handleTristateCheckbox} />
-            <Button label={'Sortuj'} onClick={handleOrderBy} disabled={!orderByType} />
+            <Dropdown className={"melonStyleContainerFruit"} placeholder="Sortowanie" value={orderByType} onChange={(e) => {setOrderByType(e.target.value)}} options={optionsOrderBy} showClear />
+            <MultiStateCheckbox className={"melonStyleContainerFruit"} value={orderByAscending} onChange={handleMultiStateCheckbox} options={optionsOrderAscending} optionValue={'value'}/>
+            <Button className={"melonStyleContainerFruit"} label={'Sortuj'} onClick={handleOrderBy} disabled={handleSortButton()} />
           </div>
         </div>
         <div className="melonStyleContainerFruit">

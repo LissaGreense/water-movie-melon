@@ -31,9 +31,10 @@ class MoviesObject(APIView):
         random = request.GET.get('random', None)
         limit = request.GET.get('limit', None)
         search = request.GET.get('search', None)
-        order_by = request.GET.get('orderBy', None)
-        print(search)
+        order_by = request.GET.get('orderBy[type]', None)
+
         print(request.GET)
+        print(order_by)
 
         if watched and watched.lower() == 'false':
             movies = movies.filter(watched_movie__isnull=True)
@@ -52,20 +53,18 @@ class MoviesObject(APIView):
         if search:
             search_query = get_query(search, ['title', 'user', 'genre'])
             movies = movies.filter(search_query)
-            # movies = movies.annotate(search=SearchVector('title')).filter(search=SearchQuery(search))
 
         if order_by:
-            order_type = order_by.get('type')
             order_field = None
-            if order_type == 'Tytuł':
+            if order_by == 'Tytuł':
                 order_field = 'title'
-            elif order_type == 'Data dodania':
+            elif order_by == 'Data dodania':
                 order_field = 'date_added'
-            elif order_type == 'Czas trwania':
+            elif order_by == 'Czas trwania':
                 order_field = 'date_added'
-            order_ascending = order_by.get('ascending')
+            order_ascending = request.GET.get('orderBy[ascending]', None)
 
-            if not order_ascending:
+            if order_ascending and order_ascending.lower() == 'false':
                 order_field = '-' + order_field
 
             movies = movies.order_by(order_field)
