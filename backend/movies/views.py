@@ -35,9 +35,6 @@ class MoviesObject(APIView):
         search = request.GET.get('search', None)
         order_by = request.GET.get('orderBy[type]', None)
 
-        print(request.GET)
-        print(order_by)
-
         if watched and watched.lower() == 'false':
             movies = movies.filter(watched_movie__isnull=True)
         elif watched and watched.lower() == 'true':
