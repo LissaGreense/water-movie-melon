@@ -54,19 +54,12 @@ class MoviesObject(APIView):
             movies = movies.filter(search_query)
 
         if order_by:
-            order_field = None
-            if order_by == 'Tytuł':
-                order_field = 'title'
-            elif order_by == 'Data dodania':
-                order_field = 'date_added'
-            elif order_by == 'Czas trwania':
-                order_field = 'date_added'
             order_ascending = request.GET.get('orderBy[ascending]', None)
 
             if order_ascending and order_ascending.lower() == 'false':
-                order_field = '-' + order_field
+                order_by = '-' + order_by
 
-            movies = movies.order_by(order_field)
+            movies = movies.order_by(order_by)
 
         serialized_movies = serializers.serialize('python', movies)
         movies_field = [d['fields'] for d in serialized_movies]

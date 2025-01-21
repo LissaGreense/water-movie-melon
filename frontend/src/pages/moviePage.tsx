@@ -9,13 +9,18 @@ import { getUsername } from "../utils/accessToken.ts";
 import { getMovies } from "../connections/internal/movie.ts";
 import { Movie, MovieSearchQuery } from "../types/internal/movie.ts";
 import { InputText } from "primereact/inputtext";
-import { Dropdown } from "primereact/dropdown";
+import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import { Nullable } from "primereact/ts-helpers";
 import {
   MultiStateCheckbox,
   MultiStateCheckboxChangeEvent,
 } from "primereact/multistatecheckbox";
 import "primeicons/primeicons.css";
+
+interface OrderByItem {
+  value: string;
+  name: string;
+}
 
 interface OrderAscendingItem {
   value: boolean;
@@ -33,7 +38,11 @@ export const MoviePage = () => {
     useState<Nullable<boolean>>(undefined);
   const [searchQuery, setSearchQuery] = useState<MovieSearchQuery>({});
 
-  const optionsOrderBy: string[] = ["Tytuł", "Data dodania", "Czas trwania"];
+  const optionsOrderBy: OrderByItem[] = [
+    { value: "title", name: "Tytuł" },
+    { value: "date_added", name: "Data Dodania" },
+    { value: "duration", name: "Czas trwania" },
+  ];
   const optionsOrderAscending: OrderAscendingItem[] = [
     { value: true, icon: "pi pi-sort-alpha-down" },
     { value: false, icon: "pi pi-sort-alpha-down-alt" },
@@ -54,7 +63,6 @@ export const MoviePage = () => {
   }, [movieFormVisible]);
 
   useEffect(() => {
-    console.log(searchQuery);
     getMovies(searchQuery)
       .then((movies) => {
         setMovies(movies);
@@ -93,12 +101,7 @@ export const MoviePage = () => {
       search: searchTerm,
     };
 
-    if (orderByAscending) {
-      searchQuery.orderBy = {
-        type: orderByType,
-        ascending: orderByAscending,
-      };
-    } else if (orderByAscending === false) {
+    if (orderByAscending || orderByAscending === false) {
       searchQuery.orderBy = {
         type: orderByType,
         ascending: orderByAscending,
@@ -123,12 +126,19 @@ export const MoviePage = () => {
 
   const handleSortButton = () => {
     let disabled = true;
-    if (orderByType && orderByAscending) {
-      disabled = false;
-    } else if (orderByType && orderByAscending === false) {
+    if ((orderByType && orderByAscending) || orderByAscending === false) {
       disabled = false;
     }
     return disabled;
+  };
+
+  const handleDropdownChange = (e: DropdownChangeEvent) => {
+    setOrderByType(e.target.value);
+    if (e.target.value) {
+      setOrderByAscending(true);
+    } else {
+      setOrderByAscending(undefined);
+    }
   };
 
   return (
@@ -164,10 +174,10 @@ export const MoviePage = () => {
               className={"melonStyleContainerFruit"}
               placeholder="Sortowanie"
               value={orderByType}
-              onChange={(e) => {
-                setOrderByType(e.target.value);
-              }}
+              onChange={handleDropdownChange}
               options={optionsOrderBy}
+              optionValue={"value"}
+              optionLabel={"name"}
               showClear
             />
             <MultiStateCheckbox

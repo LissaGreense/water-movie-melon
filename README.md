@@ -200,6 +200,12 @@ And next run the docker:
 docker run -p 8000:8000 {backend_image_name}
 ```
 
+### Database (docker)
+To start database using docker run this command in terminal:
+
+```bash
+docker run -d --name postgres -e POSTGRES_PASSWORD=mypassword  -p 5432:5432 postgres
+```
 
 ## Unit tests
 

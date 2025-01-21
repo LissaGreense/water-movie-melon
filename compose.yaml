@@ -28,6 +28,3 @@ services:
     image: postgres
     environment:
       POSTGRES_PASSWORD:  mypassword
-
-volumes:
-  wmm-database:
