@@ -19,6 +19,7 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
 
+from watermoviemelon.query_search import get_query
 from .models import Movie, Rate, MovieNight, Attendees, User, RegisterQuestion
 
 
@@ -31,6 +32,8 @@ class MoviesObject(APIView):
         watched = request.GET.get('watched', None)
         random = request.GET.get('random', None)
         limit = request.GET.get('limit', None)
+        search = request.GET.get('search', None)
+        order_by = request.GET.get('orderBy[type]', None)
 
         if watched and watched.lower() == 'false':
             movies = movies.filter(watched_movie__isnull=True)
@@ -45,6 +48,18 @@ class MoviesObject(APIView):
         if limit:
             limit = int(limit)
             movies = movies[:limit]
+
+        if search:
+            search_query = get_query(search, ['title', 'user', 'genre'])
+            movies = movies.filter(search_query)
+
+        if order_by:
+            order_ascending = request.GET.get('orderBy[ascending]', None)
+
+            if order_ascending and order_ascending.lower() == 'false':
+                order_by = '-' + order_by
+
+            movies = movies.order_by(order_by)
 
         serialized_movies = serializers.serialize('python', movies)
         movies_field = [d['fields'] for d in serialized_movies]

@@ -7,3 +7,11 @@ export interface Movie {
   cover_link: string;
   duration: number;
 }
+
+export interface MovieSearchQuery {
+  search?: string;
+  orderBy?: {
+    type?: string;
+    ascending?: boolean;
+  };
+}
