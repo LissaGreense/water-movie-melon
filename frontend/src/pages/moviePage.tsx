@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState, useRef } from "react";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { MovieItem, MovieList } from "../components/movieList.tsx";
@@ -11,6 +11,7 @@ import { Movie, MovieSearchQuery } from "../types/internal/movie.ts";
 import { InputText } from "primereact/inputtext";
 import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import { Nullable } from "primereact/ts-helpers";
+import { Toast } from "primereact/toast";
 import {
   MultiStateCheckbox,
   MultiStateCheckboxChangeEvent,
@@ -28,8 +29,9 @@ interface OrderAscendingItem {
 }
 
 export const MoviePage = () => {
+  const toast = useRef<Toast>(null);
   const [movieFormVisible, setMovieFormVisible] = useState<boolean>(false);
-  const [userHasTickets, setUserHasTickets] = useState<boolean>(false);
+  const [userTickets, setUserTickets] = useState<number>(null);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [movieItems, setMovieItems] = useState<MovieItem[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -52,13 +54,13 @@ export const MoviePage = () => {
     getStatistics(getUsername() as string).then(async (r) => {
       if (r === null) {
         alert("Error fetching user data...");
-      } else if (r.movie_tickets > 0) {
-        setUserHasTickets(true);
+      } else {
+        setUserTickets(r.movie_tickets);
       }
     });
 
     return () => {
-      setUserHasTickets(false);
+      setUserTickets(null);
     };
   }, [movieFormVisible]);
 
@@ -145,14 +147,30 @@ export const MoviePage = () => {
     <>
       <div className="moviesContainer">
         <div className="melonStyleContainerPeel">
+          <Toast ref={toast} />
           <Button
-            label={
-              userHasTickets
-                ? "Dodaj Film"
-                : "Nie masz wystarczająco biletów aby dodać film. Załóż nowy wieczór filmowy, bądź dołącz do istniejącego"
-            }
-            disabled={!userHasTickets}
-            onClick={() => setMovieFormVisible(true)}
+            label={"Dodaj Film"}
+            onClick={() => {
+              if (!userTickets) {
+                toast.current.show({
+                  severity: "error",
+                  summary: "Brak biletów",
+                  detail:
+                    "Nie masz wystarczająco biletów aby dodać film. Załóż nowy wieczór filmowy, bądź dołącz do istniejącego",
+                  life: 10000,
+                });
+              } else {
+                setMovieFormVisible(true);
+                toast.current.show({
+                  severity: "info",
+                  summary: "Pozostałe bilety",
+                  detail:
+                    "Dodanie filmu kosztuje 1 bilet. Pozostałe bilety: " +
+                    userTickets,
+                  life: 5000,
+                });
+              }
+            }}
           />
           <Dialog
             visible={movieFormVisible}
@@ -160,7 +178,11 @@ export const MoviePage = () => {
               setMovieFormVisible(false);
             }}
           >
-            <NewMovieForm></NewMovieForm>
+            <NewMovieForm
+              ticketsCount={userTickets}
+              setTicketsCount={setUserTickets}
+              messageToast={toast.current}
+            />
           </Dialog>
         </div>
         <div className="melonStyleContainerPeel">
