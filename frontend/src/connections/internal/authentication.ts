@@ -20,7 +20,9 @@ export async function login(
   };
   const config = {
     withCredentials: true,
-    "X-CSRFToken": getCSRToken(),
+    headers: {
+      "X-CSRFToken": getCSRToken(),
+    },
   };
 
   const response = await axios.post<Token>(
@@ -48,7 +50,17 @@ export async function register(
     password: password,
     answer: answer,
   };
-  const response = await axios.post(backend_url + register_endpoint, data);
+  const config = {
+    withCredentials: true,
+    headers: {
+      "X-CSRFToken": getCSRToken(),
+    },
+  };
+  const response = await axios.post(
+    backend_url + register_endpoint,
+    data,
+    config,
+  );
 
   return response.data;
 }

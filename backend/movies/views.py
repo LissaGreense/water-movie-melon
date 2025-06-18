@@ -3,6 +3,7 @@ import json
 from random import choice
 import os
 import uuid
+import mimetypes
 
 from dateutil import parser
 from django.contrib.auth import login, authenticate, logout
@@ -11,7 +12,7 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import IntegrityError
-from django.db.models import Avg
+from django.db.models import Avg, Count, OuterRef, Subquery, F
 from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
@@ -20,6 +21,8 @@ from rest_framework import permissions
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from watermoviemelon.query_search import get_query
 from .models import Movie, Rate, MovieNight, Attendees, User, RegisterQuestion
@@ -301,9 +304,20 @@ class Avatar(APIView):
         if user.avatar and hasattr(user.avatar, 'url'):
             old_avatar_path = user.avatar.path
 
-        _, extension = os.path.splitext(new_avatar.name)
+        extension = mimetypes.guess_extension(new_avatar.content_type)
+
         if not extension:
-            return HttpResponse(json.dumps({'error': 'File has no extension'}), content_type='application/json', status=400)
+            _, extension = os.path.splitext(new_avatar.name)
+
+        if not extension:
+            return HttpResponse(
+                json.dumps({'error': 'File has no extension and content type is not recognized'}),
+                content_type='application/json',
+                status=400
+            )
+
+        if extension == '.jpe':
+            extension = '.jpg'
 
         filename = f"{username}_{uuid.uuid4().hex}{extension}"
         new_avatar_path = default_storage.save(filename, ContentFile(new_avatar.read()))
@@ -357,6 +371,7 @@ class UserStatistics(APIView):
 
 
 @ratelimit(key='ip', rate='3/d')
+@api_view(['POST'])
 def user_register(request):
     if request.method == 'POST':
         user_data = request.data
