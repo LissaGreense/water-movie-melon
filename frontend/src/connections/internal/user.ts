@@ -41,7 +41,7 @@ export async function uploadAvatar(
   image: Blob | unknown,
 ) {
   const formData = new FormData();
-  formData.append("avatar", image as Blob);
+  formData.append("avatar", image as Blob, "avatar.jpg");
   const response = await axios.post<Avatar>(
     backend_url + avatar_endpoint + username + "/",
     formData,

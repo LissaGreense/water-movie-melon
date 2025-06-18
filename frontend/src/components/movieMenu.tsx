@@ -26,17 +26,19 @@ export default function MovieMenu() {
     if (username) {
       getAvatar(username as string)
         .then((r) => {
-          if (r.avatar_url == "") {
-            console.error("Error fetching avatar...");
+          if (r.avatar_url) {
+            setAvatar(DEFAULT_BACKEND_URL + r.avatar_url);
+          } else {
+            console.log("No avatar found...");
+            setAvatar("");
           }
-          setAvatar(DEFAULT_BACKEND_URL + r.avatar_url);
         })
         .catch((error) => {
           if (error.response.status === 403) {
             clearUser();
             navigate(LOGIN);
           } else {
-            console.error("Error fetching avatar...");
+            console.error("Unauthorized, redirecting to login...");
           }
           setAvatar("");
         });
