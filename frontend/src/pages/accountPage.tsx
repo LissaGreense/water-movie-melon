@@ -5,16 +5,16 @@ import { clearUser, getUsername } from "../utils/accessToken.ts";
 import { useNavigate } from "react-router-dom";
 import { LOGIN } from "../constants/paths.ts";
 import { getAvatar, getStatistics } from "../connections/internal/user.ts";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { FileUpload } from "primereact/fileupload";
 import { Statistics } from "../types/internal/user.ts";
 import { CropperDialog } from "../components/cropperDialog.tsx";
 import { PasswordChangeDialog } from "../components/passwordChangeDialog.tsx";
 import { logout } from "../connections/internal/authentication.ts";
+import { DEFAULT_BACKEND_URL } from "../constants/defaults.ts";
 
 export const AccountPage = () => {
   const navigate = useNavigate();
-  const backend_url = "http://localhost:8000";
   const [avatar, setAvatar] = useState<string>("");
   const [showCropper, setShowCropper] = useState<boolean>(false);
   const [showPasswordChange, setShowPasswordChange] = useState<boolean>(false);
@@ -22,6 +22,25 @@ export const AccountPage = () => {
     string | ArrayBuffer | null
   >();
   const [userStatistics, setUserStatistics] = useState<Statistics | null>(null);
+
+  const refreshAvatar = useCallback(() => {
+    getAvatar(getUsername() as string)
+      .then((r) => {
+        if (r.avatar_url == "") {
+          console.error("Error fetching avatar...");
+        }
+        setAvatar(DEFAULT_BACKEND_URL + r.avatar_url);
+        window.dispatchEvent(new Event("avatarUpdated"));
+      })
+      .catch((error) => {
+        if (error.response.status === 403) {
+          clearUser();
+          navigate(LOGIN);
+        } else {
+          console.error("Error fetching avatar...");
+        }
+      });
+  }, [navigate]);
 
   const handleLogoutEvent = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -60,28 +79,14 @@ export const AccountPage = () => {
   };
 
   useEffect(() => {
-    getAvatar(getUsername() as string)
-      .then((r) => {
-        if (r.avatar_url == "") {
-          alert("Error fetching avatar...");
-        }
-        setAvatar(backend_url + r.avatar_url);
-      })
-      .catch((error) => {
-        if (error.response.status === 403) {
-          clearUser();
-          navigate(LOGIN);
-        } else {
-          alert("Error fetching statistics...");
-        }
-      });
-  }, [showCropper, navigate]);
+    refreshAvatar();
+  }, [refreshAvatar]);
 
   useEffect(() => {
     getStatistics(getUsername() as string)
       .then(async (r) => {
         if (r === null) {
-          alert("Error fetching statistics...");
+          console.error("Error fetching statistics...");
         } else {
           setUserStatistics(await r);
         }
@@ -91,7 +96,7 @@ export const AccountPage = () => {
           clearUser();
           navigate(LOGIN);
         } else {
-          alert("Error fetching statistics...");
+          console.error("Error fetching statistics...");
         }
       });
   }, [navigate]);
@@ -102,6 +107,7 @@ export const AccountPage = () => {
         visible={showCropper}
         setShowCropper={setShowCropper}
         image={currentImage}
+        onUploadComplete={refreshAvatar}
       />
       <PasswordChangeDialog
         visible={showPasswordChange}

@@ -14,6 +14,7 @@ from pathlib import Path
 from datetime import timedelta
 from rest_framework.settings import api_settings
 import os
+import sys
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -121,13 +122,19 @@ WSGI_APPLICATION = 'watermoviemelon.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'mypassword',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        "NAME":     os.getenv("POSTGRES_DB", "postgres"),
+        "USER":     os.getenv("POSTGRES_USER", "postgres"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "mypassword"),
+        "HOST":     os.getenv("POSTGRES_HOST", "db"),
+        "PORT":     5432,
     }
 }
+
+if 'test' in sys.argv:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
+    }
 
 
 # Password validation

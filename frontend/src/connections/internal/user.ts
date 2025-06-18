@@ -20,7 +20,7 @@ const axios = setupCache(instance);
 export async function getAvatar(username: string): Promise<Avatar> {
   const response = await axios.get<Avatar>(
     backend_url + avatar_endpoint + username + "/",
-    getAuthHeadersConfig(false),
+    { ...getAuthHeadersConfig(false), id: `avatar-${username}` },
   );
 
   return response.data as Avatar;
@@ -47,6 +47,7 @@ export async function uploadAvatar(
     formData,
     getAuthHeadersConfig(true),
   );
+  await axios.storage.remove(`avatar-${username}`);
   return response.data;
 }
 
