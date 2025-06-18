@@ -14,3 +14,7 @@ restart:
 	docker compose down
 	docker compose build
 	docker compose up -d
+
+lint:
+	cd frontend && npm run prettier:format
+	cd frontend && npm run eslint:fix

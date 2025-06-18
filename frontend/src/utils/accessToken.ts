@@ -4,8 +4,8 @@ import Cookies from "universal-cookie";
 interface AuthHeaders {
   [key: string]: AxiosHeaderValue | undefined;
   User: string | null;
-  'Access-Control-Allow-Origin': string;
-  'X-CSRFToken'?: string;
+  "Access-Control-Allow-Origin": string;
+  "X-CSRFToken"?: string;
 }
 
 const USER_KEY = "username";
