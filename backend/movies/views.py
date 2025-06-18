@@ -303,7 +303,7 @@ class Avatar(APIView):
 
         _, extension = os.path.splitext(new_avatar.name)
         if not extension:
-            extension = '.jpg'  # Assume jpg if no extension is present
+            return HttpResponse(json.dumps({'error': 'File has no extension'}), content_type='application/json', status=400)
 
         filename = f"{username}_{uuid.uuid4().hex}{extension}"
         new_avatar_path = default_storage.save(filename, ContentFile(new_avatar.read()))
