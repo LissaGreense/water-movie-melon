@@ -10,33 +10,33 @@ import {
   MOVIES,
   REGISTER,
 } from "../constants/paths.ts";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { getAvatar } from "../connections/internal/user.ts";
 import "./movieMenu.css";
 import { Menu } from "primereact/menu";
 import { logout } from "../connections/internal/authentication.ts";
+import { DEFAULT_BACKEND_URL } from "../constants/defaults.ts";
 
 export default function MovieMenu() {
-  const backend_url = "http://localhost:8000";
   const [avatar, setAvatar] = useState<string>("");
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const fetchAvatar = useCallback(() => {
     const username = getUsername();
     if (username) {
       getAvatar(username as string)
         .then((r) => {
           if (r.avatar_url == "") {
-            alert("Error fetching avatar...");
+            console.error("Error fetching avatar...");
           }
-          setAvatar(backend_url + r.avatar_url);
+          setAvatar(DEFAULT_BACKEND_URL + r.avatar_url);
         })
         .catch((error) => {
           if (error.response.status === 403) {
             clearUser();
             navigate(LOGIN);
           } else {
-            alert("Error fetching avatar...");
+            console.error("Error fetching avatar...");
           }
           setAvatar("");
         });
@@ -44,6 +44,16 @@ export default function MovieMenu() {
       setAvatar("");
     }
   }, [navigate]);
+
+  useEffect(() => {
+    fetchAvatar();
+
+    window.addEventListener("avatarUpdated", fetchAvatar);
+
+    return () => {
+      window.removeEventListener("avatarUpdated", fetchAvatar);
+    };
+  }, [fetchAvatar]);
 
   const itemRenderer = (item: MenuItem) => (
     <div className="p-menuitem-content">

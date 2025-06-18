@@ -1,6 +1,8 @@
 import datetime
 import json
 from random import choice
+import os
+import uuid
 
 from dateutil import parser
 from django.contrib.auth import login, authenticate, logout
@@ -299,11 +301,16 @@ class Avatar(APIView):
         if user.avatar and hasattr(user.avatar, 'url'):
             old_avatar_path = user.avatar.path
 
-        new_avatar_path = default_storage.save(new_avatar.name, ContentFile(new_avatar.read()))
+        _, extension = os.path.splitext(new_avatar.name)
+        if not extension:
+            return HttpResponse(json.dumps({'error': 'File has no extension'}), content_type='application/json', status=400)
+
+        filename = f"{username}_{uuid.uuid4().hex}{extension}"
+        new_avatar_path = default_storage.save(filename, ContentFile(new_avatar.read()))
         user.avatar = new_avatar_path
         user.save()
 
-        if old_avatar_path:
+        if old_avatar_path and default_storage.exists(old_avatar_path):
             default_storage.delete(old_avatar_path)
 
         return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')

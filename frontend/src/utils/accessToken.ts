@@ -1,5 +1,12 @@
-import { AxiosRequestConfig } from "axios";
+import { AxiosHeaderValue, AxiosRequestConfig } from "axios";
 import Cookies from "universal-cookie";
+
+interface AuthHeaders {
+  [key: string]: AxiosHeaderValue | undefined;
+  User: string | null;
+  "Access-Control-Allow-Origin": string;
+  "X-CSRFToken"?: string;
+}
 
 const USER_KEY = "username";
 const CSR_KEY = "csrftoken";
@@ -24,7 +31,7 @@ export const clearUser = () => {
 export const getAuthHeadersConfig = (
   includeCSRF: boolean,
 ): AxiosRequestConfig => {
-  const headers = {
+  const headers: AuthHeaders = {
     User: getUsername(),
     "Access-Control-Allow-Origin": "*",
   };

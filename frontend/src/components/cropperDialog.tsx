@@ -13,12 +13,14 @@ interface CropperDialogProps {
   visible: boolean;
   setShowCropper: (visible: boolean) => void;
   image: string | ArrayBuffer | null | undefined;
+  onUploadComplete: () => void;
 }
 
 export const CropperDialog: FC<CropperDialogProps> = ({
   visible,
   setShowCropper,
   image,
+  onUploadComplete,
 }) => {
   const [crop, setCrop] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
@@ -32,6 +34,7 @@ export const CropperDialog: FC<CropperDialogProps> = ({
         navigate(LOGIN);
       }
     });
+    onUploadComplete();
     setShowCropper(false);
   };
   const onCropComplete = useCallback((_: Area, croppedAreaPixels: Area) => {
