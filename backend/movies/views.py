@@ -316,6 +316,7 @@ class Avatar(APIView):
                 status=400
             )
 
+        # if the extension is read as .jpe (less common JPEG format), change it to .jpg
         if extension == '.jpe':
             extension = '.jpg'
 

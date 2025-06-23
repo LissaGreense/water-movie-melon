@@ -38,7 +38,7 @@ export default function MovieMenu() {
             clearUser();
             navigate(LOGIN);
           } else {
-            console.error("Unauthorized, redirecting to login...");
+            console.error("Error fetching avatar...");
           }
           setAvatar("");
         });

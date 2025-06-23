@@ -39,7 +39,7 @@ export const AccountPage = () => {
           clearUser();
           navigate(LOGIN);
         } else {
-          console.error("Unauthorized, redirecting to login...");
+          console.error("Error fetching avatar...");
         }
       });
   }, [navigate]);
@@ -98,7 +98,7 @@ export const AccountPage = () => {
           clearUser();
           navigate(LOGIN);
         } else {
-          console.error("Unauthorized, redirecting to login...");
+          console.error("Error fetching statistics...");
         }
       });
   }, [navigate]);
