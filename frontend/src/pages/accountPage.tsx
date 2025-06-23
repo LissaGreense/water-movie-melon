@@ -26,10 +26,12 @@ export const AccountPage = () => {
   const refreshAvatar = useCallback(() => {
     getAvatar(getUsername() as string)
       .then((r) => {
-        if (r.avatar_url == "") {
-          console.error("Error fetching avatar...");
+        if (r.avatar_url) {
+          setAvatar(DEFAULT_BACKEND_URL + r.avatar_url);
+        } else {
+          console.log("No avatar found...");
+          setAvatar("");
         }
-        setAvatar(DEFAULT_BACKEND_URL + r.avatar_url);
         window.dispatchEvent(new Event("avatarUpdated"));
       })
       .catch((error) => {
