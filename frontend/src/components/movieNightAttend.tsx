@@ -105,7 +105,7 @@ export const MovieNightAttend: FC<MovieDateProps> = ({
                 dayjs(val.night.night_date).format("ddd MMM DD YYYY"),
               )
               .includes(dayjs(movieDate).format("ddd MMM DD YYYY"))
-            }
+          }
         ></Button>
       </div>
     </Dialog>
