@@ -81,6 +81,14 @@ export const MovieNightAttend: FC<MovieDateProps> = ({
     );
   };
 
+  const userAttending =
+    movieDate &&
+    attendeesList?.some(
+      (attendee) =>
+        attendee.user === (getUsername() as string) &&
+        dayjs(attendee.night.night_date).isSame(dayjs(movieDate), "day"),
+    );
+
   return (
     <Dialog visible={isVisible} onHide={() => setVisible(false)}>
       <div className="text-center">
@@ -94,18 +102,9 @@ export const MovieNightAttend: FC<MovieDateProps> = ({
       </div>
       <div className="flex justify-content-center mt-3">
         <Button
-          label="Dołącz"
+          label={userAttending ? "Dołączono" : "Dołącz"}
           onClick={handleJoinMovieNight}
-          disabled={
-            attendeesList
-              ?.map((val) => val.user)
-              .includes(getUsername() as string) &&
-            attendeesList
-              ?.map((val) =>
-                dayjs(val.night.night_date).format("ddd MMM DD YYYY"),
-              )
-              .includes(dayjs(movieDate).format("ddd MMM DD YYYY"))
-          }
+          disabled={!!userAttending}
         ></Button>
       </div>
     </Dialog>
