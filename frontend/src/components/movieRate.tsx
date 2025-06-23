@@ -46,15 +46,20 @@ export const MovieRate: FC<MovieDateProps> = ({
 
   return (
     <Dialog visible={isVisible} onHide={() => setVisible(false)}>
-      <span>Jak spodobał ci się seans filmu</span>
-      <span>{movieTitle}?</span>
-      <Rating
-        value={rating}
-        onChange={(e) => setRating(e.value as number | undefined)}
-        cancel={false}
-        stars={7}
-      />
-      <Button label="Dodaj ocenę" onClick={handleRateMovie}></Button>
+      <div className="text-center">
+        <span>Jak spodobał ci się seans filmu {movieTitle}?</span>
+      </div>
+      <div className="flex justify-content-center my-3">
+        <Rating
+          value={rating}
+          onChange={(e) => setRating(e.value as number | undefined)}
+          cancel={false}
+          stars={7}
+        />
+      </div>
+      <div className="flex justify-content-center">
+        <Button label="Dodaj ocenę" onClick={handleRateMovie}></Button>
+      </div>
     </Dialog>
   );
 };
