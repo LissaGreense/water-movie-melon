@@ -376,18 +376,23 @@ class UserStatistics(APIView):
 def user_register(request):
     if request.method == 'POST':
         user_data = request.data
-        question = RegisterQuestion.objects.get(day=datetime.datetime.today().weekday())
+        try:
+            question = RegisterQuestion.objects.get(day=datetime.datetime.today().weekday())
+        except RegisterQuestion.DoesNotExist:
+            question = None
 
-        if user_data['answer'].strip().lower() == question.answer.strip().lower():
-            try:
-                user = User.objects.create_user(username=user_data["username"], password=user_data["password"])
-                user.save()
+        if question:
+            if 'answer' not in user_data or user_data['answer'].strip().lower() != question.answer.strip().lower():
+                return HttpResponse(json.dumps({'error': 'BAD ANSWER'}), content_type='application/json', status=400)
 
-                return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
-            except IntegrityError:
-                return HttpResponse(json.dumps({'error': 'USER ALREADY EXISTS'}), status=400)
-        else:
-            return HttpResponse(json.dumps({'error': 'BAD ANSWER'}), content_type='application/json', status=400)
+        try:
+            user = User.objects.create_user(username=user_data["username"], password=user_data["password"])
+            user.save()
+
+            return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
+        except IntegrityError:
+            return HttpResponse(json.dumps({'error': 'USER ALREADY EXISTS'}), status=400)
+
     else:
         return HttpResponse(json.dumps({'error': 'Only POST method is allowed'}), status=405)
 
@@ -415,9 +420,13 @@ class UserPassword(APIView):
 
 class RegisterQuestions(APIView):
     def get(self, request, format=None):
-        question = RegisterQuestion.objects.get(day=datetime.datetime.today().weekday())
+        try:
+            question = RegisterQuestion.objects.get(day=datetime.datetime.today().weekday())
+            question_text = question.question
+        except RegisterQuestion.DoesNotExist:
+            question_text = ""
 
-        return HttpResponse(json.dumps({"question": question.question}), content_type='application/json')
+        return HttpResponse(json.dumps({"question": question_text}), content_type='application/json')
 
 
 class RandMovie(APIView):

@@ -10,6 +10,7 @@ import { Question } from "../types/internal/authentication.ts";
 import { LOGIN } from "../constants/paths.ts";
 import { useNavigate } from "react-router-dom";
 import { AxiosResponse } from "axios";
+import "./registerPage.css";
 
 const TOO_MANY_ATTEMPTS_ERROR_MSG =
   "Wykorzystałeś swoje trzy próby logowania. Spróbuj ponownie jutro! Może jutrzejsze arbuzowe pytanie będzie łatwiejsze ;)";
@@ -29,12 +30,12 @@ export const RegisterPage = () => {
   const [password, setPassword] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [answer, setAnswer] = useState<string>("");
-  const [currenQuestion, setCurrenQuestion] = useState<string>("");
+  const [currentQuestion, setCurrentQuestion] = useState<string>("");
 
   useEffect(() => {
     getRegisterQuestion()
       .then((r: Question) => {
-        setCurrenQuestion(r.question);
+        setCurrentQuestion(r.question);
       })
       .catch((error) => {
         console.error(error.toString());
@@ -78,7 +79,7 @@ export const RegisterPage = () => {
       alert("Username should be filled!");
     } else if (password == "") {
       alert("Password should be filled!");
-    } else if (answer == "") {
+    } else if (currentQuestion && answer == "") {
       alert("Question should be filled!");
     } else {
       handleRegister();
@@ -86,24 +87,29 @@ export const RegisterPage = () => {
   };
 
   return (
-    <div className={"centerAbsolute"}>
+    <div
+      className={"registerContainer centerAbsolute melonStyleContainerFruit"}
+    >
+      <div className={"topRegisterBar melonStyleContainerPeel"}>
+        <h2>DOŁĄCZ DO ARBUZOWEJ RODZINY</h2>
+      </div>
       <form>
-        <div>
-          <p>Nazwa użytkownika:</p>
+        <div className="mt-2">
           <InputText
             name={"username"}
             type="text"
             placeholder="Username"
+            className="m-2"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
         </div>
         <div>
-          <p>Hasło:</p>
           <Password
             name={"password"}
             type="password"
             placeholder="Password"
+            className="m-2"
             weakLabel={WEAK_PASSWORD_MSG}
             mediumLabel={MEDIUM_PASSWORD_MSG}
             strongLabel={STRONG_PASSWORD_MSG}
@@ -111,19 +117,24 @@ export const RegisterPage = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <div>
-          <p>{currenQuestion}</p>
-          <InputText
-            name={"odpowiedź"}
-            type="text"
-            value={answer}
-            placeholder="Zioło to, zioło tamo"
-            onChange={(e) => setAnswer(e.target.value)}
-          />
-        </div>
+        {currentQuestion && (
+          <div>
+            <p>
+              <b>{currentQuestion}</b>
+            </p>
+            <InputText
+              name={"odpowiedź"}
+              type="text"
+              value={answer}
+              placeholder="Zioło to, zioło tamo"
+              onChange={(e) => setAnswer(e.target.value)}
+            />
+          </div>
+        )}
         <div>
           <Button
             label="Zarbujestruj"
+            className="m-2"
             onClick={(event) => handleSubmitEvent(event)}
           />
         </div>
