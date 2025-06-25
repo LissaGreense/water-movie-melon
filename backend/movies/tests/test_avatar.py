@@ -64,7 +64,7 @@ class AvatarAPITest(APITestCase):
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.user_with_avatar.refresh_from_db()
-        self.assertTrue(self.user_with_avatar.avatar.name.endswith('new_avatar.jpg'))
+        self.assertIn(self.user_with_avatar.username, self.user_with_avatar.avatar.name)
         self.assertFalse(os.path.exists(old_avatar_path))
 
     def test_upload_avatar_first_time(self):
@@ -76,7 +76,7 @@ class AvatarAPITest(APITestCase):
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.user_without_avatar.refresh_from_db()
-        self.assertTrue(self.user_without_avatar.avatar.name.endswith('first_avatar.jpg'))
+        self.assertIn(self.user_without_avatar.username, self.user_without_avatar.avatar.name)
 
     def test_upload_avatar_for_another_user(self):
         # user1 tries to upload for otheruser
