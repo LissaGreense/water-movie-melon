@@ -11,6 +11,8 @@ services:
     depends_on:
       - backend
     restart: always
+    networks:
+      - wmm-network
 
   backend:
     container_name: backend
@@ -22,9 +24,40 @@ services:
       - 8000:8000
     restart: always
     depends_on:
+      db:
+        condition: service_healthy
+    links:
       - db
+    networks:
+      - wmm-network
+    env_file:
+      - ./backend/.env
+    volumes:
+      - media_data:/home/wsgi/app/avatars
 
   db:
     image: postgres
     environment:
-      POSTGRES_PASSWORD:  mypassword
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_HOST: db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 15s
+      retries: 3
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - wmm-network
+
+networks:
+  wmm-network:
+    driver: bridge
+
+volumes:
+  db_data:
+    driver: local
+  media_data:
+    driver: local

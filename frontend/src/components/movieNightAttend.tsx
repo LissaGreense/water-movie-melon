@@ -81,25 +81,32 @@ export const MovieNightAttend: FC<MovieDateProps> = ({
     );
   };
 
+  const userAttending =
+    movieDate &&
+    attendeesList?.some(
+      (attendee) =>
+        attendee.user === (getUsername() as string) &&
+        dayjs(attendee.night.night_date).isSame(dayjs(movieDate), "day"),
+    );
+
   return (
     <Dialog visible={isVisible} onHide={() => setVisible(false)}>
-      <span>Tego dnia jest już zaplanowany wieczór filmowy</span>
-      <span>Możesz do niego dołączyć ;)</span>
-      <span>Miejsce oglądania: {nightLocation}.</span>
-      <Button
-        label="Dołącz"
-        onClick={handleJoinMovieNight}
-        disabled={
-          attendeesList
-            ?.map((val) => val.user)
-            .includes(getUsername() as string) &&
-          attendeesList
-            ?.map((val) =>
-              dayjs(val.night.night_date).format("ddd MMM DD YYYY"),
-            )
-            .includes(dayjs(movieDate).format("ddd MMM DD YYYY"))
-        }
-      ></Button>
+      <div className="text-center">
+        <span>Tego dnia jest już zaplanowany wieczór filmowy</span>
+      </div>
+      <div className="text-center">
+        <span>Możesz do niego dołączyć ;)</span>
+      </div>
+      <div className="text-center">
+        <span>Miejsce oglądania: {nightLocation}.</span>
+      </div>
+      <div className="flex justify-content-center mt-3">
+        <Button
+          label={userAttending ? "Dołączono" : "Dołącz"}
+          onClick={handleJoinMovieNight}
+          disabled={!!userAttending}
+        ></Button>
+      </div>
     </Dialog>
   );
 };

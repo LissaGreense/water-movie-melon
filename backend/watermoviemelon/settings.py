@@ -122,18 +122,18 @@ WSGI_APPLICATION = 'watermoviemelon.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'mypassword',
-        'HOST': 'db',
-        'PORT': '5432',
+        "NAME":     os.getenv("POSTGRES_DB", "postgres"),
+        "USER":     os.getenv("POSTGRES_USER", "postgres"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "mypassword"),
+        "HOST":     os.getenv("POSTGRES_HOST", "db"),
+        "PORT":     5432,
     }
 }
 
 if 'test' in sys.argv:
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': ':memory:'
+        'NAME': ':memory:',
     }
 
 
