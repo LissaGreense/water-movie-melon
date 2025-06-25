@@ -24,7 +24,7 @@ export const clearUser = () => {
 export const getAuthHeadersConfig = (
   includeCSRF: boolean,
 ): AxiosRequestConfig => {
-  const headers = {
+  const headers: { [key: string]: string | null | undefined } = {
     User: getUsername(),
     "Access-Control-Allow-Origin": "*",
   };

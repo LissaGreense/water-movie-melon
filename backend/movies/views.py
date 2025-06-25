@@ -16,8 +16,12 @@ from django.utils.dateparse import parse_datetime
 from django_ratelimit.decorators import ratelimit
 from rest_framework import permissions
 from rest_framework.authentication import SessionAuthentication
+from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+import sys
 
 from watermoviemelon.query_search import get_query
 from .models import Movie, Rate, MovieNight, Attendees, User, RegisterQuestion
@@ -131,13 +135,13 @@ class RateAPI(APIView):
 
     def post(self, request, format=None):
         rate_from_body = request.data
-        movie = Movie.objects.get(title=rate_from_body['movie'])
-        user = User.objects.get(username=rate_from_body['user'])
-        rating = rate_from_body['rating']
-
         try:
+            movie = Movie.objects.get(title=rate_from_body['movie'])
+            user = User.objects.get(username=rate_from_body['user'])
+            rating = rate_from_body['rating']
+
             new_rate = Rate(movie=movie, user=user, rating=rating)
-        except TypeError:
+        except (KeyError, Movie.DoesNotExist, User.DoesNotExist):
             return HttpResponse(json.dumps({'error': 'out of field'}), content_type='application/json', status=400)
 
         new_rate.save()
@@ -191,7 +195,7 @@ class Night(APIView):
         new_movie_night.save()
 
         try:
-            new_attendee = Attendees(night=new_movie_night, user=user, accept_date=datetime.datetime.now())
+            new_attendee = Attendees(night=new_movie_night, user=user, accept_date=timezone.now())
             new_attendee.save()
         except TypeError:
             return HttpResponse(json.dumps({'error': 'out of field'}), content_type='application/json', status=400)
@@ -268,6 +272,7 @@ class Login(APIView):
 
 class Logout(APIView):
     authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         logout(request)
@@ -283,15 +288,18 @@ class Avatar(APIView):
             user = User.objects.get(username=username)
 
             if not user.avatar or not hasattr(user.avatar, 'url'):
-                return HttpResponse(json.dumps({'avatar_url': ''}))
+                return HttpResponse(json.dumps({'avatar_url': ''}), content_type='application/json')
 
             avatar_url = user.avatar.url
-            return HttpResponse(json.dumps({'avatar_url': avatar_url}))
+            return HttpResponse(json.dumps({'avatar_url': avatar_url}), content_type='application/json')
 
         except User.DoesNotExist:
-            return HttpResponse(json.dumps({'error': 'User not found'}), status=404)
+            return HttpResponse(json.dumps({'error': 'User not found'}), status=404, content_type='application/json')
 
     def post(self, request, username, format=None):
+        if request.user.username != username:
+            return HttpResponse(json.dumps({'error': 'You are not authorized to change this avatar.'}), status=403, content_type='application/json')
+
         user = User.objects.get(username=username)
         new_avatar = request.FILES["avatar"]
 
@@ -317,8 +325,8 @@ class UserStatistics(APIView):
         try:
             user = User.objects.get(username=username)
 
-            current_date = timezone.now().date()
-            hosted_nights = MovieNight.objects.filter(host=username, night_date__lte=current_date).count()
+            current_time = timezone.now()
+            hosted_nights = MovieNight.objects.filter(host=username, night_date__lte=current_time).count()
 
             movies_with_avg_ratings = Movie.objects.filter(user=username).annotate(
                 avg_rating=Avg('rate__rating')
@@ -335,7 +343,7 @@ class UserStatistics(APIView):
             statistics = {
                 'added_movies': Movie.objects.filter(user=username).count(),
                 'seven_rated_movies': seven_rated_movies,
-                'watched_movies': Attendees.objects.filter(user=user.id).count() + hosted_nights,
+                'watched_movies': Attendees.objects.filter(user=user.id).count(),
                 'hosted_movie_nights': hosted_nights,
                 'highest_rated_movie': movies_with_avg_ratings.first().title if len(
                     movies_with_avg_ratings) > 0 else None,
@@ -343,17 +351,28 @@ class UserStatistics(APIView):
                     movies_with_avg_ratings) > 0 else None,
                 'movie_tickets': user.tickets
             }
-            return HttpResponse(json.dumps(statistics))
+            return HttpResponse(json.dumps(statistics), content_type='application/json')
 
         except User.DoesNotExist:
-            return HttpResponse(json.dumps({'error': 'User not found'}), status=404)
+            return HttpResponse(json.dumps({'error': 'User not found'}), status=404, content_type='application/json')
 
 
-@ratelimit(key='ip', rate='3/d')
-def user_register(request):
-    if request.method == 'POST':
+class UserRegister(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'test' in sys.argv:
+            return super().dispatch(request, *args, **kwargs)
+
+        view = super().dispatch
+        decorated_view = ratelimit(key='ip', rate='3/d')(view)
+        return decorated_view(request, *args, **kwargs)
+
+    def post(self, request):
         user_data = request.data
-        question = RegisterQuestion.objects.get(day=datetime.datetime.today().weekday())
+        today_weekday = str(datetime.datetime.today().weekday() + 1)
+        question = RegisterQuestion.objects.get(day=today_weekday)
 
         if user_data['answer'].strip().lower() == question.answer.strip().lower():
             try:
@@ -365,8 +384,6 @@ def user_register(request):
                 return HttpResponse(json.dumps({'error': 'USER ALREADY EXISTS'}), status=400)
         else:
             return HttpResponse(json.dumps({'error': 'BAD ANSWER'}), content_type='application/json', status=400)
-    else:
-        return HttpResponse(json.dumps({'error': 'Only POST method is allowed'}), status=405)
 
 
 class UserPassword(APIView):
@@ -374,12 +391,15 @@ class UserPassword(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, username):
+        if request.user.username != username:
+            return HttpResponse(json.dumps({'error': 'You are not authorized to change this password.'}), status=403)
+
         try:
             user = User.objects.get(username=username)
             password_data = request.data
 
             if not user.check_password(password_data['old_password']):
-                return HttpResponse(json.dumps({'error': 'Wrong password provided'}), status=400)
+                return HttpResponse(json.dumps({'error': 'Wrong password provided'}), status=400, content_type='application/json')
 
             user.set_password(password_data['new_password'])
             user.save()
@@ -392,9 +412,12 @@ class UserPassword(APIView):
 
 class RegisterQuestions(APIView):
     def get(self, request, format=None):
-        question = RegisterQuestion.objects.get(day=datetime.datetime.today().weekday())
-
-        return HttpResponse(json.dumps({"question": question.question}), content_type='application/json')
+        try:
+            today_weekday = str(datetime.datetime.today().weekday() + 1)
+            question = RegisterQuestion.objects.get(day=today_weekday)
+            return HttpResponse(json.dumps({"question": question.question}), content_type='application/json')
+        except RegisterQuestion.DoesNotExist:
+            return HttpResponse(json.dumps({"error": "No question found for today"}), status=500, content_type='application/json')
 
 
 class RandMovie(APIView):
@@ -405,7 +428,7 @@ class RandMovie(APIView):
 
         next_night = upcoming_nights[0]
         if timezone.now() < next_night.night_date - datetime.timedelta(seconds=10):
-            return HttpResponse(json.dumps({'error': 'Too soon, try again later'}), status=425)
+            return HttpResponse(json.dumps({'error': 'Too soon, try again later'}), status=425, content_type='application/json')
 
         movies_not_watched = Movie.objects.filter(watched_movie=None)
 
@@ -431,7 +454,7 @@ class RandMovie(APIView):
 
 class MovieDate(APIView):
     def get(self, request, format=None):
-        now = datetime.datetime.now()
+        now = timezone.now()
         upcoming_nights = MovieNight.objects.filter(selected_movie__isnull=True, night_date__gt=now).order_by(
             'night_date')
 
