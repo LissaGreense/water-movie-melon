@@ -43,7 +43,7 @@ export const RegisterPage = () => {
   }, []);
 
   function handleRegister() {
-    function handleErrorResponse(error: any) {
+    function handleErrorResponse(error: unknown) {
       if (axios.isAxiosError(error)) {
         const errorStatus = error.response?.status;
 
