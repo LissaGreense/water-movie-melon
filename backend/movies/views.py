@@ -27,6 +27,7 @@ import sys
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 from watermoviemelon.query_search import get_query
+from watermoviemelon.utils import get_bool_env
 from .models import Movie, Rate, MovieNight, Attendees, User, RegisterQuestion
 
 
@@ -404,7 +405,7 @@ def user_register(request):
         return HttpResponse(json.dumps({'error': 'USER ALREADY EXISTS'}), content_type='application/json', status=400)
 
 
-if os.environ.get('RATE_LIMIT_ENABLED') == 'True':
+if get_bool_env('RATE_LIMIT_ENABLED'):
     user_register = ratelimit(key='ip', rate='3/d')(user_register)
 
 
