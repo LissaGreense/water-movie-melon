@@ -18,3 +18,6 @@ restart:
 lint:
 	cd frontend && npm run prettier:format
 	cd frontend && npm run eslint:fix
+
+test:
+	cd backend && venv/bin/python manage.py test

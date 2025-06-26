@@ -50,14 +50,14 @@ class Attendees(models.Model):
 
 class RegisterQuestion(models.Model):
     QUESTION_DAY = [
-        ("1", "Monday"),
-        ("2", "Tuesday"),
-        ("3", "Wednesday"),
-        ("4", "Thursday"),
-        ("5", "Friday"),
-        ("6", "Saturday"),
-        ("7", "Sunday"),
+        ("0", "Monday"),
+        ("1", "Tuesday"),
+        ("2", "Wednesday"),
+        ("3", "Thursday"),
+        ("4", "Friday"),
+        ("5", "Saturday"),
+        ("6", "Sunday"),
     ]
     question = models.CharField(max_length=150)
     answer = models.CharField(max_length=100)
-    day = models.CharField(max_length=2, choices=QUESTION_DAY, unique=True)
+    day = models.CharField(max_length=1, choices=QUESTION_DAY, unique=True)
