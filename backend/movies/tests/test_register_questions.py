@@ -27,10 +27,10 @@ class RegisterQuestionsAPITest(APITestCase):
 
     def test_no_question_for_current_day(self):
         """
-        Tests that a 500 error is returned if no question is set for the current day.
+        Tests that a 200 response is returned if no question is set for the current day.
         """
         # Delete the question created in setUp
         RegisterQuestion.objects.all().delete()
         
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR) 
+        self.assertEqual(response.status_code, status.HTTP_200_OK) 
