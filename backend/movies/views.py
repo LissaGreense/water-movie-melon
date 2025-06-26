@@ -436,11 +436,12 @@ class UserPassword(APIView):
 class RegisterQuestions(APIView):
     def get(self, request, format=None):
         try:
-            today_weekday = str(datetime.datetime.today().weekday())
-            question = RegisterQuestion.objects.get(day=today_weekday)
-            return HttpResponse(json.dumps({"question": question.question}), content_type='application/json')
+            question = RegisterQuestion.objects.get(day=datetime.datetime.today().weekday())
+            question_text = question.question
         except RegisterQuestion.DoesNotExist:
-            return HttpResponse(json.dumps({"error": "No question found for today"}), status=500, content_type='application/json')
+            question_text = ""
+
+        return HttpResponse(json.dumps({"question": question_text}), content_type='application/json')
 
 
 class RandMovie(APIView):
