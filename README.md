@@ -13,13 +13,13 @@ showtime! Once the night ends, everyone can rate the film!
 
 - **Event Creation**: Easily set up movie nights or join to the existing one.
 - **Movie List Management**: Add movies to a global list shared across all movie nights. Once a film is added, it
-  remains in the pool, keeping the options fresh and interesting for future events until it’s finally selected!
+  remains in the pool, keeping the options fresh and interesting for future events until it's finally selected!
 - **Random Movie Selector**: Let watermoviemelon randomly pick a movie from the curated list, adding a touch of
   excitement
   to each night.
-- **Rating System**: Rate the film after the event to capture everyone’s opinions and build a record of past movie
+- **Rating System**: Rate the film after the event to capture everyone's opinions and build a record of past movie
   nights.
-- **Account Statistics**: Keep track of your movie-night stats! Check out how many movie nights you’ve hosted, how many
+- **Account Statistics**: Keep track of your movie-night stats! Check out how many movie nights you've hosted, how many
   you've watched and many more!
 
 ## Project structure
@@ -78,6 +78,28 @@ touch .env
 ```bash
 # OMDb API Key for fetching movie details
 VITE_OMDB_API_KEY="OMDB_KEY_HERE"
+```
+
+#### Backend
+
+1. Create a .env file in the `backend` directory:
+
+```bash
+cd backend
+touch .env
+```
+
+2. Add required environment variables:
+
+```bash
+# PostgreSQL database configuration
+POSTGRES_DB=your_db_name
+POSTGRES_USER=your_db_user
+POSTGRES_PASSWORD=your_db_password
+POSTGRES_HOST=db
+
+# For register view rate limiting
+RATE_LIMIT_ENABLED=True
 ```
 
 ### Docker-compose
@@ -211,7 +233,7 @@ docker run -d --name postgres -e POSTGRES_PASSWORD=mypassword  -p 5432:5432 post
 
 ### Backend
 
-The backend uses Django’s built-in testing framework along with pytest (if configured) for more flexibility. Here’s how
+The backend uses Django's built-in testing framework along with pytest (if configured) for more flexibility. Here's how
 to run the backend tests:
 
 1. Navigate to the backend directory:

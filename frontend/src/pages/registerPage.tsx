@@ -9,8 +9,12 @@ import {
 import { Question } from "../types/internal/authentication.ts";
 import { LOGIN } from "../constants/paths.ts";
 import { useNavigate } from "react-router-dom";
+<<<<<<< HEAD
 import { AxiosResponse } from "axios";
 import "./registerPage.css";
+=======
+import axios from "axios";
+>>>>>>> main
 
 const TOO_MANY_ATTEMPTS_ERROR_MSG =
   "Wykorzystałeś swoje trzy próby logowania. Spróbuj ponownie jutro! Może jutrzejsze arbuzowe pytanie będzie łatwiejsze ;)";
@@ -18,6 +22,7 @@ const USER_ALREADY_EXISTS_ERROR_MSG =
   "Użytkownik o takiej nazwie już istnieje!";
 const WRONG_ANSWER_ERROR_MSG =
   "Nie znasz odpowiedzi na dzisiejsze arbuzowe pytanie? ;)";
+const ANSWER_NOT_PROVIDED_ERROR_MSG = "Musisz podać odpowiedź!";
 const REGISTRATION_FAILED_ERROR_MSG =
   "Nie udało się zarejestrować! skontaktuj się z administracją.";
 const WEAK_PASSWORD_MSG =
@@ -43,18 +48,27 @@ export const RegisterPage = () => {
   }, []);
 
   function handleRegister() {
-    function handleErrorResponse(r: AxiosResponse) {
-      const errorStatus = r.data["response"]["status"];
+    function handleErrorResponse(error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const errorStatus = error.response?.status;
 
-      if (errorStatus === 403) {
-        alert(TOO_MANY_ATTEMPTS_ERROR_MSG);
-      } else if (errorStatus === 400) {
-        const errorMsg = r.data["response"]["data"]["error"];
+        if (errorStatus === 403) {
+          alert(TOO_MANY_ATTEMPTS_ERROR_MSG);
+          return;
+        }
 
-        if (errorMsg === "USER ALREADY EXISTS") {
-          alert(USER_ALREADY_EXISTS_ERROR_MSG);
-        } else if (errorMsg === "BAD ANSWER") {
-          alert(WRONG_ANSWER_ERROR_MSG);
+        const errorMsg = error.response?.data?.error;
+
+        if (errorStatus === 400) {
+          if (errorMsg === "USER ALREADY EXISTS") {
+            alert(USER_ALREADY_EXISTS_ERROR_MSG);
+          } else if (errorMsg === "BAD ANSWER") {
+            alert(WRONG_ANSWER_ERROR_MSG);
+          } else if (errorMsg === "ANSWER NOT PROVIDED") {
+            alert(ANSWER_NOT_PROVIDED_ERROR_MSG);
+          }
+        } else {
+          alert(REGISTRATION_FAILED_ERROR_MSG);
         }
       } else {
         alert(REGISTRATION_FAILED_ERROR_MSG);
