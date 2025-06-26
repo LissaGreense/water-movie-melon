@@ -9,12 +9,8 @@ import {
 import { Question } from "../types/internal/authentication.ts";
 import { LOGIN } from "../constants/paths.ts";
 import { useNavigate } from "react-router-dom";
-<<<<<<< HEAD
-import { AxiosResponse } from "axios";
 import "./registerPage.css";
-=======
 import axios from "axios";
->>>>>>> main
 
 const TOO_MANY_ATTEMPTS_ERROR_MSG =
   "Wykorzystałeś swoje trzy próby logowania. Spróbuj ponownie jutro! Może jutrzejsze arbuzowe pytanie będzie łatwiejsze ;)";
