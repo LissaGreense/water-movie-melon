@@ -7,8 +7,8 @@ class RegisterQuestionsAPITest(APITestCase):
 
     def setUp(self):
         self.url = '/movies/registerQuestion/'
-        # The model stores weekday as a string "1" (Monday) to "7" (Sunday)
-        today_weekday_model_format = str(datetime.datetime.today().weekday() + 1)
+        # The model stores weekday as a string "0" (Monday) to "6" (Sunday)
+        today_weekday_model_format = str(datetime.datetime.today().weekday())
         self.question_text = "What is the airspeed velocity of an unladen swallow?"
         
         RegisterQuestion.objects.create(

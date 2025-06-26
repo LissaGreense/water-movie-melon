@@ -19,12 +19,11 @@ from django.utils.dateparse import parse_datetime
 from django_ratelimit.decorators import ratelimit
 from rest_framework import permissions
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
 from django.utils.decorators import method_decorator
 import sys
-from rest_framework.decorators import api_view
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 from watermoviemelon.query_search import get_query
@@ -378,33 +377,35 @@ class UserStatistics(APIView):
             return HttpResponse(json.dumps({'error': 'User not found'}), status=404, content_type='application/json')
 
 
-class UserRegister(APIView):
-    permission_classes = (permissions.AllowAny,)
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny])
+def user_register(request):
+    user_data = request.data
+    today_weekday = str(datetime.datetime.today().weekday())
 
-
-    def dispatch(self, request, *args, **kwargs):
-        if 'test' in sys.argv:
-            return super().dispatch(request, *args, **kwargs)
-
-        view = super().dispatch
-        decorated_view = ratelimit(key='ip', rate='3/d')(view)
-        return decorated_view(request, *args, **kwargs)
-
-    def post(self, request):
-        user_data = request.data
-        today_weekday = str(datetime.datetime.today().weekday() + 1)
+    try:
         question = RegisterQuestion.objects.get(day=today_weekday)
+    except RegisterQuestion.DoesNotExist:
+        question = None
 
-        if user_data['answer'].strip().lower() == question.answer.strip().lower():
-            try:
-                user = User.objects.create_user(username=user_data["username"], password=user_data["password"])
-                user.save()
+    if question:
+        if 'answer' not in user_data or not user_data['answer']:
+            return HttpResponse(json.dumps({'error': 'ANSWER NOT PROVIDED'}), content_type='application/json', status=400)
 
-                return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
-            except IntegrityError:
-                return HttpResponse(json.dumps({'error': 'USER ALREADY EXISTS'}), status=400)
-        else:
+        if user_data['answer'].strip().lower() != question.answer.strip().lower():
             return HttpResponse(json.dumps({'error': 'BAD ANSWER'}), content_type='application/json', status=400)
+
+    try:
+        user = User.objects.create_user(username=user_data["username"], password=user_data["password"])
+        user.save()
+
+        return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
+    except IntegrityError:
+        return HttpResponse(json.dumps({'error': 'USER ALREADY EXISTS'}), content_type='application/json', status=400)
+
+
+if os.environ.get('RATE_LIMIT_ENABLED') == 'True':
+    user_register = ratelimit(key='ip', rate='3/d')(user_register)
 
 
 class UserPassword(APIView):
@@ -434,7 +435,7 @@ class UserPassword(APIView):
 class RegisterQuestions(APIView):
     def get(self, request, format=None):
         try:
-            today_weekday = str(datetime.datetime.today().weekday() + 1)
+            today_weekday = str(datetime.datetime.today().weekday())
             question = RegisterQuestion.objects.get(day=today_weekday)
             return HttpResponse(json.dumps({"question": question.question}), content_type='application/json')
         except RegisterQuestion.DoesNotExist:
