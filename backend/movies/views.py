@@ -381,29 +381,6 @@ class UserStatistics(APIView):
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def user_register(request):
-<<<<<<< HEAD
-    if request.method == 'POST':
-        user_data = request.data
-        try:
-            question = RegisterQuestion.objects.get(day=datetime.datetime.today().weekday())
-        except RegisterQuestion.DoesNotExist:
-            question = None
-
-        if question:
-            if 'answer' not in user_data or user_data['answer'].strip().lower() != question.answer.strip().lower():
-                return HttpResponse(json.dumps({'error': 'BAD ANSWER'}), content_type='application/json', status=400)
-
-        try:
-            user = User.objects.create_user(username=user_data["username"], password=user_data["password"])
-            user.save()
-
-            return HttpResponse(json.dumps({'result': 'OK'}), content_type='application/json')
-        except IntegrityError:
-            return HttpResponse(json.dumps({'error': 'USER ALREADY EXISTS'}), status=400)
-
-    else:
-        return HttpResponse(json.dumps({'error': 'Only POST method is allowed'}), status=405)
-=======
     user_data = request.data
     today_weekday = str(datetime.datetime.today().weekday())
 
@@ -430,7 +407,6 @@ def user_register(request):
 
 if get_bool_env('RATE_LIMIT_ENABLED'):
     user_register = ratelimit(key='ip', rate='3/d')(user_register)
->>>>>>> main
 
 
 class UserPassword(APIView):
@@ -460,20 +436,12 @@ class UserPassword(APIView):
 class RegisterQuestions(APIView):
     def get(self, request, format=None):
         try:
-<<<<<<< HEAD
             question = RegisterQuestion.objects.get(day=datetime.datetime.today().weekday())
             question_text = question.question
         except RegisterQuestion.DoesNotExist:
             question_text = ""
 
         return HttpResponse(json.dumps({"question": question_text}), content_type='application/json')
-=======
-            today_weekday = str(datetime.datetime.today().weekday())
-            question = RegisterQuestion.objects.get(day=today_weekday)
-            return HttpResponse(json.dumps({"question": question.question}), content_type='application/json')
-        except RegisterQuestion.DoesNotExist:
-            return HttpResponse(json.dumps({"error": "No question found for today"}), status=500, content_type='application/json')
->>>>>>> main
 
 
 class RandMovie(APIView):
