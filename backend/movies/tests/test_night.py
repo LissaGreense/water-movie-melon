@@ -36,8 +36,12 @@ class NightAPITest(APITestCase):
 
     def test_get_specific_night_by_date(self):
         self.client.force_login(self.user)
-        date_str = self.night1_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-        response = self.client.get('/movies/newNight/', {'date': date_str})
+        start_date = self.night1_date.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_date = self.night1_date.replace(hour=23, minute=59, second=59, microsecond=999999)
+        response = self.client.get('/movies/newNight/', {
+            'start_date': start_date.isoformat(),
+            'end_date': end_date.isoformat()
+        })
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = json.loads(response.content)
         self.assertEqual(len(data), 1)
@@ -46,9 +50,15 @@ class NightAPITest(APITestCase):
 
     def test_get_night_for_non_existent_date(self):
         self.client.force_login(self.user)
-        date_str = (timezone.now() + timedelta(days=5)).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-        with self.assertRaises(MovieNight.DoesNotExist):
-            self.client.get('/movies/newNight/', {'date': date_str})
+        non_existent_date = timezone.now() + timedelta(days=5)
+        start_date = non_existent_date.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_date = non_existent_date.replace(hour=23, minute=59, second=59, microsecond=999999)
+        response = self.client.get('/movies/newNight/', {
+            'start_date': start_date.isoformat(),
+            'end_date': end_date.isoformat()
+        })
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(json.loads(response.content), [])
 
     def test_get_night_unauthenticated(self):
         response = self.client.get('/movies/newNight/')
@@ -81,7 +91,7 @@ class NightAPITest(APITestCase):
         }
         response = self.client.post('/movies/newNight/', night_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(json.loads(response.content), {'error': 'A MovieNight already exists for this date.'})
+        self.assertEqual(json.loads(response.content), {'error': 'A MovieNight already exists on this calendar day (UTC).'})
 
     def test_post_new_night_incomplete_data(self):
         self.client.force_login(self.user)
