@@ -1,4 +1,11 @@
-import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
+import {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import { Dialog } from "primereact/dialog";
 import {
   getAttendees,
@@ -25,6 +32,7 @@ export const MovieNightAttend: FC<MovieDateProps> = ({
   const [nightLocation, setNightLocation] = useState<string>("");
   const [movieNightData, setMovieNightData] = useState<MovieNight>();
   const [attendeesList, setAttendeesList] = useState<Attendees[]>([]);
+  const [userAttending, setUserAttending] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,7 +49,7 @@ export const MovieNightAttend: FC<MovieDateProps> = ({
       });
   }, [movieDate, navigate]);
 
-  useEffect(() => {
+  const fetchAttendees = useCallback(() => {
     getAttendees()
       .then((attds) => {
         setAttendeesList(attds);
@@ -53,7 +61,23 @@ export const MovieNightAttend: FC<MovieDateProps> = ({
         }
         console.error("Error fetching attendees:", error);
       });
-  }, [movieDate, navigate]);
+  }, [navigate]);
+
+  useEffect(() => {
+    fetchAttendees();
+  }, [movieDate, fetchAttendees]);
+
+  useEffect(() => {
+    if (movieDate && attendeesList) {
+      setUserAttending(
+        attendeesList.some(
+          (attendee) =>
+            attendee.user === (getUsername() as string) &&
+            dayjs(attendee.night.night_date).isSame(dayjs(movieDate), "day"),
+        ),
+      );
+    }
+  }, [attendeesList, movieDate]);
 
   useEffect(() => {
     getMovieNight(movieDate)
@@ -74,20 +98,12 @@ export const MovieNightAttend: FC<MovieDateProps> = ({
   }, [movieDate, navigate]);
 
   const handleJoinMovieNight = () => {
-    joinMovieNight(
-      movieNightData,
-      getUsername(),
-      dayjs(Date()).format("YYYY-MM-DD HH:mm"),
+    joinMovieNight(movieNightData, getUsername(), dayjs().toISOString()).then(
+      () => {
+        fetchAttendees();
+      },
     );
   };
-
-  const userAttending =
-    movieDate &&
-    attendeesList?.some(
-      (attendee) =>
-        attendee.user === (getUsername() as string) &&
-        dayjs(attendee.night.night_date).isSame(dayjs(movieDate), "day"),
-    );
 
   return (
     <Dialog visible={isVisible} onHide={() => setVisible(false)}>
@@ -104,7 +120,7 @@ export const MovieNightAttend: FC<MovieDateProps> = ({
         <Button
           label={userAttending ? "Dołączono" : "Dołącz"}
           onClick={handleJoinMovieNight}
-          disabled={!!userAttending}
+          disabled={userAttending}
         ></Button>
       </div>
     </Dialog>
