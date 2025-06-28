@@ -39,10 +39,15 @@ export const NewMovieNightForm: FC<MovieDateProps> = ({
           onSubmit={(e) => {
             e.preventDefault();
             const target = e.currentTarget;
+            const combinedDateTime = dayjs(movieDate)
+              .hour(dayjs(nightTime).hour())
+              .minute(dayjs(nightTime).minute())
+              .second(0)
+              .millisecond(0);
+
             postMovieNight(
               getUsername() as string,
-              dayjs(movieDate).format("YYYY-MM-DD ") +
-                dayjs(nightTime).format("HH:mm"),
+              combinedDateTime.toISOString(),
               target.location.value,
             );
           }}
