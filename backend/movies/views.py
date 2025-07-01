@@ -164,11 +164,12 @@ class Night(APIView):
             # Parse the datetime with timezone information
             date_with_tz = parse_datetime(date_str)
             if date_with_tz:
-                # Get the start and end of the day in the same timezone as the input
-                start_date = date_with_tz.replace(hour=0, minute=0, second=0, microsecond=0)
-                end_date = date_with_tz.replace(hour=23, minute=59, second=59, microsecond=999999)
+                # NEW: Use business timezone for consistent day boundary logic
+                from watermoviemelon.utils.timezone import get_business_date, get_business_day_range
+                business_date = get_business_date(date_with_tz)
+                start_utc, end_utc = get_business_day_range(business_date)
                 
-                movie_night = MovieNight.objects.filter(night_date__range=(start_date, end_date)).first()
+                movie_night = MovieNight.objects.filter(night_date__range=(start_utc, end_utc)).first()
 
                 if movie_night:
                     if movie_night.selected_movie:
@@ -200,9 +201,17 @@ class Night(APIView):
 
         try:
             night_date = parse_datetime(night_from_body.get('night_date'))
-            utc_date = night_date.astimezone(datetime.timezone.utc).date()
-            if MovieNight.objects.filter(night_date__date=utc_date).exists():
-                return HttpResponse(json.dumps({'error': 'A MovieNight already exists on this calendar day (UTC).'}),
+            
+            # NEW: Use business timezone for day boundary logic
+            from watermoviemelon.utils.timezone import get_business_date, get_business_day_range
+            business_date = get_business_date(night_date)
+            
+            # Check if any MovieNight exists on this business calendar date
+            start_utc, end_utc = get_business_day_range(business_date)
+            existing_nights = MovieNight.objects.filter(night_date__range=(start_utc, end_utc))
+            
+            if existing_nights.exists():
+                return HttpResponse(json.dumps({'error': 'A MovieNight already exists on this calendar day.'}),
                                     status=400)
 
             new_movie_night = MovieNight(**night_from_body)

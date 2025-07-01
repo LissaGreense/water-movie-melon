@@ -85,7 +85,7 @@ class NightAPITest(APITestCase):
         }
         response = self.client.post('/movies/newNight/', night_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(json.loads(response.content), {'error': 'A MovieNight already exists on this calendar day (UTC).'})
+        self.assertEqual(json.loads(response.content), {'error': 'A MovieNight already exists on this calendar day.'})
 
     def test_post_new_night_incomplete_data(self):
         self.client.force_login(self.user)

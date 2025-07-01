@@ -161,11 +161,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Poland'
+TIME_ZONE = 'Europe/Warsaw'
 
 USE_I18N = True
 
 USE_TZ = True
+
+# Business timezone for day-boundary logic consistency
+BUSINESS_TIMEZONE = 'Europe/Warsaw'  # Configurable for future expansion
 
 
 # Static files (CSS, JavaScript, Images)
