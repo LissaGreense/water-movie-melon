@@ -158,35 +158,40 @@ class Night(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        start_date_str = request.GET.get('start_date')
-        end_date_str = request.GET.get('end_date')
+        date_str = request.GET.get('date')
 
-        if start_date_str and end_date_str:
-            start_date = parse_datetime(start_date_str)
-            end_date = parse_datetime(end_date_str)
-            movie_night = MovieNight.objects.filter(night_date__range=(start_date, end_date)).first()
+        if date_str:
+            # Parse the datetime with timezone information
+            date_with_tz = parse_datetime(date_str)
+            if date_with_tz:
+                # Get the start and end of the day in the same timezone as the input
+                start_date = date_with_tz.replace(hour=0, minute=0, second=0, microsecond=0)
+                end_date = date_with_tz.replace(hour=23, minute=59, second=59, microsecond=999999)
+                
+                movie_night = MovieNight.objects.filter(night_date__range=(start_date, end_date)).first()
 
-            if movie_night:
-                if movie_night.selected_movie:
-                    selected_movie = serializers.serialize('python', [movie_night.selected_movie, ])[0]['fields']
+                if movie_night:
+                    if movie_night.selected_movie:
+                        selected_movie = serializers.serialize('python', [movie_night.selected_movie, ])[0]['fields']
+                    else:
+                        selected_movie = None
+
+                    nights_response = {
+                        "host": movie_night.host,
+                        "night_date": movie_night.night_date.isoformat(),
+                        "location": movie_night.location,
+                        "selected_movie": selected_movie,
+                    }
+                    return HttpResponse(json.dumps([nights_response], cls=DjangoJSONEncoder),
+                                        content_type='application/json')
                 else:
-                    selected_movie = None
-
-                nights_response = {
-                    "host": movie_night.host,
-                    "night_date": movie_night.night_date.isoformat(),
-                    "location": movie_night.location,
-                    "selected_movie": selected_movie,
-                }
-                return HttpResponse(json.dumps([nights_response], cls=DjangoJSONEncoder),
-                                    content_type='application/json')
+                    return HttpResponse(json.dumps([], cls=DjangoJSONEncoder), content_type='application/json')
             else:
-                return HttpResponse(json.dumps([], cls=DjangoJSONEncoder), content_type='application/json')
-        else:
-            all_nights = serializers.serialize('python', MovieNight.objects.all())
-
+                return HttpResponse(json.dumps({'error': 'Invalid date format'}), content_type='application/json', status=400)
+        
+        # Return all nights when no date parameter is provided
+        all_nights = serializers.serialize('python', MovieNight.objects.all())
         night_field = [d['fields'] for d in all_nights]
-
         return HttpResponse(json.dumps(night_field, cls=DjangoJSONEncoder), content_type='application/json')
 
     def post(self, request, format=None):

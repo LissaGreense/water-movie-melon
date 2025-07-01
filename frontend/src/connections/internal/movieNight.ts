@@ -26,10 +26,8 @@ export async function getMovieNight(
 ): Promise<MovieNight[]> {
   const config: AxiosRequestConfig = getAuthHeadersConfig(false);
   if (nightDate !== null) {
-    const localDay = dayjs(nightDate);
     config["params"] = {
-      start_date: localDay.startOf("day").toISOString(),
-      end_date: localDay.endOf("day").toISOString(),
+      date: nightDate.toISOString(),
     };
   }
   const response = await axios.get<MovieNight[]>(

@@ -36,11 +36,8 @@ class NightAPITest(APITestCase):
 
     def test_get_specific_night_by_date(self):
         self.client.force_login(self.user)
-        start_date = self.night1_date.replace(hour=0, minute=0, second=0, microsecond=0)
-        end_date = self.night1_date.replace(hour=23, minute=59, second=59, microsecond=999999)
         response = self.client.get('/movies/newNight/', {
-            'start_date': start_date.isoformat(),
-            'end_date': end_date.isoformat()
+            'date': self.night1_date.isoformat()
         })
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = json.loads(response.content)
@@ -51,11 +48,8 @@ class NightAPITest(APITestCase):
     def test_get_night_for_non_existent_date(self):
         self.client.force_login(self.user)
         non_existent_date = timezone.now() + timedelta(days=5)
-        start_date = non_existent_date.replace(hour=0, minute=0, second=0, microsecond=0)
-        end_date = non_existent_date.replace(hour=23, minute=59, second=59, microsecond=999999)
         response = self.client.get('/movies/newNight/', {
-            'start_date': start_date.isoformat(),
-            'end_date': end_date.isoformat()
+            'date': non_existent_date.isoformat()
         })
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(json.loads(response.content), [])
@@ -108,4 +102,13 @@ class NightAPITest(APITestCase):
             'location': 'New Location'
         }
         response = self.client.post('/movies/newNight/', night_data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN) 
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_get_night_with_invalid_date_format(self):
+        self.client.force_login(self.user)
+        response = self.client.get('/movies/newNight/', {
+            'date': 'invalid-date-format'
+        })
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        data = json.loads(response.content)
+        self.assertEqual(data['error'], 'Invalid date format') 
