@@ -168,7 +168,7 @@ USE_I18N = True
 USE_TZ = True
 
 # Business timezone for day-boundary logic consistency
-BUSINESS_TIMEZONE = 'Europe/Warsaw'  # Configurable for future expansion
+BUSINESS_TIMEZONE = os.getenv("BUSINESS_TIMEZONE", "Europe/Warsaw")
 
 
 # Static files (CSS, JavaScript, Images)
