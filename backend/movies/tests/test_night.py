@@ -36,8 +36,9 @@ class NightAPITest(APITestCase):
 
     def test_get_specific_night_by_date(self):
         self.client.force_login(self.user)
-        date_str = self.night1_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-        response = self.client.get('/movies/newNight/', {'date': date_str})
+        response = self.client.get('/movies/newNight/', {
+            'date': self.night1_date.isoformat()
+        })
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = json.loads(response.content)
         self.assertEqual(len(data), 1)
@@ -46,9 +47,12 @@ class NightAPITest(APITestCase):
 
     def test_get_night_for_non_existent_date(self):
         self.client.force_login(self.user)
-        date_str = (timezone.now() + timedelta(days=5)).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-        with self.assertRaises(MovieNight.DoesNotExist):
-            self.client.get('/movies/newNight/', {'date': date_str})
+        non_existent_date = timezone.now() + timedelta(days=5)
+        response = self.client.get('/movies/newNight/', {
+            'date': non_existent_date.isoformat()
+        })
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(json.loads(response.content), [])
 
     def test_get_night_unauthenticated(self):
         response = self.client.get('/movies/newNight/')
@@ -81,7 +85,7 @@ class NightAPITest(APITestCase):
         }
         response = self.client.post('/movies/newNight/', night_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(json.loads(response.content), {'error': 'A MovieNight already exists for this date.'})
+        self.assertEqual(json.loads(response.content), {'error': 'A MovieNight already exists on this calendar day.'})
 
     def test_post_new_night_incomplete_data(self):
         self.client.force_login(self.user)
@@ -98,4 +102,13 @@ class NightAPITest(APITestCase):
             'location': 'New Location'
         }
         response = self.client.post('/movies/newNight/', night_data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN) 
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_get_night_with_invalid_date_format(self):
+        self.client.force_login(self.user)
+        response = self.client.get('/movies/newNight/', {
+            'date': 'invalid-date-format'
+        })
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        data = json.loads(response.content)
+        self.assertEqual(data['error'], 'Invalid date format') 

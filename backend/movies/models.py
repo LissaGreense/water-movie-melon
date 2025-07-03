@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from watermoviemelon.utils.timezone import get_business_date
 
 
 class Movie(models.Model):
@@ -36,6 +37,11 @@ class MovieNight(models.Model):
     night_date = models.DateTimeField('night_date')
     location = models.CharField(max_length=100)
     selected_movie = models.ForeignKey(Movie, on_delete=models.CASCADE, null=True, related_name='watched_movie')
+
+    @property
+    def business_date(self):
+        """Get the calendar date in business timezone"""
+        return get_business_date(self.night_date)
 
 
 class Attendees(models.Model):

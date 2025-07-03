@@ -27,7 +27,8 @@ import sys
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 from watermoviemelon.query_search import get_query
-from watermoviemelon.utils import get_bool_env
+from watermoviemelon.utils.environment import get_bool_env
+from watermoviemelon.utils.timezone import get_business_date, get_business_day_range
 from .models import Movie, Rate, MovieNight, Attendees, User, RegisterQuestion
 
 
@@ -158,29 +159,38 @@ class Night(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        date = request.GET.get('date', None)
+        date_str = request.GET.get('date')
 
-        if date:
-            parsed_date = parser.parse(date)
-            movie_night = MovieNight.objects.get(night_date__date=parsed_date)
+        if date_str:
+            # Parse the datetime with timezone information
+            date_with_tz = parse_datetime(date_str)
+            if not date_with_tz:
+                return HttpResponse(json.dumps({'error': 'Invalid date format'}), content_type='application/json', status=400)
+            
+            # Use business timezone for consistent day boundary logic
+            business_date = get_business_date(date_with_tz)
+            start_utc, end_utc = get_business_day_range(business_date)
+            
+            movie_night = MovieNight.objects.filter(night_date__range=(start_utc, end_utc)).first()
 
-            if movie_night.selected_movie:
-                selected_movie = serializers.serialize('python', [movie_night.selected_movie, ])[0]['fields']
-            else:
+            if movie_night:
                 selected_movie = None
-
-            nights_response = {
-                "host": movie_night.host,
-                "night_date": date,
-                "location": movie_night.location,
-                "selected_movie": selected_movie,
-            }
-            return HttpResponse(json.dumps([nights_response], cls=DjangoJSONEncoder), content_type='application/json')
-        else:
-            all_nights = serializers.serialize('python', MovieNight.objects.all())
-
+                if movie_night.selected_movie:
+                    selected_movie = serializers.serialize('python', [movie_night.selected_movie, ])[0]['fields']
+                
+                nights_response = {
+                    "host": movie_night.host,
+                    "night_date": movie_night.night_date.isoformat(),
+                    "location": movie_night.location,
+                    "selected_movie": selected_movie,
+                }
+                return HttpResponse(json.dumps([nights_response], cls=DjangoJSONEncoder),
+                                    content_type='application/json')
+            return HttpResponse(json.dumps([], cls=DjangoJSONEncoder), content_type='application/json')
+        
+        # Return all nights when no date parameter is provided
+        all_nights = serializers.serialize('python', MovieNight.objects.all())
         night_field = [d['fields'] for d in all_nights]
-
         return HttpResponse(json.dumps(night_field, cls=DjangoJSONEncoder), content_type='application/json')
 
     def post(self, request, format=None):
@@ -189,8 +199,17 @@ class Night(APIView):
 
         try:
             night_date = parse_datetime(night_from_body.get('night_date'))
-            if MovieNight.objects.filter(night_date__date=night_date.date()).exists():
-                return HttpResponse(json.dumps({'error': 'A MovieNight already exists for this date.'}), status=400)
+            
+            # Use business timezone for day boundary logic
+            business_date = get_business_date(night_date)
+            
+            # Check if any MovieNight exists on this business calendar date
+            start_utc, end_utc = get_business_day_range(business_date)
+            existing_nights = MovieNight.objects.filter(night_date__range=(start_utc, end_utc))
+            
+            if existing_nights.exists():
+                return HttpResponse(json.dumps({'error': 'A MovieNight already exists on this calendar day.'}),
+                                    status=400)
 
             new_movie_night = MovieNight(**night_from_body)
         except TypeError:

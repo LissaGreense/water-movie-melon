@@ -100,6 +100,11 @@ POSTGRES_HOST=db
 
 # For register view rate limiting
 RATE_LIMIT_ENABLED=True
+
+# Business timezone for consistent day-boundary logic (optional)
+# Used for movie night scheduling and conflict detection
+# Default: Europe/Warsaw
+BUSINESS_TIMEZONE=Europe/Warsaw
 ```
 
 ### Docker-compose

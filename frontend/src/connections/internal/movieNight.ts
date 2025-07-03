@@ -27,7 +27,7 @@ export async function getMovieNight(
   const config: AxiosRequestConfig = getAuthHeadersConfig(false);
   if (nightDate !== null) {
     config["params"] = {
-      date: nightDate.toLocaleDateString(),
+      date: nightDate.toISOString(),
     };
   }
   const response = await axios.get<MovieNight[]>(
