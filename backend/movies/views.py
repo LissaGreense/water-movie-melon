@@ -164,28 +164,29 @@ class Night(APIView):
         if date_str:
             # Parse the datetime with timezone information
             date_with_tz = parse_datetime(date_str)
-            if date_with_tz:
-                # Use business timezone for consistent day boundary logic
-                business_date = get_business_date(date_with_tz)
-                start_utc, end_utc = get_business_day_range(business_date)
-                
-                movie_night = MovieNight.objects.filter(night_date__range=(start_utc, end_utc)).first()
+            if not date_with_tz:
+                return HttpResponse(json.dumps({'error': 'Invalid date format'}), content_type='application/json', status=400)
+            
+            # Use business timezone for consistent day boundary logic
+            business_date = get_business_date(date_with_tz)
+            start_utc, end_utc = get_business_day_range(business_date)
+            
+            movie_night = MovieNight.objects.filter(night_date__range=(start_utc, end_utc)).first()
 
-                if movie_night:
-                    selected_movie = None
-                    if movie_night.selected_movie:
-                        selected_movie = serializers.serialize('python', [movie_night.selected_movie, ])[0]['fields']
-                    
-                    nights_response = {
-                        "host": movie_night.host,
-                        "night_date": movie_night.night_date.isoformat(),
-                        "location": movie_night.location,
-                        "selected_movie": selected_movie,
-                    }
-                    return HttpResponse(json.dumps([nights_response], cls=DjangoJSONEncoder),
-                                        content_type='application/json')
-                return HttpResponse(json.dumps([], cls=DjangoJSONEncoder), content_type='application/json')
-            return HttpResponse(json.dumps({'error': 'Invalid date format'}), content_type='application/json', status=400)
+            if movie_night:
+                selected_movie = None
+                if movie_night.selected_movie:
+                    selected_movie = serializers.serialize('python', [movie_night.selected_movie, ])[0]['fields']
+                
+                nights_response = {
+                    "host": movie_night.host,
+                    "night_date": movie_night.night_date.isoformat(),
+                    "location": movie_night.location,
+                    "selected_movie": selected_movie,
+                }
+                return HttpResponse(json.dumps([nights_response], cls=DjangoJSONEncoder),
+                                    content_type='application/json')
+            return HttpResponse(json.dumps([], cls=DjangoJSONEncoder), content_type='application/json')
         
         # Return all nights when no date parameter is provided
         all_nights = serializers.serialize('python', MovieNight.objects.all())
