@@ -27,7 +27,8 @@ import sys
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 from watermoviemelon.query_search import get_query
-from watermoviemelon.utils import get_bool_env
+from watermoviemelon.utils.environment import get_bool_env
+from watermoviemelon.utils.timezone import get_business_date, get_business_day_range
 from .models import Movie, Rate, MovieNight, Attendees, User, RegisterQuestion
 
 
@@ -164,19 +165,17 @@ class Night(APIView):
             # Parse the datetime with timezone information
             date_with_tz = parse_datetime(date_str)
             if date_with_tz:
-                # NEW: Use business timezone for consistent day boundary logic
-                from watermoviemelon.utils.timezone import get_business_date, get_business_day_range
+                # Use business timezone for consistent day boundary logic
                 business_date = get_business_date(date_with_tz)
                 start_utc, end_utc = get_business_day_range(business_date)
                 
                 movie_night = MovieNight.objects.filter(night_date__range=(start_utc, end_utc)).first()
 
                 if movie_night:
+                    selected_movie = None
                     if movie_night.selected_movie:
                         selected_movie = serializers.serialize('python', [movie_night.selected_movie, ])[0]['fields']
-                    else:
-                        selected_movie = None
-
+                    
                     nights_response = {
                         "host": movie_night.host,
                         "night_date": movie_night.night_date.isoformat(),
@@ -185,10 +184,8 @@ class Night(APIView):
                     }
                     return HttpResponse(json.dumps([nights_response], cls=DjangoJSONEncoder),
                                         content_type='application/json')
-                else:
-                    return HttpResponse(json.dumps([], cls=DjangoJSONEncoder), content_type='application/json')
-            else:
-                return HttpResponse(json.dumps({'error': 'Invalid date format'}), content_type='application/json', status=400)
+                return HttpResponse(json.dumps([], cls=DjangoJSONEncoder), content_type='application/json')
+            return HttpResponse(json.dumps({'error': 'Invalid date format'}), content_type='application/json', status=400)
         
         # Return all nights when no date parameter is provided
         all_nights = serializers.serialize('python', MovieNight.objects.all())
@@ -202,8 +199,7 @@ class Night(APIView):
         try:
             night_date = parse_datetime(night_from_body.get('night_date'))
             
-            # NEW: Use business timezone for day boundary logic
-            from watermoviemelon.utils.timezone import get_business_date, get_business_day_range
+            # Use business timezone for day boundary logic
             business_date = get_business_date(night_date)
             
             # Check if any MovieNight exists on this business calendar date
