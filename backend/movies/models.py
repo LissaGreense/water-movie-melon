@@ -37,6 +37,7 @@ class MovieNight(models.Model):
     night_date = models.DateTimeField('night_date')
     location = models.CharField(max_length=100)
     selected_movie = models.ForeignKey(Movie, on_delete=models.CASCADE, null=True, related_name='watched_movie')
+    movie_selected_at = models.DateTimeField(null=True, blank=True)
 
     @property
     def business_date(self):

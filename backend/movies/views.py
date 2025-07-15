@@ -463,25 +463,46 @@ class RegisterQuestions(APIView):
         return HttpResponse(json.dumps({"question": question_text}), content_type='application/json')
 
 
-class RandMovie(APIView):
+class SelectedMovieView(APIView):
     def get(self, request, format=None):
-        upcoming_nights = MovieNight.objects.filter(selected_movie__isnull=True).order_by('night_date')
-        if len(upcoming_nights) == 0:
-            return HttpResponse(json.dumps([], cls=DjangoJSONEncoder), content_type='application/json')
-
-        next_night = upcoming_nights[0]
-        if timezone.now() < next_night.night_date - datetime.timedelta(seconds=10):
-            return HttpResponse(json.dumps({'error': 'Too soon, try again later'}), status=425, content_type='application/json')
-
-        movies_not_watched = Movie.objects.filter(watched_movie=None)
-
-        if len(movies_not_watched) == 0:
-            return HttpResponse(json.dumps([], cls=DjangoJSONEncoder), content_type='application/json')
-
-        selected_movie = choice(movies_not_watched)
-        next_night.selected_movie = selected_movie
-        next_night.save()
-
+        """
+        Read-only endpoint that returns the selected movie for the current or recent movie night.
+        Shows selected movie for at least 1 hour after the movie night time.
+        """
+        now = timezone.now()
+        
+        # Find the most recent movie night that should display its selected movie
+        # Include nights that:
+        # 1. Have a selected movie
+        # 2. Are either current (countdown <= 0) or within 1 hour after the night time
+        one_hour_ago = now - datetime.timedelta(hours=1)
+        
+        # Get nights that have a selected movie and are within display period
+        nights_with_movies = MovieNight.objects.filter(
+            selected_movie__isnull=False,
+            night_date__gte=one_hour_ago
+        ).order_by('night_date')
+        
+        if not nights_with_movies.exists():
+            # No movie nights with selected movies in the display period
+            return HttpResponse(json.dumps(None), content_type='application/json')
+        
+        # Find the most appropriate night to show
+        # Priority: current/future nights, then recent past nights
+        current_or_future_nights = nights_with_movies.filter(night_date__gte=now)
+        
+        if current_or_future_nights.exists():
+            # Show the earliest current/future night with a selected movie
+            target_night = current_or_future_nights.first()
+        else:
+            # Show the most recent past night (within 1 hour)
+            target_night = nights_with_movies.filter(night_date__lt=now).last()
+        
+        if not target_night or not target_night.selected_movie:
+            return HttpResponse(json.dumps(None), content_type='application/json')
+        
+        selected_movie = target_night.selected_movie
+        
         selected_movie_response = {
             'title': selected_movie.title,
             'link': selected_movie.link,
@@ -490,6 +511,8 @@ class RandMovie(APIView):
             'genre': selected_movie.genre,
             'cover_link': selected_movie.cover_link,
             'duration': selected_movie.duration,
+            'movie_selected_at': target_night.movie_selected_at,
+            'night_date': target_night.night_date,
         }
 
         return HttpResponse(json.dumps(selected_movie_response, cls=DjangoJSONEncoder), content_type='application/json')

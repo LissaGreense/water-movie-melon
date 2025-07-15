@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from "react";
 import "./movieNightCounter.css";
 import {
   checkForNights,
-  getRandomMovie,
+  getSelectedMovie,
 } from "../connections/internal/movieNight.ts";
 import { Movie } from "../types/internal/movie.ts";
 
@@ -22,6 +22,15 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({
 
   const isCountDownFinished = (countDown as number) <= 0;
 
+  const shouldShowSelectedMovie = (): boolean => {
+    if (!todayMovie) return false;
+    if (countDown > 0) return false;
+    
+    // Show for at least 1 hour after movie night time
+    const hourAfterNight = nextNightDate.getTime() + (60 * 60 * 1000);
+    return new Date().getTime() <= hourAfterNight;
+  };
+
   useEffect(() => {
     try {
       checkForNights().then((data) => {
@@ -38,16 +47,27 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({
   }, [nextNightDate]);
 
   useEffect(() => {
-    try {
-      getRandomMovie().then((m) => {
-        if (m) {
-          setTodayMovie(m);
-        }
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  }, [isCountDownFinished]);
+    // Fetch selected movie periodically (every 30 seconds) instead of only when countdown finishes
+    const fetchSelectedMovie = () => {
+      try {
+        getSelectedMovie().then((m) => {
+          if (m) {
+            setTodayMovie(m);
+          } else {
+            setTodayMovie(undefined);
+          }
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    // Fetch immediately and then every 30 seconds
+    fetchSelectedMovie();
+    const interval = setInterval(fetchSelectedMovie, 30000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -82,7 +102,7 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({
         <h2>Nie ma planów :|</h2>
       </div>
     );
-  } else if ((countDown as number) <= 0) {
+  } else if (shouldShowSelectedMovie()) {
     return (
       <>
         <div className={"counterContainer"}>

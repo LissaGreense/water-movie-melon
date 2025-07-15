@@ -81,7 +81,7 @@ export async function getAttendees(): Promise<Attendees[]> {
   return response.data as Attendees[];
 }
 
-export async function getRandomMovie(): Promise<Movie | null> {
+export async function getSelectedMovie(): Promise<Movie | null> {
   const response = await axios.get(
     backend_url + rand_movie_endpoint,
     getAuthHeadersConfig(false),
