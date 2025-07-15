@@ -25,9 +25,9 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({
   const shouldShowSelectedMovie = (): boolean => {
     if (!todayMovie) return false;
     if (countDown > 0) return false;
-    
+
     // Show for at least 1 hour after movie night time
-    const hourAfterNight = nextNightDate.getTime() + (60 * 60 * 1000);
+    const hourAfterNight = nextNightDate.getTime() + 60 * 60 * 1000;
     return new Date().getTime() <= hourAfterNight;
   };
 
