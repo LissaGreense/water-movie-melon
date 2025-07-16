@@ -7,7 +7,7 @@ import {
 import { Movie } from "../types/internal/movie.ts";
 
 interface MovieNightCounterProps {
-  nextNightDate: Date;
+  nextNightDate: Date | null;
 }
 
 export const MovieNightCounter: FC<MovieNightCounterProps> = ({
@@ -24,6 +24,9 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({
 
   const shouldShowSelectedMovie = (): boolean => {
     if (!todayMovie) return false;
+    if (!nextNightDate) return false;
+
+    // Show when countdown is finished (<= 0) and within 1 hour after movie night time
     if (countDown > 0) return false;
 
     // Show for at least 1 hour after movie night time
@@ -42,12 +45,18 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({
   }, []);
 
   useEffect(() => {
-    setNextNightTime(nextNightDate.getTime());
-    setCountDown(nextNightDate.getTime() - new Date().getTime());
+    if (nextNightDate) {
+      const nightTime = nextNightDate.getTime();
+      const initialCountDown = nightTime - new Date().getTime();
+      setNextNightTime(nightTime);
+      setCountDown(initialCountDown);
+    } else {
+      setNextNightTime(undefined);
+      setCountDown(0);
+    }
   }, [nextNightDate]);
 
   useEffect(() => {
-    // Fetch selected movie periodically (every 30 seconds) instead of only when countdown finishes
     const fetchSelectedMovie = () => {
       try {
         getSelectedMovie().then((m) => {
@@ -58,26 +67,29 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({
           }
         });
       } catch (error) {
-        console.error(error);
+        console.error("fetchSelectedMovie error:", error);
       }
     };
 
-    // Fetch immediately and then every 30 seconds
-    fetchSelectedMovie();
-    const interval = setInterval(fetchSelectedMovie, 30000);
-
-    return () => clearInterval(interval);
-  }, []);
+    // Only fetch when countdown reaches 0
+    if (countDown <= 0) {
+      fetchSelectedMovie();
+    }
+  }, [countDown]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCountDown((nextNightTime as number) - new Date().getTime());
+      if (nextNightTime) {
+        const newCountDown = nextNightTime - new Date().getTime();
+        setCountDown(newCountDown);
+      }
     }, 1000);
 
     return () => clearInterval(interval);
   }, [nextNightTime]);
 
   const getDaysValue = () => {
+    if (!nextNightTime || countDown <= 0) return 0;
     return Math.floor(
       ((countDown as number) % millisecondsInYear) / millisecondsInDay,
     );
@@ -85,14 +97,17 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({
 
   // TODO: @LissaGreense this part "(1000 * 60 * 60 * 24)) / (1000 * 60 * 60)" is not clear. Move it to func/var and name properly. As a developer we shouldn't write complex code to check others intelligence ;P
   const getHourValue = () => {
+    if (!nextNightTime || countDown <= 0) return 0;
     return Math.floor(
       ((countDown as number) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
     );
   };
   const getMinutesValue = () => {
+    if (!nextNightTime || countDown <= 0) return 0;
     return Math.floor(((countDown as number) % (1000 * 60 * 60)) / (1000 * 60));
   };
   const getSecondsValue = () => {
+    if (!nextNightTime || countDown <= 0) return 0;
     return Math.floor(((countDown as number) % (1000 * 60)) / 1000);
   };
 

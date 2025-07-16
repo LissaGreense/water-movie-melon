@@ -6,7 +6,7 @@ import { BucketWithCovers } from "../components/bucketWithCovers.tsx";
 import "./homePage.css";
 
 export const HomePage = () => {
-  const [nextMovieDate, setNextMovieDate] = useState<Date>();
+  const [nextMovieDate, setNextMovieDate] = useState<Date | null>(null);
 
   useEffect(() => {
     try {
@@ -24,12 +24,8 @@ export const HomePage = () => {
         <TopMovies />
       </div>
       <div id={"bucketSpace"} className={"bucketSpace"}>
-        {nextMovieDate && (
-          <>
-            <MovieNightCounter nextNightDate={nextMovieDate} />
-            <BucketWithCovers />
-          </>
-        )}
+        <MovieNightCounter nextNightDate={nextMovieDate} />
+        <BucketWithCovers />
       </div>
     </>
   );

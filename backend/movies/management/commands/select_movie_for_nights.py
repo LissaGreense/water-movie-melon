@@ -22,7 +22,7 @@ class Command(BaseCommand):
         # Only select for nights that don't already have a selected movie
         upcoming_nights = MovieNight.objects.filter(
             selected_movie__isnull=True,
-            night_date__lte=now + datetime.timedelta(seconds=10)
+            night_date__lte=now + datetime.timedelta(seconds=59)
         ).order_by('night_date')
         
         if not upcoming_nights.exists():

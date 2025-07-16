@@ -521,23 +521,58 @@ class SelectedMovieView(APIView):
 class MovieDate(APIView):
     def get(self, request, format=None):
         now = timezone.now()
-        upcoming_nights = MovieNight.objects.filter(selected_movie__isnull=True, night_date__gt=now).order_by(
-            'night_date')
+        
+        # First, try to find the next upcoming movie night without a selected movie
+        upcoming_nights_without_movies = MovieNight.objects.filter(
+            night_date__gt=now,
+            selected_movie__isnull=True
+        ).order_by('night_date')
 
-        if len(upcoming_nights) == 0:
-            return HttpResponse(json.dumps([], cls=DjangoJSONEncoder), content_type='application/json')
-
-        next_night = upcoming_nights[0]
-        next_night_date = next_night.night_date
-
-        return HttpResponse(json.dumps(next_night_date, cls=DjangoJSONEncoder), content_type='application/json')
+        if upcoming_nights_without_movies.exists():
+            # Return the next upcoming night without a selected movie
+            next_night = upcoming_nights_without_movies[0]
+            next_night_date = next_night.night_date
+            return HttpResponse(json.dumps(next_night_date, cls=DjangoJSONEncoder), content_type='application/json')
+        
+        # If no upcoming nights without movies, check for recent nights with selected movies
+        # (same logic as SelectedMovieView - show for 1 hour after night time)
+        one_hour_ago = now - datetime.timedelta(hours=1)
+        nights_with_movies = MovieNight.objects.filter(
+            selected_movie__isnull=False,
+            night_date__gte=one_hour_ago
+        ).order_by('night_date')
+        
+        if nights_with_movies.exists():
+            # Return the most recent night with a selected movie
+            target_night = nights_with_movies.last()
+            return HttpResponse(json.dumps(target_night.night_date, cls=DjangoJSONEncoder), content_type='application/json')
+        
+        # No upcoming nights and no recent nights with selected movies
+        return HttpResponse(json.dumps([], cls=DjangoJSONEncoder), content_type='application/json')
 
 
 class UpcomingNights(APIView):
     def get(self, request, format=None):
-        upcoming_night = MovieNight.objects.filter(selected_movie__isnull=True).order_by('night_date')
-
-        if len(upcoming_night) != 0:
-            return HttpResponse(json.dumps(True, cls=DjangoJSONEncoder), content_type='application/json')
-
-        return HttpResponse(json.dumps(False, cls=DjangoJSONEncoder), content_type='application/json')
+        now = timezone.now()
+        
+        # Check for upcoming nights without selected movies
+        upcoming_nights_without_movies = MovieNight.objects.filter(
+            selected_movie__isnull=True,
+            night_date__gt=now
+        )
+        
+        # Check for nights with selected movies that are still in display period
+        # (same logic as SelectedMovieView - show for 1 hour after night time)
+        one_hour_ago = now - datetime.timedelta(hours=1)
+        nights_with_movies_in_display = MovieNight.objects.filter(
+            selected_movie__isnull=False,
+            night_date__gte=one_hour_ago
+        )
+        
+        # Return true if there are either upcoming nights or movies in display period
+        has_content = (
+            upcoming_nights_without_movies.exists() or 
+            nights_with_movies_in_display.exists()
+        )
+        
+        return HttpResponse(json.dumps(has_content, cls=DjangoJSONEncoder), content_type='application/json')

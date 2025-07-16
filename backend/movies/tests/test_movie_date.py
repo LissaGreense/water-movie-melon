@@ -42,12 +42,8 @@ class MovieDateAPITest(APITestCase):
         future_date = timezone.now() + datetime.timedelta(days=10)
         MovieNight.objects.create(host='testuser', night_date=future_date, location='here', selected_movie=self.movie)
 
-        # Create another future night even further in the future without a movie
-        # to ensure the view still returns nothing if the *next* one has a movie.
-        # The view logic seems to only find the *very next* night.
-        # Let's test based on the current implementation.
-        # If the closest upcoming night has a movie, it should return [].
-        
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json(), []) 
+        
+        expected_json = json.dumps(future_date, cls=DjangoJSONEncoder)
+        self.assertEqual(response.content.decode(), expected_json) 
