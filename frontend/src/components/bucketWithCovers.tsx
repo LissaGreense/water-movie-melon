@@ -98,7 +98,7 @@ export function BucketWithCovers() {
     return () => {
       clearRenderer();
     };
-  }, []); // Empty dependency array to run only once on mount
+  });
 
   function rotateGravityVector() {
     engine.current.gravity.x = Math.cos(
