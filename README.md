@@ -21,6 +21,7 @@ showtime! Once the night ends, everyone can rate the film!
   nights.
 - **Account Statistics**: Keep track of your movie-night stats! Check out how many movie nights you've hosted, how many
   you've watched and many more!
+- **Automated Movie Selection**: The system automatically selects movies for upcoming movie nights using a built-in cron job that runs every minute.
 
 ## Project structure
 
@@ -117,6 +118,21 @@ docker compose up
 ```
 
 App will start, you can connect locally to the frontend at http://localhost:4173, and to the backend at http://localhost:8000.
+
+#### Automated Movie Selection
+
+The application includes an automated movie selection system that runs as a cron job within the Docker container. This feature:
+
+- **Automatically selects movies** for upcoming movie nights that are within 1 minute of their start time
+- **Runs every minute** to ensure timely movie selection
+- **Prevents duplicate selections** by checking if a movie has already been selected for a night
+- **Logs all activities** to `/tmp/movie_selection.log` within the container
+
+The cron job is automatically started when the Docker container launches, so no additional setup is required. You can view the selection logs by accessing the container:
+
+```bash
+docker compose exec backend tail -f /tmp/movie_selection.log
+```
 
 
 ### Local Development
