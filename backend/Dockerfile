@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1
-
 FROM python:3.12-bookworm
 
 RUN useradd --create-home --shell /bin/bash wsgi
@@ -17,4 +15,5 @@ USER wsgi
 
 COPY --chown=wsgi:wsgi . .
 
-CMD ["gunicorn", "-b", "0.0.0.0:8000", "watermoviemelon.wsgi"]
+# Start gunicorn
+CMD exec gunicorn -b 0.0.0.0:8000 watermoviemelon.wsgi

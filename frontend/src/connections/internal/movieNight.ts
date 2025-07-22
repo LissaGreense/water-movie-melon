@@ -81,7 +81,7 @@ export async function getAttendees(): Promise<Attendees[]> {
   return response.data as Attendees[];
 }
 
-export async function getRandomMovie(): Promise<Movie | null> {
+export async function getSelectedMovie(): Promise<Movie | null> {
   const response = await axios.get(
     backend_url + rand_movie_endpoint,
     getAuthHeadersConfig(false),
@@ -89,12 +89,20 @@ export async function getRandomMovie(): Promise<Movie | null> {
   return response.data;
 }
 
-export async function getMovieDate(): Promise<Date> {
+export async function getMovieDate(): Promise<Date | null> {
   const response = await axios.get(
     backend_url + movie_date_endpoint,
     getAuthHeadersConfig(false),
   );
-  return dayjs(response.data).toDate();
+
+  // Handle case where no upcoming nights exist (backend returns empty array)
+  if (Array.isArray(response.data) && response.data.length === 0) {
+    return null;
+  }
+
+  // Parse the date and validate it
+  const date = dayjs(response.data);
+  return date.isValid() ? date.toDate() : null;
 }
 
 export async function checkForNights(): Promise<boolean> {

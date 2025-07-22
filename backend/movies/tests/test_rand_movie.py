@@ -27,31 +27,37 @@ class RandMovieAPITest(APITestCase):
         )
 
     def test_successful_random_movie_selection(self):
+        # Create a night with a pre-selected movie
         night_date = timezone.now() + datetime.timedelta(seconds=5)
-        upcoming_night = MovieNight.objects.create(host='testuser', night_date=night_date, location='upcoming')
+        upcoming_night = MovieNight.objects.create(
+            host='testuser', 
+            night_date=night_date, 
+            location='upcoming',
+            selected_movie=self.movie1,
+            movie_selected_at=timezone.now()
+        )
 
         with patch('django.utils.timezone.now', return_value=night_date):
             response = self.client.get(self.url)
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn(response.json()['title'], [self.movie1.title, self.movie2.title])
-
-        upcoming_night.refresh_from_db()
-        self.assertIsNotNone(upcoming_night.selected_movie)
+        self.assertEqual(response.json()['title'], self.movie1.title)
 
     def test_no_upcoming_nights(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json(), [])
+        self.assertIsNone(response.json())
 
     def test_too_early_to_select_movie(self):
+        # Create a future night without a selected movie
         night_date = timezone.now() + datetime.timedelta(days=1)
         MovieNight.objects.create(host='testuser', night_date=night_date, location='far_future')
         
         response = self.client.get(self.url)
         
-        self.assertEqual(response.status_code, status.HTTP_425_TOO_EARLY)
-        self.assertEqual(response.json(), {'error': 'Too soon, try again later'})
+        # The new view returns empty array when no movie is selected
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNone(response.json())
 
     def test_no_unwatched_movies_available(self):
         # Mark all movies as watched
@@ -75,4 +81,4 @@ class RandMovieAPITest(APITestCase):
             response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json(), []) 
+        self.assertIsNone(response.json()) 

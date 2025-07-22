@@ -21,3 +21,17 @@ lint:
 
 test:
 	cd backend && venv/bin/python manage.py test
+
+# Cron Service Management
+cron-logs:
+	docker compose logs -f cron
+
+cron-restart:
+	docker compose restart cron
+
+cron-shell:
+	docker compose exec cron bash
+
+# Manual cron job execution (for testing)
+run-cron-once:
+	docker compose exec cron python manage.py select_movie_for_nights
