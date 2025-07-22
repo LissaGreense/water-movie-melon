@@ -9,7 +9,8 @@ echo "Setting up movie selection cron job..."
 PROJECT_ROOT=$(pwd)
 
 # Create the cron job command
-CRON_COMMAND="* * * * * cd $PROJECT_ROOT && docker compose exec -T backend python manage.py select_movie_for_nights >> /tmp/movie_selection.log 2>&1"
+# Note: We need to wait for the database to be ready
+CRON_COMMAND="* * * * * cd $PROJECT_ROOT && python manage.py select_movie_for_nights >> /tmp/movie_selection.log 2>&1"
 
 # Check if cron job already exists
 if crontab -l 2>/dev/null | grep -q "select_movie_for_nights"; then
@@ -32,5 +33,11 @@ echo "🔍 To view logs: tail -f /tmp/movie_selection.log"
 echo "🗑️  To remove cron job: crontab -e (then delete the line with select_movie_for_nights)"
 
 echo ""
-echo "⚠️  Make sure Docker Compose services are running before the cron job executes!"
-echo "   Run: docker compose up -d" 
+echo "⚠️  Waiting for database to be ready..."
+# Wait for database to be ready
+while ! python manage.py check --database default 2>/dev/null; do
+    echo "Database not ready yet, waiting..."
+    sleep 5
+done
+
+echo "✅ Database is ready! Cron jobs will start executing." 

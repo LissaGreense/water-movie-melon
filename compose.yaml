@@ -35,6 +35,28 @@ services:
     volumes:
       - media_data:/home/wsgi/app/avatars
 
+  cron:
+    container_name: cron
+    build:
+        context: ./backend
+        dockerfile: ./cron/Dockerfile
+    image: wmm-cron
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+      backend:
+        condition: service_started
+    links:
+      - db
+      - backend
+    networks:
+      - wmm-network
+    env_file:
+      - ./backend/.env
+    volumes:
+      - cron_logs:/tmp
+
   db:
     image: postgres
     environment:
@@ -60,4 +82,6 @@ volumes:
   db_data:
     driver: local
   media_data:
+    driver: local
+  cron_logs:
     driver: local

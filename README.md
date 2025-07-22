@@ -121,18 +121,29 @@ App will start, you can connect locally to the frontend at http://localhost:4173
 
 #### Automated Movie Selection
 
-The application includes an automated movie selection system that runs as a cron job within the Docker container. This feature:
+The application includes an automated movie selection system that runs in a separate cron container. This feature:
 
 - **Automatically selects movies** for upcoming movie nights that are within 1 minute of their start time
 - **Runs every minute** to ensure timely movie selection
 - **Prevents duplicate selections** by checking if a movie has already been selected for a night
-- **Logs all activities** to `/tmp/movie_selection.log` within the container
+- **Logs all activities** to `/tmp/movie_selection.log` within the cron container
 
-The cron job is automatically started when the Docker container launches, so no additional setup is required. You can view the selection logs by accessing the container:
+The cron service is automatically started when you run `docker compose up -d`. You can view the selection logs by accessing the cron container:
 
 ```bash
-docker compose exec backend tail -f /tmp/movie_selection.log
+docker compose logs -f cron
 ```
+
+##### Cron Service Management
+
+The cron service runs in its own container for better separation of concerns:
+
+- **View cron logs**: `docker compose logs -f cron`
+- **Restart cron service**: `docker compose restart cron`
+- **Access cron container**: `docker compose exec cron bash`
+- **Run cron job manually** (for testing): `docker compose exec cron python manage.py select_movie_for_nights`
+
+This architecture provides better resource management and easier debugging by isolating scheduled tasks from the web server.
 
 
 ### Local Development

@@ -79,7 +79,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
-    'knox'
+    'knox',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -199,3 +200,13 @@ SESSION_SAVE_EVERY_REQUEST = True
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'avatars')
+
+# Django Crontab Configuration
+CRONJOBS = [
+    # Run movie selection every minute
+    ('* * * * *', 'movies.cron.select_movies_for_nights')
+]
+
+# Crontab settings
+CRONTAB_LOCK_JOBS = True
+CRONTAB_COMMAND_PREFIX = 'DJANGO_SETTINGS_MODULE=watermoviemelon.settings'

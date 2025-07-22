@@ -19,6 +19,9 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({
   const [areThereNights, setAreThereNights] = useState<boolean>(false);
   const millisecondsInYear = 1000 * 60 * 60 * 24 * 365;
   const millisecondsInDay = 1000 * 60 * 60 * 24;
+  const millisecondsInHour = 1000 * 60 * 60;
+  const millisecondsInMinute = 1000 * 60;
+  const millisecondsInSecond = 1000;
 
   const isCountDownFinished = (countDown as number) <= 0;
 
@@ -30,7 +33,7 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({
     if (countDown > 0) return false;
 
     // Show for at least 1 hour after movie night time
-    const hourAfterNight = nextNightDate.getTime() + 60 * 60 * 1000;
+    const hourAfterNight = nextNightDate.getTime() + millisecondsInHour;
     return new Date().getTime() <= hourAfterNight;
   };
 
@@ -88,28 +91,23 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({
     return () => clearInterval(interval);
   }, [nextNightTime]);
 
-  const getDaysValue = () => {
-    if (!nextNightTime || countDown <= 0) return 0;
-    return Math.floor(
-      ((countDown as number) % millisecondsInYear) / millisecondsInDay,
-    );
+  const getCountdownValues = () => {
+    if (!nextNightTime || countDown <= 0) {
+      return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    }
+    
+    return {
+      days: Math.floor(((countDown as number) % millisecondsInYear) / millisecondsInDay),
+      hours: Math.floor(((countDown as number) % millisecondsInDay) / millisecondsInHour),
+      minutes: Math.floor(((countDown as number) % millisecondsInHour) / millisecondsInMinute),
+      seconds: Math.floor(((countDown as number) % millisecondsInMinute) / millisecondsInSecond),
+    };
   };
 
-  // TODO: @LissaGreense this part "(1000 * 60 * 60 * 24)) / (1000 * 60 * 60)" is not clear. Move it to func/var and name properly. As a developer we shouldn't write complex code to check others intelligence ;P
-  const getHourValue = () => {
-    if (!nextNightTime || countDown <= 0) return 0;
-    return Math.floor(
-      ((countDown as number) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-    );
-  };
-  const getMinutesValue = () => {
-    if (!nextNightTime || countDown <= 0) return 0;
-    return Math.floor(((countDown as number) % (1000 * 60 * 60)) / (1000 * 60));
-  };
-  const getSecondsValue = () => {
-    if (!nextNightTime || countDown <= 0) return 0;
-    return Math.floor(((countDown as number) % (1000 * 60)) / 1000);
-  };
+  const getDaysValue = () => getCountdownValues().days;
+  const getHourValue = () => getCountdownValues().hours;
+  const getMinutesValue = () => getCountdownValues().minutes;
+  const getSecondsValue = () => getCountdownValues().seconds;
 
   if (!areThereNights) {
     return (
