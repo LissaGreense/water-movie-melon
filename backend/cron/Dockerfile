@@ -13,6 +13,7 @@ WORKDIR /home/cronuser/app
 
 COPY requirements.txt ./
 
+# Install packages globally so they're available to cronuser
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy cron setup script

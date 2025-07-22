@@ -10,7 +10,7 @@ PROJECT_ROOT=$(pwd)
 
 # Create the cron job command
 # Note: We need to wait for the database to be ready
-CRON_COMMAND="* * * * * cd $PROJECT_ROOT && python manage.py select_movie_for_nights >> /tmp/movie_selection.log 2>&1"
+CRON_COMMAND="* * * * * cd $PROJECT_ROOT && /usr/local/bin/python3 manage.py select_movie_for_nights >> /tmp/movie_selection.log 2>&1"
 
 # Check if cron job already exists
 if crontab -l 2>/dev/null | grep -q "select_movie_for_nights"; then
@@ -35,7 +35,7 @@ echo "🗑️  To remove cron job: crontab -e (then delete the line with select_
 echo ""
 echo "⚠️  Waiting for database to be ready..."
 # Wait for database to be ready
-while ! python manage.py check --database default 2>/dev/null; do
+while ! /usr/local/bin/python3 manage.py check --database default 2>/dev/null; do
     echo "Database not ready yet, waiting..."
     sleep 5
 done
