@@ -95,12 +95,20 @@ export const MovieNightCounter: FC<MovieNightCounterProps> = ({
     if (!nextNightTime || countDown <= 0) {
       return { days: 0, hours: 0, minutes: 0, seconds: 0 };
     }
-    
+
     return {
-      days: Math.floor(((countDown as number) % millisecondsInYear) / millisecondsInDay),
-      hours: Math.floor(((countDown as number) % millisecondsInDay) / millisecondsInHour),
-      minutes: Math.floor(((countDown as number) % millisecondsInHour) / millisecondsInMinute),
-      seconds: Math.floor(((countDown as number) % millisecondsInMinute) / millisecondsInSecond),
+      days: Math.floor(
+        ((countDown as number) % millisecondsInYear) / millisecondsInDay,
+      ),
+      hours: Math.floor(
+        ((countDown as number) % millisecondsInDay) / millisecondsInHour,
+      ),
+      minutes: Math.floor(
+        ((countDown as number) % millisecondsInHour) / millisecondsInMinute,
+      ),
+      seconds: Math.floor(
+        ((countDown as number) % millisecondsInMinute) / millisecondsInSecond,
+      ),
     };
   };
 
