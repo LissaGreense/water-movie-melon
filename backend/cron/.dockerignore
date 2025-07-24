@@ -1,0 +1,50 @@
+# Exclude unnecessary files from cron container context
+# Keep only essential files for Django management commands
+
+# Exclude all test files
+**/tests/
+**/test_*.py
+
+# Exclude web-specific files
+**/views.py
+**/urls.py
+**/serializers.py
+**/admin.py
+
+# Exclude static files and media
+avatars/
+static/
+media/
+
+# Exclude migrations (not needed for cron)
+**/migrations/
+
+# Exclude development files
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+.env
+
+# Exclude IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Exclude logs
+*.log
+
+# Exclude documentation
+README.md
+*.md
+
+# Exclude git
+.git/
+.gitignore
+
+# Exclude other Docker files (keep the cron Dockerfile)
+../Dockerfile 

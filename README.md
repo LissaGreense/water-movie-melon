@@ -28,19 +28,32 @@ showtime! Once the night ends, everyone can rate the film!
 ```
 .
 ├── backend                # Backend service (e.g., API, database models)
-│   ├── ...            
-│   ├── Dockerfile         # Docker configuration for the backend
+│   ├── cron               # Cron service for automated movie selection
+│   │   ├── Dockerfile     # Docker configuration for the cron container
+│   │   ├── .dockerignore  # Excludes unnecessary files from cron build context
+│   │   └── cron-setup.sh  # Script to set up cron jobs
 │   ├── movies             # Application directory for managing movie-related features
+│   │   ├── management/    # Django management commands
+│   │   │   └── commands/  # Custom management commands
+│   │   ├── models.py      # Database models
+│   │   ├── views.py       # API views
+│   │   └── tests/         # Test files
+│   ├── watermoviemelon    # Project configuration and main app settings
+│   │   ├── settings.py    # Django settings
+│   │   ├── urls.py        # URL configuration
+│   │   └── utils/         # Utility functions
+│   ├── Dockerfile         # Docker configuration for the backend
 │   ├── requirements.txt   # Python dependencies
-│   └── watermoviemelon    # Project configuration and main app settings for backend
+│   └── manage.py          # Django management script
 │
 ├── compose.yaml           # Docker Compose configuration for orchestrating services
+├── Makefile               # Build and deployment commands
 │
 ├── frontend               # Frontend service (React application)
-│   ├── ...               
-│   ├── Dockerfile         # Docker configuration for the frontend   
+│   ├── src                # Source code, organized by components, pages, utilities, etc.
 │   ├── public             # Public assets, like icons and images
-│   └── src                # Source code, organized by components, pages, utilities, etc.
+│   ├── Dockerfile         # Docker configuration for the frontend
+│   └── package.json       # Node.js dependencies
 ├── ...                
 └── README.md              # Project documentation
 

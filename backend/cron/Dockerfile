@@ -16,13 +16,19 @@ COPY requirements.txt ./
 # Install packages globally so they're available to cronuser
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy only essential Django files
+COPY manage.py ./
+COPY watermoviemelon/ ./watermoviemelon/
+COPY movies/models.py ./movies/
+COPY movies/management/ ./movies/management/
+COPY movies/__init__.py ./movies/
+COPY movies/apps.py ./movies/
+
 # Copy cron setup script
 COPY --chown=root:root cron/cron-setup.sh /cron-setup.sh
 RUN chmod +x /cron-setup.sh
 
 USER cronuser
-
-COPY --chown=cronuser:cronuser . .
 
 # Switch back to root for running cron service
 USER root
