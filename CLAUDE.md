@@ -28,6 +28,7 @@ cd frontend
 npm install
 npm run dev                       # http://localhost:5173
 npm run build                     # tsc + vite build
+npm test                          # run vitest suite
 npm run eslint:fix                # auto-fix lint
 npm run prettier:format           # auto-format src/
 ```
