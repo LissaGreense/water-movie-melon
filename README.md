@@ -31,6 +31,7 @@ showtime! Once the night ends, everyone can rate the film!
 │   ├── ...            
 │   ├── Dockerfile         # Docker configuration for the backend
 │   ├── movies             # Application directory for managing movie-related features
+│   │   └── tests/         # Django test cases (one file per view/feature)
 │   ├── requirements.txt   # Python dependencies
 │   └── watermoviemelon    # Project configuration and main app settings for backend
 │
@@ -274,25 +275,23 @@ docker run -d --name postgres -e POSTGRES_PASSWORD=mypassword  -p 5432:5432 post
 
 ### Backend
 
-The backend uses Django's built-in testing framework along with pytest (if configured) for more flexibility. Here's how
-to run the backend tests:
-
-1. Navigate to the backend directory:
+Tests live in `backend/movies/tests/`, one file per view or feature. The test runner automatically uses an in-memory SQLite database, so no running Postgres instance is needed.
 
 ```bash
-cd watermoviemelon/backend
+cd backend
+source venv/bin/activate
+python manage.py test                        # run all tests
+python manage.py test movies.tests.test_night  # run a single module
 ```
 
-2. Activate the virtual environment (if using a manual setup):
+### Frontend
+
+Tests live in `frontend/src/test/`, mirroring the source structure. Powered by [Vitest](https://vitest.dev/) and React Testing Library.
 
 ```bash
-source venv/bin/activate # On Windows use: venv\Scripts\activate
-```
-
-3. Run all test cases by executing:
-
-```bash
-python manage.py test
+cd frontend
+npm test            # run all tests once
+npm run test:watch  # run in watch mode during development
 ```
 
 ## Authors
