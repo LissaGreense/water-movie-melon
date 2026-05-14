@@ -10,7 +10,7 @@ import {
   getMovieDate,
   checkForNights,
 } from "../../../connections/internal/movieNight";
-import { MovieNight } from "../../../../types/internal/movieNight";
+import { MovieNight } from "../../../types/internal/movieNight";
 import { Movie } from "../../../types/internal/movie";
 
 vi.mock("axios");
