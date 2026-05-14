@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import axios from "axios";
-import { login, logout, register, getRegisterQuestion } from "./authentication";
+import { login, logout, register, getRegisterQuestion } from "../../../connections/internal/authentication";
 
 vi.mock("axios");
-vi.mock("../../utils/accessToken", () => ({
+vi.mock("../../../utils/accessToken", () => ({
   getUsername: vi.fn(() => "testuser"),
   getCSRToken: vi.fn(() => "csrf-token"),
   getAuthHeadersConfig: vi.fn((includeCSRF: boolean) => ({

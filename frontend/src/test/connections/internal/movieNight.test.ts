@@ -9,12 +9,12 @@ import {
   getSelectedMovie,
   getMovieDate,
   checkForNights,
-} from "./movieNight";
-import { MovieNight } from "../../types/internal/movieNight";
-import { Movie } from "../../types/internal/movie";
+} from "../../../connections/internal/movieNight";
+import { MovieNight } from "../../../../types/internal/movieNight";
+import { Movie } from "../../../types/internal/movie";
 
 vi.mock("axios");
-vi.mock("../../utils/accessToken", () => ({
+vi.mock("../../../utils/accessToken", () => ({
   getAuthHeadersConfig: vi.fn(() => ({
     headers: { User: "testuser" },
     withCredentials: true,

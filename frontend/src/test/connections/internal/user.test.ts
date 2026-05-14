@@ -4,8 +4,8 @@ import {
   getStatistics,
   uploadAvatar,
   postNewPassword,
-} from "./user";
-import { Statistics } from "../../types/internal/user";
+} from "../../../connections/internal/user";
+import { Statistics } from "../../../types/internal/user";
 
 // Both the cached axios instance and the cache storage are created at module
 // load time, so we hoist the mocks before any imports run.
@@ -27,7 +27,7 @@ vi.mock("axios-cache-interceptor", () => ({
   })),
 }));
 
-vi.mock("../../utils/accessToken", () => ({
+vi.mock("../../../utils/accessToken", () => ({
   getAuthHeadersConfig: vi.fn((includeCSRF: boolean) => ({
     headers: {
       User: "testuser",

@@ -5,7 +5,7 @@ import {
   clearUser,
   getCSRToken,
   getAuthHeadersConfig,
-} from "./accessToken";
+} from "../../utils/accessToken";
 
 // vi.hoisted ensures mockGet is defined before vi.mock hoisting runs,
 // so the Cookies instance created at module load in accessToken.ts uses it.

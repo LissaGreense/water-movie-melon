@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import axios from "axios";
-import { postRating, getRating, getAverageRatings } from "./movieRate";
-import { Movie } from "../../types/internal/movie";
+import { postRating, getRating, getAverageRatings } from "../../../connections/internal/movieRate";
+import { Movie } from "../../../types/internal/movie";
 
 vi.mock("axios");
-vi.mock("../../utils/accessToken", () => ({
+vi.mock("../../../utils/accessToken", () => ({
   getAuthHeadersConfig: vi.fn(() => ({
     headers: { User: "testuser" },
     withCredentials: true,

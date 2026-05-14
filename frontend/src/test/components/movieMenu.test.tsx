@@ -1,14 +1,14 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import { MemoryRouter } from "react-router-dom";
-import MovieMenu from "./movieMenu";
-import * as accessToken from "../utils/accessToken";
-import * as userConnections from "../connections/internal/user";
-import * as authConnections from "../connections/internal/authentication";
+import MovieMenu from "../../components/movieMenu";
+import * as accessToken from "../../utils/accessToken";
+import * as userConnections from "../../connections/internal/user";
+import * as authConnections from "../../connections/internal/authentication";
 
-vi.mock("../connections/internal/user");
-vi.mock("../connections/internal/authentication");
-vi.mock("./movieMenu.css", () => ({}));
+vi.mock("../../connections/internal/user");
+vi.mock("../../connections/internal/authentication");
+vi.mock("../../components/movieMenu.css", () => ({}));
 
 describe("MovieMenu", () => {
   beforeEach(() => {

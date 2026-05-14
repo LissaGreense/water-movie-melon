@@ -1,13 +1,13 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
-import TopMovies from "./movieTopFilms";
-import * as movieRateConnections from "../connections/internal/movieRate";
-import { MovieRateAverage } from "../types/internal/movieRate";
-import { Movie } from "../types/internal/movie";
+import TopMovies from "../../components/movieTopFilms";
+import * as movieRateConnections from "../../connections/internal/movieRate";
+import { MovieRateAverage } from "../../../types/internal/movieRate";
+import { Movie } from "../../types/internal/movie";
 
-vi.mock("../connections/internal/movieRate");
-vi.mock("./movieTopFilms.css", () => ({}));
+vi.mock("../../connections/internal/movieRate");
+vi.mock("../../components/movieTopFilms.css", () => ({}));
 
 // VirtualScroller relies on real scroll dimensions unavailable in jsdom.
 // Replace it with a simple passthrough that renders all items directly.

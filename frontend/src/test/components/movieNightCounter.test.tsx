@@ -1,10 +1,10 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
-import { MovieNightCounter } from "./movieNightCounter";
-import * as movieNightConnections from "../connections/internal/movieNight";
+import { MovieNightCounter } from "../../components/movieNightCounter";
+import * as movieNightConnections from "../../connections/internal/movieNight";
 
-vi.mock("../connections/internal/movieNight");
-vi.mock("./movieNightCounter.css", () => ({}));
+vi.mock("../../connections/internal/movieNight");
+vi.mock("../../components/movieNightCounter.css", () => ({}));
 
 const mockMovie = {
   title: "The Matrix",
