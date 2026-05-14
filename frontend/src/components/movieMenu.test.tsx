@@ -47,7 +47,9 @@ describe("MovieMenu", () => {
   describe("when the user is logged in", () => {
     beforeEach(() => {
       vi.spyOn(accessToken, "getUsername").mockReturnValue("alice");
-      vi.spyOn(userConnections, "getAvatar").mockResolvedValue({ avatar_url: "" });
+      vi.spyOn(userConnections, "getAvatar").mockResolvedValue({
+        avatar_url: "",
+      });
       vi.spyOn(authConnections, "logout").mockResolvedValue({} as never);
     });
 

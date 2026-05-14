@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
+import { vi, describe, it, expect, beforeEach } from "vitest";
 import { MovieNightCounter } from "./movieNightCounter";
 import * as movieNightConnections from "../connections/internal/movieNight";
 
@@ -47,7 +47,9 @@ describe("MovieNightCounter", () => {
 
   it("shows the selected movie title when the countdown has finished and movie is set", async () => {
     vi.spyOn(movieNightConnections, "checkForNights").mockResolvedValue(true);
-    vi.spyOn(movieNightConnections, "getSelectedMovie").mockResolvedValue(mockMovie);
+    vi.spyOn(movieNightConnections, "getSelectedMovie").mockResolvedValue(
+      mockMovie,
+    );
 
     // 30 minutes ago — countdown finished but still within the 1-hour display window
     const recentPastDate = new Date(Date.now() - 1000 * 60 * 30);
@@ -61,7 +63,9 @@ describe("MovieNightCounter", () => {
 
   it("shows the movie cover image when the selected movie is displayed", async () => {
     vi.spyOn(movieNightConnections, "checkForNights").mockResolvedValue(true);
-    vi.spyOn(movieNightConnections, "getSelectedMovie").mockResolvedValue(mockMovie);
+    vi.spyOn(movieNightConnections, "getSelectedMovie").mockResolvedValue(
+      mockMovie,
+    );
 
     const recentPastDate = new Date(Date.now() - 1000 * 60 * 30);
 
@@ -87,7 +91,9 @@ describe("MovieNightCounter", () => {
 
   it("does not show the selected movie more than 1 hour after the night", async () => {
     vi.spyOn(movieNightConnections, "checkForNights").mockResolvedValue(true);
-    vi.spyOn(movieNightConnections, "getSelectedMovie").mockResolvedValue(mockMovie);
+    vi.spyOn(movieNightConnections, "getSelectedMovie").mockResolvedValue(
+      mockMovie,
+    );
 
     // 2 hours ago — outside the 1-hour display window
     const oldDate = new Date(Date.now() - 1000 * 60 * 120);

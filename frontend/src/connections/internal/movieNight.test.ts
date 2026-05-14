@@ -90,7 +90,11 @@ describe("movieNight connections", () => {
 
       expect(mockedAxios.post).toHaveBeenCalledWith(
         expect.stringContaining("/movies/newNight/"),
-        { host: "alice", night_date: "2026-06-01T20:00:00Z", location: "Alice's place" },
+        {
+          host: "alice",
+          night_date: "2026-06-01T20:00:00Z",
+          location: "Alice's place",
+        },
         expect.objectContaining({ withCredentials: true }),
       );
     });
@@ -112,7 +116,9 @@ describe("movieNight connections", () => {
 
   describe("getAttendees", () => {
     it("fetches and returns attendees", async () => {
-      const attendees = [{ night: mockNight, user: "bob", accept_date: "2026-05-01T10:00:00Z" }];
+      const attendees = [
+        { night: mockNight, user: "bob", accept_date: "2026-05-01T10:00:00Z" },
+      ];
       mockedAxios.get = vi.fn().mockResolvedValue({ data: attendees });
 
       const result = await getAttendees();
@@ -148,7 +154,9 @@ describe("movieNight connections", () => {
 
   describe("getMovieDate", () => {
     it("returns a valid Date when backend returns a date string", async () => {
-      mockedAxios.get = vi.fn().mockResolvedValue({ data: "2026-06-01T20:00:00Z" });
+      mockedAxios.get = vi
+        .fn()
+        .mockResolvedValue({ data: "2026-06-01T20:00:00Z" });
 
       const result = await getMovieDate();
 

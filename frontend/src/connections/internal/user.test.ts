@@ -1,5 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { getAvatar, getStatistics, uploadAvatar, postNewPassword } from "./user";
+import {
+  getAvatar,
+  getStatistics,
+  uploadAvatar,
+  postNewPassword,
+} from "./user";
 import { Statistics } from "../../types/internal/user";
 
 // Both the cached axios instance and the cache storage are created at module
@@ -24,12 +29,17 @@ vi.mock("axios-cache-interceptor", () => ({
 
 vi.mock("../../utils/accessToken", () => ({
   getAuthHeadersConfig: vi.fn((includeCSRF: boolean) => ({
-    headers: { User: "testuser", ...(includeCSRF && { "X-CSRFToken": "csrf-token" }) },
+    headers: {
+      User: "testuser",
+      ...(includeCSRF && { "X-CSRFToken": "csrf-token" }),
+    },
     withCredentials: true,
   })),
 }));
 
-const mockAvatar = { avatar_url: "http://localhost:8000/media/avatars/alice.jpg" };
+const mockAvatar = {
+  avatar_url: "http://localhost:8000/media/avatars/alice.jpg",
+};
 
 const mockStats: Statistics = {
   added_movies: 5,
@@ -121,7 +131,10 @@ describe("user connections", () => {
       expect(mockPost).toHaveBeenCalledWith(
         expect.stringContaining("/movies/userPassword/alice/"),
         { old_password: "oldpass", new_password: "newpass" },
-        expect.objectContaining({ withCredentials: true, headers: expect.objectContaining({ "X-CSRFToken": "csrf-token" }) }),
+        expect.objectContaining({
+          withCredentials: true,
+          headers: expect.objectContaining({ "X-CSRFToken": "csrf-token" }),
+        }),
       );
       expect(result).toEqual({ result: "ok" });
     });

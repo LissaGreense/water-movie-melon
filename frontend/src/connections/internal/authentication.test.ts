@@ -7,7 +7,10 @@ vi.mock("../../utils/accessToken", () => ({
   getUsername: vi.fn(() => "testuser"),
   getCSRToken: vi.fn(() => "csrf-token"),
   getAuthHeadersConfig: vi.fn((includeCSRF: boolean) => ({
-    headers: { User: "testuser", ...(includeCSRF && { "X-CSRFToken": "csrf-token" }) },
+    headers: {
+      User: "testuser",
+      ...(includeCSRF && { "X-CSRFToken": "csrf-token" }),
+    },
     withCredentials: true,
   })),
 }));

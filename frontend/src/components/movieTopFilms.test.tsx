@@ -18,7 +18,11 @@ vi.mock("primereact/virtualscroller", () => ({
   }: {
     items: unknown[];
     itemTemplate: (item: unknown) => React.ReactNode;
-  }) => <div>{items?.map((item, i) => <div key={i}>{itemTemplate(item)}</div>)}</div>,
+  }) => (
+    <div>
+      {items?.map((item, i) => <div key={i}>{itemTemplate(item)}</div>)}
+    </div>
+  ),
 }));
 
 const mockMovie: Movie = {
@@ -31,9 +35,7 @@ const mockMovie: Movie = {
   duration: 148,
 };
 
-const mockRatings: MovieRateAverage[] = [
-  { movie: mockMovie, rating: 6.5 },
-];
+const mockRatings: MovieRateAverage[] = [{ movie: mockMovie, rating: 6.5 }];
 
 describe("TopMovies", () => {
   beforeEach(() => {
@@ -53,7 +55,9 @@ describe("TopMovies", () => {
   });
 
   it("fetches average ratings on mount", async () => {
-    vi.spyOn(movieRateConnections, "getAverageRatings").mockResolvedValue(mockRatings);
+    vi.spyOn(movieRateConnections, "getAverageRatings").mockResolvedValue(
+      mockRatings,
+    );
 
     render(<TopMovies />);
 
@@ -63,7 +67,9 @@ describe("TopMovies", () => {
   });
 
   it("opens the sidebar when the TOP MOVIES button is clicked", async () => {
-    vi.spyOn(movieRateConnections, "getAverageRatings").mockResolvedValue(mockRatings);
+    vi.spyOn(movieRateConnections, "getAverageRatings").mockResolvedValue(
+      mockRatings,
+    );
 
     render(<TopMovies />);
     fireEvent.click(screen.getByText("TOP MOVIES"));
@@ -74,7 +80,9 @@ describe("TopMovies", () => {
   });
 
   it("displays movie titles after sidebar is opened", async () => {
-    vi.spyOn(movieRateConnections, "getAverageRatings").mockResolvedValue(mockRatings);
+    vi.spyOn(movieRateConnections, "getAverageRatings").mockResolvedValue(
+      mockRatings,
+    );
 
     render(<TopMovies />);
     fireEvent.click(screen.getByText("TOP MOVIES"));
