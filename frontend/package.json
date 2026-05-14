@@ -10,7 +10,9 @@
     "eslint:fix": "eslint src --ext ts,tsx --fix",
     "preview": "vite preview --host",
     "prettier:check": "prettier -c src",
-    "prettier:format": "prettier -w src"
+    "prettier:format": "prettier -w src",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@types/matter-js": "^0.19.8",
