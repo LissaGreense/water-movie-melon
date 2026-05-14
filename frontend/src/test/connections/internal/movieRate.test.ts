@@ -1,6 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import axios from "axios";
-import { postRating, getRating, getAverageRatings } from "../../../connections/internal/movieRate";
+import {
+  postRating,
+  getRating,
+  getAverageRatings,
+} from "../../../connections/internal/movieRate";
 import { Movie } from "../../../types/internal/movie";
 
 vi.mock("axios");

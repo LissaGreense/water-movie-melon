@@ -41,6 +41,15 @@ showtime! Once the night ends, everyone can rate the film!
 │   ├── Dockerfile         # Docker configuration for the frontend   
 │   ├── public             # Public assets, like icons and images
 │   └── src                # Source code, organized by components, pages, utilities, etc.
+│       ├── components     # Reusable React components
+│       ├── connections    # API layer (internal backend + external OMDb)
+│       ├── pages          # Page-level components (one per route)
+│       ├── types          # TypeScript interfaces
+│       ├── utils          # Utility functions
+│       └── test           # All frontend tests, mirroring the src/ structure
+│           ├── components/
+│           ├── connections/internal/
+│           └── utils/
 ├── ...                
 └── README.md              # Project documentation
 
